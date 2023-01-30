@@ -256,10 +256,10 @@ new$new = asendaja(new$new, "õpetaja", "alushar", excl1 = "abi", replace = "las
 ####
 
 unique(leidur(new$new, "õpetaja", "keskkool"))
-new$new = asendaja(new$new, "õpetaja", "keskkool", replace = "keskkooliõpetaja")
+new$new = asendaja(new$new, "õpetaja", "keskkool", excl1 = "agronoom", excl2 = "põhi", replace = "keskkooliõpetaja")
 
 unique(leidur(new$new, "õpetaja", "gümn"))
-new$new = asendaja(new$new, "õpetaja", "gümn", replace = "keskkooliõpetaja")
+new$new = asendaja(new$new, "õpetaja", "gümn", excl1 = "põhi", replace = "keskkooliõpetaja")
 
 unique(leidur(new$new, "õpetaja", "keel"))
 new$new = asendaja(new$new, "õpetaja", "keel", replace = "keeleõpetaja")
