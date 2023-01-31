@@ -33,6 +33,13 @@ new$new = asendaja(new$new, "vanemspetsialist", "", excl1 = "it", replace = "van
 unique(leidur(new$new, "spetsialist", "juhtiv", excl1 = "it"))
 new$new = asendaja(new$new, "spetsialist", "juhtiv", excl1 = "it", replace = "vanemspetsialist")
 
+unique(leidur(new$new, "spetsialist", "ostu"))
+new$new = asendaja(new$new, "spetsialist", "ostu", replace = "hankepetsialist")
+new$new = asendaja(new$new, "spetsialist", "hanke", replace = "hankepetsialist")
+
+unique(leidur(new$new, "spetsialist", "labori"))
+new$new = asendaja(new$new, "spetsialist", "labori", replace = "laborispetsialist")
+
 ### veel spetsialiste sorteerida teemade järgi. Näiteks lastekaitsjad on nagu sotsiaaltöötajad? It omaette? Koolitus, andmed ..
 
 table(leidur(new$new, "andme", "", "")) %>% sort(decreasing = T) %>% .[1:30]
@@ -42,4 +49,16 @@ new$new = asendaja(new$new, "andme", "tööt", excl1 = "juht", replace = "andmet
 
 unique(leidur(new$new, "andme", "sisest", excl1 = "it"))
 new$new = asendaja(new$new, "andme", "sisest", excl1 = "juht", replace = "andmesisestaja")
+
+unique(leidur(new$new, "andme", "tead"))
+new$new = asendaja(new$new, "andme", "tead", excl1 = "juht", replace = "andmeteadlane")
+
+unique(leidur(new$new, "andme", "analüüt"))
+new$new = asendaja(new$new, "andme", "analüüt",replace = "andmeanalüütik")
+
+unique(leidur(new$new, "sotsiaal", "tööta", ""))
+new$new = asendaja(new$new, "sotsiaal", "töötaja",replace = "sotsiaaltöötaja")
+new$new = asendaja(new$new, "sotsiaaltöö", "spetsialist",replace = "sotsiaaltöötaja")
+new$new = asendaja(new$new, "laste", "kaitse",replace = "sotsiaaltöötaja") ## läheb?
+new$new = asendaja(new$new, "sotsiaalnõunik", "",replace = "sotsiaaltöötaja")
 
