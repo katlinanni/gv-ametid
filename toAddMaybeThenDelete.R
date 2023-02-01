@@ -62,3 +62,19 @@ new$new = asendaja(new$new, "sotsiaaltöö", "spetsialist",replace = "sotsiaalt�
 new$new = asendaja(new$new, "laste", "kaitse",replace = "sotsiaaltöötaja") ## läheb?
 new$new = asendaja(new$new, "sotsiaalnõunik", "",replace = "sotsiaaltöötaja")
 
+unique(leidur(new$new, "luksepp", "", ""))
+new$new = asendaja(new$new, "luksepp", "",replace = "luksepp")
+new$new = asendaja(new$new, "lukksepp", "",replace = "luksepp")
+
+unique(leidur(new$new, "auto", "remondi", ""))
+new$new = asendaja(new$new, "autor", "remondi",replace = "luksepp")
+
+unique(leidur(new$new, "operaator", "masina", ""))
+new$new = asendaja(new$new, "operaator", "masina",replace = "masinaoperaator")
+new$new = asendaja(new$new, "operaator", "seadme",replace = "masinaoperaator")
+new$new = asendaja(new$new, "operaator", "pingi",replace = "masinaoperaator")
+new$new = asendaja(new$new, "operaator", "pink",replace = "masinaoperaator")
+new$new = asendaja(new$new, "operaator", "tehas",replace = "masinaoperaator")
+
+unique(leidur(new$new, "operaator", "liini", ""))
+new$new = asendaja(new$new, "operaator", "liini",replace = "liinioperaator")

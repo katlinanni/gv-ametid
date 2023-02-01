@@ -493,6 +493,7 @@ new$new = asendaja(new$new, "füsioterepeut;", "", replace = "füsioterapeut")
 #new$new = asendaja(new$new, "talunik", "", excl1 = "abikaasa", replace = "põllumajandustöötaja")
 #new$new = asendaja(new$new, "talupida", "", excl1 = "turismi", replace = "põllumajandustöötaja")
 #new$new = asendaja(new$new, "farmi", "", excl1 = "juh", replace = "põllumajandustöötaja")
+#new$new = asendaja(new$new, "lüps", "",replace = "põllumajandustöötaja")
 
 unique(leidur(new$new, "müügispetsialist", ""))
 new$new = asendaja(new$new, "müügispetsialist", "", excl1 = "juht", replace = "müügiesindaja")
@@ -728,4 +729,3 @@ new$new = asendaja(new$new, "metsatööline", "", replace = "metsatööline")
 new$new = asendaja(new$new, "metsamees", "", replace = "metsatööline")
 new$new = asendaja(new$new, "metsamasinaoperaator", "", replace = "metsatööline")
 new$new = asendaja(new$new, "harvest", "", replace = "metsatööline")
-
