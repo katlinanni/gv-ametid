@@ -223,10 +223,6 @@ new$new = asendaja(new$new, "klien", "teenin", "kaup", excl1="juht", excl2 = "om
 unique(leidur(new$new, "klien", "teenin", "poe", excl1 = "juht"))
 new$new = asendaja(new$new, "klien", "teenin", "poe", excl1="juht", excl2 = "haldur", replace = "müüja")
 
-#unique(leidur(new$new, "koristaja", ""))
-#new$new = asendaja(new$new, "koristaja", "", "", replace = "puhastusteenindaja")
-
-
 unique(leidur(new$new, "massöör", ""))
 new$new = asendaja(new$new, "massöör", "", excl1 = "toitumisn", excl2 = "aroomi", excl3 = "logistik", excl4 = "klienditoe", replace = "massöör")
 
@@ -517,16 +513,13 @@ new$new = asendaja(new$new, "müügi", "esindaja", excl1 = "meditsiini", excl2 =
 new$new = asendaja(new$new, "müügi", "esindaja-", replace = "müügiesindaja")
 new$new = asendaja(new$new, "müügi", "mees", excl1 = "juht", replace = "müügiesindaja")
 
-#unique(leidur(new$new, "hald", "kliend"))
-#new$new = asendaja(new$new, "hald", "kliend", replace = "kliendihaldur")
-
 unique(leidur(new$new, "sekretär", "asja"))
 new$new = asendaja(new$new, "sekretär", "asja", replace = "juhiabi")
 new$new = asendaja(new$new, "juhiabi", "sekretär", replace = "juhiabi")
 new$new = asendaja(new$new, "juhiabi-", "", replace = "juhiabi")
 
+#liigutasin juhiabi allapoole, äkki vahepeal tehtud välistused mõjutavad?
 #unique(leidur(new$new, "juhiabi", ""))
-
 
 #unique(leidur(new$new, "sekretär", ""))
 #new$new = asendaja(new$new, "sekretär", "", replace = "sekretär")
@@ -611,6 +604,7 @@ new$new = asendaja(new$new, "hooldus", "õde", replace = "hooldaja")
 new$new = asendaja(new$new, "hoold", "töötaja", excl1 = "tee", excl2 = "turva", replace = "hooldaja")
 new$new = asendaja(new$new, "hooldaja", "kodu", replace = "hooldaja")
 new$new = asendaja(new$new, "hooldaja", "abi", replace = "hooldaja")
+new$new = asendaja(new$new, "hooldaja", "inim", replace = "hooldaja")
 
 unique(leidur(new$new, "kuller", ""))
 new$new = asendaja(new$new, "kuller", "", excl1 = "toidu", excl2 = "ratta", excl3 = "raamatu", replace = "postlijon-kuller")
@@ -995,4 +989,33 @@ new$new = asendaja(new$new, "geoinfo", "", excl1 = "ispets", excl2 = "ospets", r
 new$new = asendaja(new$new, "gis", "peaspetsialist", replace = "maamõõtja")
 new$new = asendaja(new$new, "gis-", "spetsialist", replace = "maamõõtja")
 
-## geoinfospetsialistid veel eraldi grupp
+# geoinfospetsialist on veel eraldi kood (keskastme spets), kuigi neid ainult 2 tk
+new$new = asendaja(new$new, "geoinfo", "spetsialist", replace = "ehitustehnik")
+
+unique(leidur(new$new, "veduri", "juh"))
+new$new = asendaja(new$new, "veduri", "juht", replace = "rongijuht")
+
+unique(leidur(new$new, "juhiabi", ""))
+new$new = asendaja(new$new, "juhiabi", "", excl1 = "kahe", excl2 = "puidurestauraator", excl3 = "huvi", replace = "juhiabi")
+
+unique(leidur(new$new, "kliend", "haldu"))
+new$new = asendaja(new$new, "hald", "kliend", "panga", excl1 = "juh", replace = "pangateller")
+new$new = asendaja(new$new, "hald", "kliend", "äri", excl1 = "juh", replace = "finantsnõustaja") # selles ärikliendis natuke kahtlen, aga nii ISCO ütleb
+new$new = asendaja(new$new, "hald", "kliend", "ãri", excl1 = "juh", replace = "finantsnõustaja")
+new$new = asendaja(new$new, "finants", "nõu", excl1 = "raamatu", replace = "finantsnõustaja")
+new$new = asendaja(new$new, "võla", "nõu", excl1 = "nõudja", excl2 = "menetl", excl3 = "juht", replace = "finantsnõustaja")
+new$new = asendaja(new$new, "invest", "nõu", excl1 = "juht", replace = "finantsnõustaja")
+
+# suurkliendihaldur on ka tegelikult "finantsnõustaja", kuigi minu arvates peaks olema kindel, et tegu siis finatssektoriga - suurkliendid võivad ju ka nt müügitöös või kus iganes olla
+# liiga palju välistusi peab tegema
+#unique(leidur(new$new, "kliend", "haldu"))
+
+unique(leidur(new$new, "tegevusjuhe", ""))
+new$new = asendaja(new$new, "tegevusjuhe", "", replace = "tegevusjuhendaja")
+
+#unique(leidur(new$new, "koristaja", ""))
+#new$new = asendaja(new$new, "koristaja", "", "", replace = "puhastusteenindaja")
+
+unique(leidur(new$new, "puhastus", "tee"))
+# hooldajad ja koristajad järgmiseks (üle vaadata) - loomade hooldajad eraldi jne
+#unique(leidur(new$new, "hooldaja", "hobu"))
