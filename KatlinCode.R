@@ -425,10 +425,11 @@ new$new = asendaja(new$new, "bussijuht", "", excl1 = "õpet", excl2 = "auto", re
 new$new = asendaja(new$new, "trammijuht", "", replace = "bussijuht")
 #trollijuht ka siia, aga liiga palju muid kontrollijuhte tuleb kaasa?
 
-unique(leidur(new$new, "autojuht", "veo"))
-new$new = asendaja(new$new, "autojuht", "veo", excl1 = "metsa", replace = "autojuht")
-new$new = asendaja(new$new, "taksojuht", "", replace = "autojuht")
-new$new = asendaja(new$new, "autojuht", "betooni", replace = "autojuht")
+# Vbl peaks alustama spetsiifilisemast, nt kaugsõidu-rahvusvahelised-autojuhid eraldi, taksojuhid eraldi -- psühholoogiselt erinev töö?
+#unique(leidur(new$new, "autojuht", "veo"))
+#new$new = asendaja(new$new, "autojuht", "veo", excl1 = "metsa", replace = "autojuht")
+#new$new = asendaja(new$new, "taksojuht", "", replace = "autojuht")
+#new$new = asendaja(new$new, "autojuht", "betooni", replace = "autojuht")
 
 unique(leidur(new$new, "traktori", ""))
 new$new = asendaja(new$new, "traktori", "", excl1 = "auto", excl2 = "raamatupidaja", excl3 = "hoold", excl4 = "ensvaja", replace = "põllumasinajuht")
@@ -729,3 +730,4 @@ new$new = asendaja(new$new, "metsatööline", "", replace = "metsatööline")
 new$new = asendaja(new$new, "metsamees", "", replace = "metsatööline")
 new$new = asendaja(new$new, "metsamasinaoperaator", "", replace = "metsatööline")
 new$new = asendaja(new$new, "harvest", "", replace = "metsatööline")
+

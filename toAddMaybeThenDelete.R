@@ -67,7 +67,10 @@ new$new = asendaja(new$new, "luksepp", "",replace = "luksepp")
 new$new = asendaja(new$new, "lukksepp", "",replace = "luksepp")
 
 unique(leidur(new$new, "auto", "remondi", ""))
-new$new = asendaja(new$new, "autor", "remondi",replace = "luksepp")
+new$new = asendaja(new$new, "auto", "remondi",replace = "luksepp")
+new$new = asendaja(new$new, "auto", "plekk",replace = "luksepp")
+new$new = asendaja(new$new, "auto", "maaler",replace = "luksepp")
+new$new = asendaja(new$new, "auto", "klaasi",replace = "luksepp")
 
 unique(leidur(new$new, "operaator", "masina", ""))
 new$new = asendaja(new$new, "operaator", "masina",replace = "masinaoperaator")
@@ -75,6 +78,14 @@ new$new = asendaja(new$new, "operaator", "seadme",replace = "masinaoperaator")
 new$new = asendaja(new$new, "operaator", "pingi",replace = "masinaoperaator")
 new$new = asendaja(new$new, "operaator", "pink",replace = "masinaoperaator")
 new$new = asendaja(new$new, "operaator", "tehas",replace = "masinaoperaator")
+
+new$new = asendaja(new$new, "autojuht", "kaug",replace = "kaugsõiduautojuht")
+new$new = asendaja(new$new, "rekka", "juht",replace = "kaugsõiduautojuht")
+new$new = asendaja(new$new, "pikamaa", "juht",replace = "kaugsõiduautojuht")
+new$new = asendaja(new$new, "rahvusvahel", "autojuht",replace = "kaugsõiduautojuht")
+
+
+new$new = asendaja(new$new, "bussi", "juht", excl1 = "õpetaja", replace = "bussijuht")
 
 unique(leidur(new$new, "operaator", "liini", ""))
 new$new = asendaja(new$new, "operaator", "liini",replace = "liinioperaator")
