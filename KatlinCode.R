@@ -63,6 +63,7 @@ new$new = asendaja(new$new, "vanemõde","", replace = "meditsiiniõde")
 new$new = asendaja(new$new, "õde","kiirabi", replace = "meditsiiniõde")
 new$new = asendaja(new$new, "õde","intensiiv", replace = "meditsiiniõde")
 new$new = asendaja(new$new, "õde","psühh", replace = "meditsiiniõde")
+new$new = asendaja(new$new, "meditsiiniōde", "", replace = "meditsiiniõde")
 
 unique(leidur(new$new, "pere", "õde"))
 new$new = asendaja(new$new, "pere","õde", excl1 = "ämmaemaja", replace = "meditsiiniõde")
@@ -178,14 +179,10 @@ new$new = asendaja(new$new, "müüja", "klienditeenind", "", replace = "müüja"
 new$new = asendaja(new$new, "müüja", "vanem", "", excl1 = "laojuhataja", replace = "müüja")
 new$new = asendaja(new$new, "müüja", "vastutav", "", replace = "müüja")
 
+# kas siin eristada müüjatest "müüja-kassapidajad"? Kassapidajad harutan allpool lahti
 unique(leidur(new$new, "müüja", "kaup"))
 new$new = asendaja(new$new, "müüja", "kaup", "", excl1="juhataja-", excl2 = "maaletooja", replace = "müüja")
 new$new = asendaja(new$new, "müüja", "poe", "", replace = "müüja")
-
-#liiga lai? Ja äkki ei ole mõtet eristada kassapidajaid ja müüjaid? Neil on küll eraldi koodid, aga mõned "müüja-kassapidajad" läksid juba müüjateks nagunii
-#unique(leidur(new$new, "kassapid", ""))
-#new$new = asendaja(new$new, "kassapid", "", "", replace = "kassapidaja")
-#new$new = asendaja(new$new, "kassiir", "", "", replace = "kassapidaja")
 
 unique(leidur(new$new, "klien", "teenin", "kaup", excl1 = "juht"))
 new$new = asendaja(new$new, "klien", "teenin", "kaup", excl1="juht", excl2 = "omanik", excl3 = "juhataja", replace = "müüja")
@@ -316,6 +313,8 @@ new$new = asendaja(new$new, "politseinik", "", replace = "politseinik")
 
 unique(leidur(new$new, "valla", "sekretär"))
 new$new = asendaja(new$new, "valla", "sekretär", excl1 = "abi", replace = "vallasekretär")
+new$new = asendaja(new$new, "valla", "sekretär", excl1 = "abi", replace = "vallasekretär")
+new$new = asendaja(new$new, "linna", "sekretär", replace = "vallasekretär")
 
 unique(leidur(new$new, "jurist", "kohtu"))
 new$new = asendaja(new$new, "jurist", "kohtu", replace = "kohtujurist-advokaat")
@@ -962,6 +961,7 @@ new$new = asendaja(new$new, "hald", "kliend", "ãri", excl1 = "juh", replace = "
 new$new = asendaja(new$new, "finants", "nõu", excl1 = "raamatu", replace = "finantsnõustaja")
 new$new = asendaja(new$new, "võla", "nõu", excl1 = "nõudja", excl2 = "menetl", excl3 = "juht", replace = "finantsnõustaja")
 new$new = asendaja(new$new, "invest", "nõu", excl1 = "juht", replace = "finantsnõustaja")
+new$new = asendaja(new$new, "portfelli", "haldur", excl1 = "metsa", replace = "finantsnõustaja")
 # suurkliendihaldur on ka tegelikult "finantsnõustaja", kuigi minu arvates peaks olema kindel, et tegu siis finatssektoriga - suurkliendid võivad ju ka nt müügitöös või kus iganes olla
 
 unique(leidur(new$new, "tegevusjuhe", ""))
@@ -1226,6 +1226,41 @@ new$new = asendaja(new$new, "lüps", "",replace = "põllumajandustöötaja")
 new$new = asendaja(new$new, "loomakasvat", "", excl1 = "mehhan", replace = "põllumajandustöötaja")
 new$new = asendaja(new$new, "hobusekasvat", "", replace = "põllumajandustöötaja")
 new$new = asendaja(new$new, "kasvat", "veis", replace = "põllumajandustöötaja")
+
+unique(leidur(new$new, "turvatöö", ""))
+new$new = asendaja(new$new, "turvatöö", "", excl1 = "ankass", replace = "turvatöötaja")
+new$new = asendaja(new$new, "turvamees", "", replace = "turvatöötaja")
+new$new = asendaja(new$new, "turvateenuseosut", "", replace = "turvatöötaja")
+new$new = asendaja(new$new, "muuseumi", "valvur", replace = "turvatöötaja")
+
+unique(leidur(new$new, "metoodik", ""))
+new$new = asendaja(new$new, "metoodik", "", excl1 = "juht", excl2 = "arst", excl3 = "mängudi", replace = "õppemetoodikaspetsialist")
+new$new = asendaja(new$new, "juhtõpetaja", "", replace = "õppemetoodikaspetsialist")
+new$new = asendaja(new$new, "programmijuht", "ülik", replace = "õppemetoodikaspetsialist")
+new$new = asendaja(new$new, "haridus", "nõu", replace = "õppemetoodikaspetsialist")
+new$new = asendaja(new$new, "haridus", "spets", excl1 = "tugi", replace = "õppemetoodikaspetsialist")
+new$new = asendaja(new$new, "juhtivõpe", "", replace = "õppemetoodikaspetsialist")
+new$new = asendaja(new$new, "erialajuht", "", replace = "õppemetoodikaspetsialist")
+
+unique(leidur(new$new, "päästja", ""))
+new$new = asendaja(new$new, "päästja", "", excl1 = "vetel", excl2 = "lennujuht", excl3 = "instrukt", replace = "päästja")
+new$new = asendaja(new$new, "tuletõrjuja", "", replace = "päästja")
+new$new = asendaja(new$new, "deminee", "", replace = "päästja")
+new$new = asendaja(new$new, "pääste", "töötaja", replace = "päästja")
+
+unique(leidur(new$new, "sekretär", ""))
+unique(leidur(new$new, "sekretär-", ""))
+new$new = asendaja(new$new, "sekretär-", "", replace = "sekretär")
+
+new$new = asendaja(new$new, "sekretär", "haigla", replace = "meditsiinisekretär")
+new$new = asendaja(new$new, "sekretär", "ravi", replace = "meditsiinisekretär")
+new$new = asendaja(new$new, "sekretär", "kliinik", replace = "meditsiinisekretär")
+new$new = asendaja(new$new, "sekretär", "patoloogia", replace = "meditsiinisekretär")
+
+#liiga lai? Ja äkki ei ole mõtet eristada kassapidajaid ja müüjaid? Neil on küll eraldi koodid, aga mõned "müüja-kassapidajad" läksid juba müüjateks nagunii
+unique(leidur(new$new, "kassapid", ""))
+#new$new = asendaja(new$new, "kassapid", "", "", excl1 = "teeni", excl2 = "kohtusp", excl3 = "sekretär", excl4 = "kontrolör", replace = "kassapidaja")
+#new$new = asendaja(new$new, "kassiir", "", "", replace = "kassapidaja")
 
 # liiga palju välistusi peab tegema, hiljem üle vaadata
 #unique(leidur(new$new, "kliend", "haldu"))
