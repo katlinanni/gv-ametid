@@ -57,6 +57,10 @@ new$new = asendaja(new$new, "tudeng","", excl1 = "nõust", excl2="assist", excl3
 unique(leidur(new$new, "üliõpilane", ""))
 new$new = asendaja(new$new, "üliõpilane","", excl1 = "ema", excl2="arst", excl3="õpetaja", replace = "tudeng")
 
+# järeldoktorandid teaduriteks?
+unique(leidur(new$new, "doktorant", ""))
+new$new = asendaja(new$new, "doktorant", "", excl1 = "nooremteadur", replace = "doktorant")
+
 unique(leidur(new$new, "med", "õde", excl1 = "hamba"))
 new$new = asendaja(new$new, "med","õde", excl1 = "abi", replace = "meditsiiniõde")
 new$new = asendaja(new$new, "vanemõde","", replace = "meditsiiniõde")
@@ -144,8 +148,14 @@ unique(leidur(new$new, "professor", ""))
 new$new = asendaja(new$new, "professor","", excl1 = "insti", excl2 = "juhataja", excl3 = "abi", replace = "professor")
 
 ##kas teha kõik teaduriks või nt "rakubioloogia teadur" oleks "bioloog"? ISCO-s iseenesest ei ole "teaduri" ametit (kuigi paljud on lihtsalt "teaduriks" end siiski tituleerinud)
-#unique(leidur(new$new, "teadur", ""))
-#new$new = asendaja(new$new, "teadur","", replace = "teadur")
+unique(leidur(new$new, "teadur", ""))
+new$new = asendaja(new$new, "teadur","ülik", replace = "teadur")
+new$new = asendaja(new$new, "teadur","vanem", excl1 = "füüsika", excl2 = "spetsialist", replace = "teadur")
+new$new = asendaja(new$new, "teadur","pea", replace = "teadur")
+new$new = asendaja(new$new, "teadur","juhtiv", replace = "teadur")
+new$new = asendaja(new$new, "teadur","noorem", excl1 = "leksik", excl2 = "loogia", excl3 = "tervise", excl4 = "füüsika", replace = "teadur")
+new$new = asendaja(new$new, "teadur","kooli", replace = "teadur")
+new$new = asendaja(new$new, "teadur","külalis", replace = "teadur")
 
 unique(leidur(new$new, "õppejõud", "ülik"))
 new$new = asendaja(new$new, "õppejõud", "ülik", excl1 = "juht", replace = "õppejõud")
@@ -275,6 +285,7 @@ unique(leidur(new$new, "õpetaja", "käsitöö"))
 new$new = asendaja(new$new, "õpetaja", "käsitöö", replace = "käsitöö-kunstiõpetaja")
 new$new = asendaja(new$new, "õpetaja", "kunst", replace = "käsitöö-kunstiõpetaja")
 new$new = asendaja(new$new, "õpetaja", "kodund", replace = "käsitöö-kunstiõpetaja")
+new$new = asendaja(new$new, "õpet", "käsitöö", replace = "käsitöö-kunstiõpetaja")
 
 unique(leidur(new$new, "õpetaja", "õpiabi"))
 new$new = asendaja(new$new, "õpetaja", "õpiabi", replace = "eripedagoog")
@@ -410,7 +421,7 @@ new$new = asendaja(new$new, "tõlkija", "", replace = "tõlkija-toimetaja")
 new$new = asendaja(new$new, "keele", "toimetaja", replace = "tõlkija-toimetaja")
 
 # sotsiaaltöötajaid on jälle mitmes kategoorias - on sotsiaaltöötajad/tippspetsialistid ja keskastmespetsialistid (sotsiaaltööspetsialistid ISCO nimetuste kaudu)
-# lastekaitsjatega on eriti keeruline - tippspetsialist (sotsiaaltöötajatega ühes) on "lastekaitse tippspetsialist" ja keskasmes on "lastekaitsespetsialist"
+# lastekaitsjatega on eriti keeruline - tippspetsialist (sotsiaaltöötajatega ühes) on "lastekaitse tippspetsialist" ja keskastmes on "lastekaitsespetsialist"
 unique(leidur(new$new, "sotsiaaltöötaja", ""))
 new$new = asendaja(new$new, "sotsiaaltöötaja", "", excl1 = "tegevuster", excl2 = "raamatupidaja", excl3 = "eraettevõtja", replace = "sotsiaaltöötaja")
 unique(leidur(new$new, "sotsiaaltöö", "spetsialist"))
@@ -423,6 +434,8 @@ new$new = asendaja(new$new, "sotsiaal", "peda", excl1 = "õpetaja", excl2 = "juh
 new$new = asendaja(new$new, "sotsiaal", "nõu", replace = "sotsiaaltöötaja")
 new$new = asendaja(new$new, "kogemus", "nõu", replace = "sotsiaaltöötaja")
 new$new = asendaja(new$new, "juhtumikorr", "", replace = "sotsiaaltöötaja")
+new$new = asendaja(new$new, "sotsiaaltööjuht", "", replace = "sotsiaaltöötaja")
+new$new = asendaja(new$new, "pere", "nõustaja", replace = "sotsiaaltöötaja")
 
 unique(leidur(new$new, "müügisekretär", ""))
 new$new = asendaja(new$new, "müügisekretär", "", excl1 = "juhiabi", replace = "raamatupidamisekontoritöötaja")
@@ -1311,9 +1324,30 @@ unique(leidur(new$new, "koolitusjuh", ""))
 new$new = asendaja(new$new, "koolitusjuh", "", excl1 = "lennu", excl2 = "kutsek", excl3 = "ülik", excl4 = "õppejõud", replace = "töötajate koolitusspetsialist")
 new$new = asendaja(new$new, "personaliaren", "", replace = "töötajate koolitusspetsialist")
 
-#unique(leidur(new$new, "noorsoo", "töö"))
+# analoogne olukord nagu sotsiaaltöötajatega - noorsootöötajaid on kahes astmes (tippspetsialistid ja keskastmespetsialistid)
+unique(leidur(new$new, "noorsoo", "töö"))
+new$new = asendaja(new$new, "noorsoo", "töö", excl1 = "kutse", excl2 = "keskuse", excl3 = "juhataja", excl4 = "omavalitsus", replace = "sotsiaaltöötaja")
 
-#unique(leidur(new$new, "käsitööline", ""))
+unique(leidur(new$new, "käsitööline", ""))
+new$new = asendaja(new$new, "käsitööline", "", excl1 = "disainer", replace = "käsitööline")
+new$new = asendaja(new$new, "käsitöö", "meister", excl1 = "kliendi", replace = "käsitööline")
+new$new = asendaja(new$new, "käsitöö", "tegi", replace = "käsitööline")
+
+unique(leidur(new$new, "projekteerija", "insener"))
+new$new = asendaja(new$new, "projekteerija", "insener", excl1 = "müügi", replace = "ehitusinsener")
+
+unique(leidur(new$new, "projekteerija", "ehitus"))
+new$new = asendaja(new$new, "projekteerija", "ehitus", replace = "ehitusprojekteerija")
+new$new = asendaja(new$new, "projekteerija", "hoone", replace = "ehitusprojekteerija")
+new$new = asendaja(new$new, "projekteerija", "konstruktor", replace = "ehitusprojekteerija")
+
+#unique(leidur(new$new, "kutseõpetaja", ""))
+
+#unique(leidur(new$new, "töödejuhataja", ""))
+
+#unique(leidur(new$new, "toimetaja", ""))
+
+#unique(leidur(new$new, "projekteerija", ""))
 
 #liiga lai? Ja äkki ei ole mõtet eristada kassapidajaid ja müüjaid? Neil on küll eraldi koodid, aga mõned "müüja-kassapidajad" läksid juba müüjateks nagunii
 unique(leidur(new$new, "kassapid", ""))
@@ -1341,3 +1375,5 @@ unique(leidur(new$new, "kassapid", ""))
 #new$new = asendaja(new$new, "osakonna", "juhataja", "", excl1 = "ase", excl2 = "abi", excl3 = "kohuset", replace = "osakonnajuhataja")
 
 #unique(leidur(new$new, "haldusjuht", ""))
+
+
