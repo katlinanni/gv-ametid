@@ -146,6 +146,7 @@ new$new = asendaja(new$new, "veteri","", excl1 = "abi", excl2="assist", excl3 = 
 
 unique(leidur(new$new, "professor", ""))
 new$new = asendaja(new$new, "professor","", excl1 = "insti", excl2 = "juhataja", excl3 = "abi", replace = "professor")
+new$new = asendaja(new$new, "prof","kaas", replace = "professor")
 
 ##kas teha kõik teaduriks või nt "rakubioloogia teadur" oleks "bioloog"? ISCO-s iseenesest ei ole "teaduri" ametit (kuigi paljud on lihtsalt "teaduriks" end siiski tituleerinud)
 unique(leidur(new$new, "teadur", ""))
@@ -304,11 +305,21 @@ new$new = asendaja(new$new, "pedagoog", "muuseum", replace = "muuseumipedagoog")
 unique(leidur(new$new, "ehitus", "tööline"))
 new$new = asendaja(new$new, "ehitus", "tööline", excl1 = "laot", excl2 = "abi", replace = "ehitustööline")
 
-unique(leidur(new$new, "ehitus", "tööde", "juh"))
-new$new = asendaja(new$new, "ehitus", "tööde", "juh", excl1 = "fie", replace = "ehitustöödejuht")
 
-unique(leidur(new$new, "ehitus", "obje", "juh"))
-new$new = asendaja(new$new, "ehitus", "obje", "juh", replace = "ehitustöödejuht")
+unique(leidur(new$new, "ehitus", "tööde", "juh"))
+new$new = asendaja(new$new, "ehitus", "tööde", "juh", excl1 = "fie", replace = "ehitustöödejuhataja")
+new$new = asendaja(new$new, "ehitus", "obje", "juh", replace = "ehitustöödejuhataja")
+
+# panin ehitustöödejuhatajate alla ka elektritöödejuhatajad jms - ISCO kirjelduse järgi peaks sobima, eks elektritööd ka osa ehitustöödest?
+unique(leidur(new$new, "töödejuhataja", ""))
+new$new = asendaja(new$new, "töödejuhataja", "elektri", replace = "ehitustöödejuhataja")
+new$new = asendaja(new$new, "töödejuhataja", "ehit", replace = "ehitustöödejuhataja")
+
+# töödejuhatajaid ka mitmetes valdkondades (kaevandus/tööstus/ehitus)
+new$new = asendaja(new$new, "töödejuhat", "tootm", replace = "tootmistöödejuhataja")
+
+# ilma täpsustuseta töödejuhatajaid kõige rohkem
+table(leidur(new$new, "töödejuhat", ""))
 
 unique(leidur(new$new, "puu", "sepp"))
 new$new = asendaja(new$new, "puu", "sepp", excl1 = "üldehi", excl2 = "ehitaja.", excl3 = "ehitaja-", replace = "puusepp")
@@ -339,6 +350,9 @@ unique(leidur(new$new, "ajal", "toimet"))
 new$new = asendaja(new$new, "ajal", "toimet", replace = "ajakirjanik")
 new$new = asendaja(new$new, "ajak", "toimet", excl1 = "raamatu", replace = "ajakirjanik")
 new$new = asendaja(new$new, "reporter", "", replace = "ajakirjanik")
+new$new = asendaja(new$new, "saatejuht", "", replace = "ajakirjanik")
+
+
 
 unique(leidur(new$new, "programm", "veebi"))
 new$new = asendaja(new$new, "programm", "veebi", replace = "veebiprogrammeerija")
@@ -693,6 +707,7 @@ new$new = asendaja(new$new, "kontsertmeister", "", excl1 = "õpetaja", replace =
 new$new = asendaja(new$new, "viiul","", excl1 = "õpetaja", replace = "muusik")
 new$new = asendaja(new$new, "helilooja", "", replace = "muusik")
 new$new = asendaja(new$new, "dirigent", "", excl1 = "õpetaja", replace = "muusik")
+new$new = asendaja(new$new, "dirigentja", "", replace = "muusik")
 new$new = asendaja(new$new, "koorijuht", "", excl1 = "õpetaja", replace = "muusik")
 new$new = asendaja(new$new, "muusik", "erso", replace = "muusik")
 new$new = asendaja(new$new, "muusik", "kirik", replace = "muusik")
@@ -1341,11 +1356,13 @@ new$new = asendaja(new$new, "projekteerija", "ehitus", replace = "ehitusprojekte
 new$new = asendaja(new$new, "projekteerija", "hoone", replace = "ehitusprojekteerija")
 new$new = asendaja(new$new, "projekteerija", "konstruktor", replace = "ehitusprojekteerija")
 
-#unique(leidur(new$new, "kutseõpetaja", ""))
+unique(leidur(new$new, "kutseõpetaja", ""))
+new$new = asendaja(new$new, "kutse", "õpetaja", excl1 = "juhatuseliige", replace = "kutseõpetaja")
+new$new = asendaja(new$new, "eriala", "õpetaja", replace = "kutseõpetaja")
+new$new = asendaja(new$new, "praktika", "juhendaja", replace = "kutseõpetaja")
+new$new = asendaja(new$new, "meister-tehno", "", replace = "kutseõpetaja")
 
-#unique(leidur(new$new, "töödejuhataja", ""))
-
-#unique(leidur(new$new, "toimetaja", ""))
+unique(leidur(new$new, "toimetaja", ""))
 
 #unique(leidur(new$new, "projekteerija", ""))
 
