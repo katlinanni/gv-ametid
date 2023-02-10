@@ -1363,6 +1363,15 @@ new$new = asendaja(new$new, "praktika", "juhendaja", replace = "kutseõpetaja")
 new$new = asendaja(new$new, "meister-tehno", "", replace = "kutseõpetaja")
 
 unique(leidur(new$new, "toimetaja", ""))
+new$new = asendaja(new$new, "saatejuht", "", replace = "ajakirjanik")
+new$new = asendaja(new$new, "uudis", "toimetaja", replace = "ajakirjanik")
+new$new = asendaja(new$new, "tele", "toimetaja", replace = "ajakirjanik")
+new$new = asendaja(new$new, "pea", "toimetaja", replace = "ajakirjanik")
+new$new = asendaja(new$new, "lehe", "toimetaja", replace = "ajakirjanik")
+new$new = asendaja(new$new, "meedia", "toimetaja", replace = "ajakirjanik")
+
+new$new = asendaja(new$new, "raamatu", "toimetaja", replace = "kirjanik")
+new$new = asendaja(new$new, "õpik", "toimetaja", replace = "kirjanik")
 
 #unique(leidur(new$new, "projekteerija", ""))
 
