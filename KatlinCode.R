@@ -1098,6 +1098,7 @@ new$new = asendaja(new$new, "kaubanduskesk", "juh", excl1 = "reklaami",  replace
 unique(leidur(new$new, "kategooriajuht", ""))
 new$new = asendaja(new$new, "kategooriajuht", "", excl1 = "teenindus", excl2 = "meeskonna", replace = "hankespetsialist")
 new$new = asendaja(new$new, "tootejuht", "kauba", replace = "hankespetsialist")
+new$new = asendaja(new$new, "hange", "spets", excl1 = "riigi", replace = "hankespetsialist")
 
 unique(leidur(new$new, "hotell", "admin"))
 new$new = asendaja(new$new, "hotell", "admin", replace = "hotelliadministraator")
@@ -1145,6 +1146,7 @@ unique(leidur(new$new, "personalispetsialist", ""))
 new$new = asendaja(new$new, "personalispetsialist", "", excl1 = "juht", excl2 = "sekretär", replace = "personalispetsialist")
 new$new = asendaja(new$new, "värbamisspetsialist", "", replace = "personalispetsialist")
 new$new = asendaja(new$new, "karjääri", "nõust", replace = "personalispetsialist")
+new$new = asendaja(new$new, "personali", "spets", replace = "personalispetsialist")
 
 unique(leidur(new$new, "värba", ""))
 new$new = asendaja(new$new, "värba", "", excl1 = "juh", excl2 = "assis",  replace = "personalivärbaja")
@@ -1452,6 +1454,24 @@ new$new = asendaja(new$new, "tegevus", "terapeut", replace = "tegevusterapeut")
 
 unique(leidur(new$new, "mesinik", ""))
 new$new = asendaja(new$new, "mesinik", "", replace = "mesinik")
+
+unique(leidur(new$new, "diplomaat", ""))
+new$new = asendaja(new$new, "diplomaat", "", replace = "diplomaat")
+
+# ISCO-s eristatakse tippspetsialisti ja spetsialisti - ma praegu ei eristanud, sest neid, kes on end "pea", "juhtiv" jne spetsiks määratlenud, on vähe
+unique(leidur(new$new, "töökesk", "spets"))
+new$new = asendaja(new$new, "töökesk", "spets", excl1 = "juhataja", excl2 = "person", replace = "töökeskkonnaspetsialist")
+
+unique(leidur(new$new, "keskkonna", "spets"))
+new$new = asendaja(new$new, "keskkonnaspets", "", excl1 = "juhataja", excl2 = "hange", excl3 = "ehitus", excl4 = "töö", replace = "keskkonnanõunik")
+new$new = asendaja(new$new, "keskkonna", "spets", excl1 = "töö", excl2 = "ehitus", excl3 = "juhataja", excl4 = "eritöö", replace = "keskkonnanõunik")
+new$new = asendaja(new$new, "loodus", "kaitse", excl1 = "juht", replace = "keskkonnanõunik")
+new$new = asendaja(new$new, "keskkonna", "nõu", replace = "keskkonnanõunik")
+new$new = asendaja(new$new, "keskkonna", "audii", replace = "keskkonnanõunik")
+new$new = asendaja(new$new, "keskkonna", "kons", excl1 = "töö", excl2 = "juht", replace = "keskkonnanõunik")
+new$new = asendaja(new$new, "ökoloog", "", replace = "keskkonnanõunik")
+new$new = asendaja(new$new, "keskkonna", "amet", replace = "keskkonnanõunik")
+new$new = asendaja(new$new, "keskkonna", "eksp", excl1 = "töö", replace = "keskkonnanõunik")
 
 # politsei-ametid vaja ka lahti harutada
 unique(leidur(new$new, "politsei", ""))
