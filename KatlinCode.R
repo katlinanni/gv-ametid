@@ -1,6 +1,7 @@
 require(tidyverse)
 require(fuzzyjoin)
 require(qdap)
+require(readr)
 setwd("~/Private/gvpers")
 
 leidur = function(var,x,y,z=NULL, excl1 = NULL, excl2 = NULL) {
