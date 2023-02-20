@@ -459,13 +459,13 @@ new$new = asendaja(new$new, "autojuhtja", "", replace = "autojuht")
 new$new = asendaja(new$new, "autojuht", "kutse", excl1 = "rasket", replace = "autojuht")
 
 unique(leidur(new$new, "traktori", ""))
-new$new = asendaja(new$new, "traktori", "", excl1 = "auto", excl2 = "raamatupidaja", excl3 = "hoold", excl4 = "ensvaja", replace = "põllumasinajuht")
+new$new = asendaja(new$new, "traktori", "", excl1 = "auto", excl2 = "raamatupidaja", excl3 = "hoold", excl4 = "ensvaja", replace = "põllujametsamasinajuht")
 new$new = asendaja(new$new, "harvester", "", replace = "põllumasinajuht")
 
 unique(leidur(new$new, "metsa", "auto"))
-new$new = asendaja(new$new, "metsa", "auto", replace = "metsamasinajuht")
-new$new = asendaja(new$new, "metsa", "masin", excl1 = "hooldus", replace = "metsamasinajuht")
-new$new = asendaja(new$new, "forvarder", "", replace = "metsamasinajuht")
+new$new = asendaja(new$new, "metsa", "auto", replace = "põllujametsamasinajuht")
+new$new = asendaja(new$new, "metsa", "masin", excl1 = "hooldus", replace = "põllujametsamasinajuht")
+new$new = asendaja(new$new, "forvarder", "", replace = "põllujametsamasinajuht")
 
 unique(leidur(new$new, "buldooseri", ""))
 new$new = asendaja(new$new, "buldooseri", "", replace = "teemasinajuht")
@@ -1005,10 +1005,10 @@ new$new = asendaja(new$new, "ökonomist", "", replace = "ökonomist")
 new$new = asendaja(new$new, "majandustead", "", replace = "ökonomist")
 new$new = asendaja(new$new, "majandus", "analüü", replace = "ökonomist")
 
-new$new = asendaja(new$new, "raamatupi", "tööt", excl1 = "sotsiaal", excl2 = "juhi", replace = "raamatupidamistöötaja")
-new$new = asendaja(new$new, "finants", "tööt", replace = "raamatupidamistöötaja")
-new$new = asendaja(new$new, "arve", "ametn", replace = "raamatupidamistöötaja")
-new$new = asendaja(new$new, "arve", "spets", replace = "raamatupidamistöötaja")
+new$new = asendaja(new$new, "raamatupi", "tööt", excl1 = "sotsiaal", excl2 = "juhi", replace = "raamatupidamisekontoritöötaja")
+new$new = asendaja(new$new, "finants", "tööt", replace = "raamatupidamisekontoritöötaja")
+new$new = asendaja(new$new, "arve", "ametn", replace = "raamatupidamisekontoritöötaja")
+new$new = asendaja(new$new, "arve", "spets", replace = "raamatupidamisekontoritöötaja")
 
 new$new = asendaja(new$new, "palga", "arvest", excl1 = "juht",  replace = "palgaarvestaja")
 
@@ -1953,6 +1953,16 @@ new$new = asendaja(new$new, "klienditeenidaja", "", replace = "klienditeenindaja
 
 new$new = asendaja(new$new, "klienditeenindsja", "", "", replace = "klienditeenindaja")
 
+unique(leidur(new$new, "kontori", "töötaja"))
+new$new = asendaja(new$new, "kontori", "töötaja", excl1 = "raamatup", excl2 = "vanem", replace = "kontoritöötaja")
+
+unique(leidur(new$new, "juhatuse", "liige"))
+new$new = asendaja(new$new, "juhatuse", "liige", excl1 = "juht", excl2 = "peaspet", excl3 = "osakonnaj", excl4 = "tegevdir", replace = "juhatuseliige")
+
+unique(leidur(new$new, "teenindaja", "müüja"))
+new$new = asendaja(new$new, "teenindaja", "müüja", replace = "müüja")
+new$new = asendaja(new$new, "teenindaja", "poe", excl1 = "internet", excl2 = "e-poe", replace = "müüja")
+
 #unique(leidur(new$new, "klienditugi", ""))
 
 # seda peaks ka võib-olla veel natuke mõtlema, kusjuures asetäitjad ja kohusetäitjad pannakse samale reale põhitäitjaga 
@@ -1970,7 +1980,7 @@ unique(leidur(new$new, "osakonna", "juhataja", excl1 = "ase"))
 
 table(leidur(new$new, "spetsialist", "", "")) %>% sort(decreasing = T) %>% .[1:30]
 
-#unique(leidur(new$new, "peaspetsialist", "", excl1 = "it"))
+unique(leidur(new$new, "peaspetsialist", "", excl1 = "it"))
 #new$new = asendaja(new$new, "peaspetsialist", "", excl1 = "it", replace = "vanemspetsialist")
 
 #unique(leidur(new$new, "vanemspetsialist", "", excl1 = "it"))
