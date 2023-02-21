@@ -28,28 +28,69 @@ asendaja = function(var,x,y,z=NULL,excl1=NULL,excl2 = NULL,excl3=NULL,excl4=NULL
   var
 }
 
-codes = new = read_tsv("AmetidKodeerimisele.tsv")
-new$new = new$firstBeforeCommaSlash
-new$new = gsub("olin", "", new$new, fixed="")
-new$new = gsub("olen", "", new$new, fixed="")
-new$new = gsub("praegu", "", new$new, fixed="")
-new$new = gsub("klenditeenindaja", "klienditeenindaja", new$new, fixed=T)
-#new$new = gsub("kliendideenindus", "klienditeenindaja", new$new, fixed=T)
-#new$new = gsub("sotsiaaltöö", "sotsiaaltöötaja", new$new, fixed=T)
-#new$new = gsub("põllumajandus", "põllumajandustöötaja", new$new, fixed=T)
+codes = new = read_tsv("AmetidKodeerimisele.tsv") %>% select(c(1:2,6))
 
+sonad = tolower(codes$workPositionName)
+sonad = gsub("olen ", "", sonad, fixed=T)
+sonad = gsub("olin ", "", sonad, fixed=T)
+sonad = gsub("olnud ", "", sonad, fixed=T)
+sonad = gsub("töötan ", "", sonad, fixed=T)
+sonad = gsub("praegu ", "", sonad, fixed=T)
+sonad = gsub("enne ", "", sonad, fixed=T)
+sonad = gsub("nüüd ", "", sonad, fixed=T)
+sonad = gsub("hetkel ", "", sonad, fixed=T)
+sonad = gsub("eesti ", "", sonad, fixed=T)
+sonad = gsub(" ja ", "", sonad, fixed=T)
+sonad = gsub(" and ", "", sonad, fixed=T)
+sonad = gsub(" või ", "", sonad, fixed=T)
+sonad = gsub(" ning ", "", sonad, fixed=T)
+sonad = gsub(" ehk ", "", sonad, fixed=T)
+sonad = gsub(" ei ", "", sonad, fixed=T)
+sonad = gsub(" aastat ", "", sonad, fixed=T)
+sonad = gsub(" по ", "", sonad, fixed=T)
+sonad = gsub(" в ", "", sonad, fixed=T)
+sonad = gsub(" и ", "", sonad, fixed=T)
+sonad = gsub(" на ", "", sonad, fixed=T)
+sonad = gsub(" of ", "", sonad, fixed=T)
+sonad = gsub(".", ",", sonad, fixed=T)
+sonad = gsub("  ", " ", sonad, fixed=T)
+sonad = gsub("eluaegne", " ", sonad, fixed=T)
+sonad = gsub("pedagoog", "õpetaja", sonad, fixed=T)
+sonad = gsub("elukutseline", " ", sonad, fixed=T)
+sonad = gsub("juhataja", "juht", sonad, fixed=T)
+sonad = gsub("juhatuseesimees", "juht", sonad, fixed=T)
+sonad = gsub("esimees", "juht", sonad, fixed=T)
+sonad = gsub("peadirektor", "direktor", sonad, fixed=T)
+sonad = gsub("direktori", "juhi", sonad, fixed=T)
+sonad = gsub("direktor", "juht", sonad, fixed=T)
+sonad = gsub("asetäitja", "abi", sonad, fixed=T)
+sonad = gsub("assistent", "abi", sonad, fixed=T)
+sonad = gsub("klenditeenindaja", "klienditeenindaja", sonad, fixed=T)
+sonad = gsub("ülem", "vanem", sonad, fixed=T)
+sonad = gsub("juhtiv", "pea", sonad, fixed=T)
+sonad = gsub("enda", "oma", sonad, fixed=T)
+sonad = gsub("isikliku", "oma", sonad, fixed=T)
+
+## Maybe there are more synonyms to be replaced in one go?
+## Levinumad venekeelsed võib ka kohe asendada, nt õpetajad jms
+
+sonad = sonad %>% strsplit(",") %>% lapply(function(x) x[1]) %>% unlist
+sonad = sonad %>% strsplit(";") %>% lapply(function(x) x[1]) %>% unlist
+sonad = sonad %>% strsplit("/") %>% lapply(function(x) x[1]) %>% unlist
+
+new$new = gsub(" ", "", sonad, fixed=T)
 dic = unique(new$new[new$AtLeastTwo == 1 & !is.na(new$new)])
 check = new$new %>% as.character
 checked = check_spelling(strtrim(check,30), dictionary = dic,range = 2, assume.first.correct = F) 
 checked = checked %>% filter(!duplicated(row))
 new$row = 1:nrow(new)
 new = left_join(new, checked[,1:5], by = "row") %>% select(-row)
-new$dist = stringdist::stringsim(new$new, new$suggestion.x)
-new %>% filter(AtLeastTwo == 0) %>% select(scode, not.found.x:suggestion.x, dist) %>% arrange(desc(dist)) %>% filter(dist < .80) %>% slice(1:20)
+new$dist = stringdist::stringsim(new$new, new$suggestion)
+new %>% filter(AtLeastTwo == 0) %>% select(scode, not.found:suggestion, dist) %>% arrange(desc(dist)) %>% filter(dist < .75) %>% slice(1:20)
 
 ## replace
-i = !is.na(new$dist) & (new$dist > .80)
-new$new[i] = new$suggestion.x[i]
+i = !is.na(new$dist) & (new$dist > .75)
+new$new[i] = new$suggestion[i]
 
 ## start fishing
 unique(leidur(new$new, "eisoovi", ""))
@@ -2045,4 +2086,50 @@ unique(leidur(new$new, "raamatupida", "", excl1 = "abi"))
 #new$new = asendaja(new$new, "tehnik", "hoold", replace = "masinaehitustehnik")
 #unique(leidur(new$new, "insener", "hoold",))
 #new$new = asendaja(new$new, "insener", "hoold", replace = "hooldustehnik")
+
+
+#### Stop and replace some more values
+
+uh = table(new$new) %>% .[. > 5] %>% names
+kodeerimata = new %>% filter(!new %in% uh)
+kodeeritud = new %>% filter(new %in% uh)
+
+dic = unique(kodeeritud$new[!is.na(kodeerimata$new)])
+check = kodeerimata$new %>% as.character
+checked = check_spelling(strtrim(check,60), dictionary = dic,range = 2, assume.first.correct = F) 
+checked = checked %>% filter(!duplicated(row))
+kodeerimata$row = 1:nrow(kodeerimata)
+kodeerimata = left_join(kodeerimata %>% select(1:4,"row"), checked[,1:5], by = "row") %>% select(-row)
+kodeerimata$dist = stringdist::stringsim(kodeerimata$new, kodeerimata$suggestion)
+kodeerimata %>% select(scode:dist) %>% arrange(desc(dist)) %>% filter(dist > .85) %>% tail(20)
+
+i = !is.na(kodeerimata$dist) & (kodeerimata$dist > .85)
+kodeerimata$new[i] = kodeerimata$suggestion[i]
+
+tmp = new
+new = rbind(kodeerimata, kodeeritud) %>% arrange(match(scode, tmp$scode))
+
+### now you can use this to get some more ideas: which words are more coommon among those with unique jobs
+
+uh = table(new$new) %>% .[. == 1] %>% names
+kodeerimata = new %>% filter(new %in% uh)
+
+strsplit(kodeerimata$workPositionName, "\\W") %>% unlist %>% 
+  table %>% sort(decreasing = T) %>% .[. > 49]
+
+table(leidur(kodeerimata$new, "klien","teeninda", excl1 = "juh")) 
+table(leidur(kodeerimata$new, "juht","osakonna")) 
+table(leidur(kodeerimata$new, "juht","müügi")) 
+table(leidur(kodeerimata$new, "juht","projekt")) 
+table(leidur(kodeerimata$new, "juht","klien")) 
+table(leidur(kodeerimata$new, "arst","")) 
+table(leidur(kodeerimata$new, "teadur","")) 
+table(leidur(kodeerimata$new, "nõunik","")) 
+table(leidur(kodeerimata$new, "","raamatupid")) 
+table(leidur(kodeerimata$new, "","spetsialist")) 
+table(leidur(kodeerimata$new, "","koordi")) 
+table(leidur(kodeerimata$new, "","operaator")) 
+table(leidur(kodeerimata$new, "","abi")) 
+table(leidur(kodeerimata$new, "","insener")) 
+
 
