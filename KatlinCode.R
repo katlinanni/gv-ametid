@@ -2313,12 +2313,15 @@ new$new = asendaja(new$new, "osakonna", "juh", "infoteh", replace = "IKT-juht")
 new$new = asendaja(new$new, "osakonna", "juh", "ikt", replace = "IKT-juht")
 
 new$new = asendaja(new$new, "osakonna", "juh", "tootmis", replace = "tootmisjuht")
+#new$new = asendaja(new$new, "tootmisejuht", "", replace = "tootmisjuht")
 
 new$new = asendaja(new$new, "osakonna", "juh", "tootearendus", replace = "tootearendusjuht")
+new$new = asendaja(new$new, "tootearendus", "juht", excl1 = "müügi", replace = "tootearendusjuht")
 
 new$new = asendaja(new$new, "arendusosakonna", "juh", excl1 = "tehnika", excl2 = "projekti", replace = "arendusjuht")
 new$new = asendaja(new$new, "äriarendus", "juh", replace = "arendusjuht")
 new$new = asendaja(new$new, "arengu-planeeringuosakonnamaa", "", replace = "arendusjuht")
+
 
 new$new = asendaja(new$new, "osakonna", "juh", "energeet", replace = "tööstusjuht")
 new$new = asendaja(new$new, "osakonna", "juh", "enegreetika", replace = "tööstusjuht")
@@ -2331,8 +2334,10 @@ new$new = asendaja(new$new, "osakonna", "juh", "reklaam", replace = "reklaamijuh
 
 # ja siis on hulk osakonnajuhatajaid, kellele ei leia ISCO-st eraldi nimetust ehk panen nad kõik lihtsalt osakonnajuhatajateks
 new$new = asendaja(new$new, "osakonna", "juhataja", replace = "osakonnajuhataja")
+new$new = asendaja(new$new, "osakonnajuhtaja", "", replace = "osakonnajuhataja")
 
-## osakonnajuhid järgmiseks
+unique(leidur(new$new, "osakonnajuht", ""))
+
 
 #ISCO-s on "ärianalüütik" ainult IT-elukutsete all, mõtlen veel selle peale
 #new$new = asendaja(new$new, "analüütik", "krediidi", replace = "ärianalüütik")
