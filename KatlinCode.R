@@ -1050,12 +1050,12 @@ unique(leidur(new$new, "elektrik", "", excl1 = "kappide"))
 new$new = asendaja(new$new, "elektrik", "", excl1 = "kappide", excl2 = "kilp", excl3 = "keevitaja", replace = "elektrik")
 
 unique(leidur(new$new, "spetsialist", "ostu"))
-new$new = asendaja(new$new, "spetsialist", "ostu", replace = "hankepetsialist")
-new$new = asendaja(new$new, "spetsialist", "hanke", replace = "hankepetsialist")
-new$new = asendaja(new$new, "ostu", "assist", excl1 = "juhi", replace = "hankepetsialist")
-new$new = asendaja(new$new, "kauba", "kategooria", replace = "hankepetsialist")
-new$new = asendaja(new$new, "hange", "koordin", replace = "hankepetsialist")
-new$new = asendaja(new$new, "hanke", "koordin", replace = "hankepetsialist")
+new$new = asendaja(new$new, "spetsialist", "ostu", replace = "hankespetsialist")
+new$new = asendaja(new$new, "spetsialist", "hanke", replace = "hankespetsialist")
+new$new = asendaja(new$new, "ostu", "assist", excl1 = "juhi", replace = "hankespetsialist")
+new$new = asendaja(new$new, "kauba", "kategooria", replace = "hankespetsialist")
+new$new = asendaja(new$new, "hange", "koordin", replace = "hankespetsialist")
+new$new = asendaja(new$new, "hanke", "koordin", replace = "hankespetsialist")
 
 ### veel spetsialiste sorteerida teemade järgi. Näiteks lastekaitsjad on nagu sotsiaaltöötajad? It omaette? Koolitus, andmed ..
 
