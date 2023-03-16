@@ -2990,6 +2990,8 @@ new$new = asendaja(new$new, "spordiinstruktor", "", replace = "spordiinstruktor"
 
 new$new = asendaja(new$new, "valuutamaakler", "", replace = "valuutamaakler")
 new$new = asendaja(new$new, "autopesija", "", replace = "autopesija")
+new$new = asendaja(new$new, "stilist", "", replace = "stilist")
+new$new = asendaja(new$new, "tehnilinejuht", "", replace = "tehniline juht")
 
 ### vt seda enne
 #new$new = asendaja(new$new, "ettevõttejuht.", "", replace = "ettevõttejuht")
