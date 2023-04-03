@@ -102,14 +102,14 @@ new$newWithManualReplacement = ifelse(!is.na(new$rewrite), new$rewrite, new$new)
 
 # selleks, et saaks kogu koodi ka neist käsitsi muudetud nimedest üle käia, siis nimetasin mõned tunnused ringi
 new = rename(new, new1 = new, new = newWithManualReplacement)
-new$new = gsub(" ", "", new$new, fixed=T) 
-new$new = tolower(new$new)
+new$new <- new$new %>% gsub(" ", "", ., fixed = TRUE) %>% tolower()
 
 ## start fishing
 
 #FIE-d -- valdkondade kaupa määratlenud end ainult üksikud, seega mõistlikum kas kõik FIE-d kokku panna või siis valdkonna määratlenud FIE-d ameti järgi gruppi panna
 table(leidur(new$new, "fie", "")) 
 new$new = asendaja(new$new, "füüsilisest", "", replace = "fie")
+new$new = asendaja(new$new, "fie", "", replace = "fie")
 
 unique(leidur(new$new, "eisoovi", ""))
 new$new = asendaja(new$new, "eisoovi", "", replace = "NA")
@@ -224,7 +224,7 @@ unique(leidur(new$new, "arst", "hamba"))
 new$new = asendaja(new$new, "arst","hamba", excl1 = "abil", excl2="assist", replace = "hambaarst")
 
 unique(leidur(new$new, "hamba", "abi"))
-new$new = asendaja(new$new, "hamba","abi", replace = "hambaarstiabiline")
+new$new = asendaja(new$new, "hamba","abi", replace = "muu tervishoiuhooldustöötaja")
 
 unique(leidur(new$new, "hamba", "tehnik"))
 new$new = asendaja(new$new, "hambatehnik", "", replace = "hambatehnik")
@@ -1109,7 +1109,7 @@ new$new = asendaja(new$new, "lukksepp-auto", "", replace = "lukksepp")
 unique(leidur(new$new, "operaator", "masina", ""))
 
 # see rühm kodeeritakse hiljem ümber 
-new$new = asendaja(new$new, "operaator", "masina", "trük", replace = "trükimasinaoperaator")
+new$new = asendaja(new$new, "operaator", "masina", "trük", replace = "trükkal")
 
 # N = 6
 new$new = asendaja(new$new, "operaator", "klaas", replace = "klaasimasinaoperaator")
@@ -1758,7 +1758,7 @@ new$new = asendaja(new$new, "lillemüü", "", excl1 = "juh", replace = "florist"
 unique(leidur(new$new, "valvur", ""))
 new$new = asendaja(new$new, "valvur", "vang", replace = "vangivalvur")
 
-new$new = asendaja(new$new, "valvur", "", excl1 = "piiri", excl2 = "vangi", replace = "valvur")
+new$new = asendaja(new$new, "valvur", "", excl1 = "piiri", excl2 = "vangi", replace = "muulihttööline")
 
 unique(leidur(new$new, "tegevus", "terapeut"))
 new$new = asendaja(new$new, "tegevus", "terapeut", replace = "tegevusterapeut")
@@ -2122,9 +2122,9 @@ new$new = asendaja(new$new, "viimistleja", "akend", replace = "ehitusviimistleja
 # lihtsalt "viimistlejaid" on ka 21 tk
 
 unique(leidur(new$new, "kliend", "haldu", excl1 = "juh"))
-new$new = asendaja(new$new, "kliend", "haldu", "spets", excl1 = "juh", replace = "kliendihaldur")
-new$new = asendaja(new$new, "kliend", "haldu", excl1 = "juh", excl2 = "disain", excl3 = "teeninda", excl4 = "õpetaja", replace = "kliendihaldur")
-new$new = asendaja(new$new, "kliendihaldurmüügi", "", replace = "kliendihaldur")
+new$new = asendaja(new$new, "kliend", "haldu", "spets", excl1 = "juh", replace = "klienditoe konsultant")
+new$new = asendaja(new$new, "kliend", "haldu", excl1 = "juh", excl2 = "disain", excl3 = "teeninda", excl4 = "õpetaja", replace = "klienditoe konsultant")
+new$new = asendaja(new$new, "kliendihaldurmüügi", "", replace = "klienditoe konsultant")
 
 unique(leidur(new$new, "ettevõ", "oma", "väike"))
 new$new = asendaja(new$new, "ettevõ", "oma", "väike", excl1 = "õpetaja", replace = "väikeettevõtja")
