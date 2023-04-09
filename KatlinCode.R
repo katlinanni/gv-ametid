@@ -72,7 +72,17 @@ sonad = gsub("juhtiv", "pea", sonad, fixed=T)
 sonad = gsub("isikliku", "oma", sonad, fixed=T)
 sonad = gsub("firma", "ettevõtte", sonad, fixed=T)
 sonad = gsub("ekspert", "spetsialist", sonad, fixed=T)
-sonad = gsub("juhataj ", "juhataja", sonad, fixed=T)
+sonad = gsub("õpetja", "õpetaja", sonad, fixed=T)
+sonad = gsub("^öde\\b", "meditsiiniõde", sonad, fixed=T)
+sonad = gsub("^juhataj\\b", "juhataja", sonad, fixed=T)
+sonad = gsub("^учитель\\b", "õpetaja", sonad, fixed=T)
+sonad = gsub("^бухгалтер\\b", "raamatupidaja", sonad, fixed=T)
+sonad = gsub("^ehitus\\b", "ehitaja", sonad, fixed=T)
+sonad = gsub("^медсестра\\b", "meditsiiniõde", sonad, fixed=T)
+sonad = gsub("^швея\\b", "õmbleja", sonad, fixed=T)
+sonad = gsub("^врач\\b", "arst", sonad, fixed=T)
+sonad = gsub("^инженер\\b", "insener", sonad, fixed=T)
+sonad = gsub("^abi\\b", "abitööline", sonad, fixed=T)
 
 ## Maybe there are more synonyms to be replaced in one go?
 ## Levinumad venekeelsed võib ka kohe asendada, nt õpetajad jms - esialgu lisasin, aga siis on natuke segane, kui pool sõna eesti ja pool vene keeles, seega kustutasin ära
@@ -155,6 +165,7 @@ new$new = asendaja(new$new, "ülemõde","", replace = "õendusjuht")
 unique(leidur(new$new, "hamba", "õde"))
 new$new = asendaja(new$new, "õde", "hamba", replace = "hambaraviõde")
 new$new = asendaja(new$new, "õde", "suuhügieen", replace = "hambaraviõde")
+new$new = asendaja(new$new, "", "suuhügienist", replace = "hambaraviõde")
 
 unique(leidur(new$new, "abi", "õde"))
 new$new = asendaja(new$new, "abi", "õde", excl1 = "ilu", replace = "hooldusõde")
@@ -984,6 +995,7 @@ new$new = asendaja(new$new, "metsalangetaja", "", replace = "metsatööline")
 new$new = asendaja(new$new, "metsamees", "", replace = "metsatööline")
 new$new = asendaja(new$new, "metsnik", "", replace = "metsatööline")
 new$new = asendaja(new$new, "hooldaja", "mets", replace = "metsatööline")
+new$new = asendaja(new$new, "raietööline", "", replace = "metsatööline")
 
 # kõik kokku panna?
 unique(leidur(new$new, "õmbleja", ""))
@@ -1018,6 +1030,7 @@ new$new = asendaja(new$new, "kujundaja", "graaf", replace = "multimeediadisainer
 new$new = asendaja(new$new, "kujundaja", "deko", replace = "multimeediadisainer")
 new$new = asendaja(new$new, "kujundaja", "disainer", replace = "multimeediadisainer")
 new$new = asendaja(new$new, "multimeedia", "disainer", replace = "multimeediadisainer")
+new$new = asendaja(new$new, "illustraator", "", replace = "multimeediadisainer")
 
 unique(leidur(new$new, "moe", "kunstnik"))
 new$new = asendaja(new$new, "moe", "kunstnik", replace = "moedisainer")
@@ -1699,6 +1712,7 @@ unique(leidur(new$new, "käsitööline", ""))
 new$new = asendaja(new$new, "käsitööline", "", excl1 = "disainer", replace = "käsitööline")
 new$new = asendaja(new$new, "käsitöö", "meister", excl1 = "kliendi", replace = "käsitööline")
 new$new = asendaja(new$new, "käsitöö", "tegi", replace = "käsitööline")
+new$new = asendaja(new$new, "käsitöö", "", excl1 = "kunsti", excl2 = "juh", replace = "käsitööline")
 
 unique(leidur(new$new, "projekteerija", "insener"))
 new$new = asendaja(new$new, "projekteerija", "insener", excl1 = "müügi", replace = "ehitusinsener")
@@ -1710,6 +1724,7 @@ new$new = asendaja(new$new, "projekteerija", "hoone", replace = "ehitusprojektee
 new$new = asendaja(new$new, "projekteerija", "konstruktor", replace = "ehitusprojekteerija")
 new$new = asendaja(new$new, "projekteerija", "joon", replace = "ehitusprojekteerija")
 new$new = asendaja(new$new, "projekteerija", "teede", replace = "ehitusprojekteerija")
+new$new = asendaja(new$new, "ehituskonstruktor", "", replace = "ehitusprojekteerija")
 
 new$new = asendaja(new$new, "projekteerija", "elektri", replace = "elektriinsener")
 new$new = asendaja(new$new, "insener", "elektri", replace = "elektriinsener")
@@ -2247,6 +2262,9 @@ new$new = asendaja(new$new, "haljastaja", "", replace = "haljastustööline")
 unique(leidur(new$new, "ehitaja", ""))
 new$new = asendaja(new$new, "ehitajaja", "", replace = "ehitaja")
 new$new = asendaja(new$new, "ehitaja-", "", replace = "ehitaja")
+new$new = asendaja(new$new, "ehitusmeister", "", replace = "ehitaja")
+new$new = asendaja(new$new, "üldehitus", "", replace = "ehitaja")
+new$new = asendaja(new$new, "ehitusremont", "", replace = "ehitaja")
 
 unique(leidur(new$new, "autojuht", ""))
 new$new = asendaja(new$new, "autojuht", "", excl1 = "ehitaja", excl2 = "laborite", excl3 = "kaugsõidu", excl4 = "bussijuhta",  replace = "autojuht")
@@ -2604,7 +2622,8 @@ new$new = asendaja(new$new, "käibe", "juht", "", replace = "reklaamispetsialist
 new$new = asendaja(new$new, "avalikesuhe", "juht", "", replace = "reklaamispetsialist")
 new$new = asendaja(new$new, "kliendisuhete", "spetsialist", "", replace = "reklaamispetsialist")
 new$new = asendaja(new$new, "sotsiaalmeedia", "spetsialist", "", replace = "reklaamispetsialist")
-new$new = asendaja(new$new, "digiturundus", "", "", replace = "reklaamispetsialist")
+new$new = asendaja(new$new, "digiturund", "", "", replace = "reklaamispetsialist")
+new$new = asendaja(new$new, "turundaja", "", "", replace = "reklaamispetsialist")
 
 # projektijuhid tunduvad ikka nii ebamäärane grupp, raske neile mingi koodi leida (mõned projektijuhid on ka ISCO-s need kodeerisin juba varasemalt)
 # kõik ülejäänud lihtsalt projektijuhtideks?
@@ -3005,6 +3024,7 @@ new$new = asendaja(new$new, "põllumajandustehnik", "", replace = "põllumajandu
 
 new$new = asendaja(new$new, "seadusandja", "", replace = "seadusandja")
 new$new = asendaja(new$new, "minister", "", replace = "seadusandja")
+new$new = asendaja(new$new, "riigikoguliige", "", replace = "seadusandja")
 
 unique(leidur(new$new, "rautaja", ""))
 new$new = asendaja(new$new, "rautaja", "", replace = "sepp")
@@ -3182,8 +3202,11 @@ new$new = asendaja(new$new, "mehanisaator", "", replace = "mehhanisaator")
 
 new$new = asendaja(new$new, "vanemmeister", "", replace = "meister")
 
-new$new = asendaja(new$new, "disainer", "", replace = "disainer")
 new$new = asendaja(new$new, "disainer-", "", replace = "disainer")
+new$new = asendaja(new$new, "peauurija", "", replace = "uurija")
+new$new = asendaja(new$new, "vaneminsener", "", replace = "insener")
+
+new$new = asendaja(new$new, "produtsent", "", replace = "filmi-teatriprodutsent")
 
 #### Stop and replace some more values
 
@@ -3231,6 +3254,7 @@ table(leidur(kodeerimata$new, "","insener"))
 
 table(new$new) %>% sort(decreasing = T)
 library('vctrs')
+
 vec_count(new$new)
 
 # panin new-tunnuse ISCO-koodidega kokku
@@ -3247,3 +3271,4 @@ new_count = vec_count(new$new)
 new_count = rename(new_count, new = key)
 new_count = left_join(new_count, ISCO, by = "new")
 
+# üksusejuht, ettevõttejuht, juht ja tegevjuht kõik kokku üheks "juhiks" teha?
