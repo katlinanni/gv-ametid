@@ -73,22 +73,17 @@ sonad = gsub("isikliku", "oma", sonad, fixed=T)
 sonad = gsub("firma", "ettevõtte", sonad, fixed=T)
 sonad = gsub("ekspert", "spetsialist", sonad, fixed=T)
 sonad = gsub("õpetja", "õpetaja", sonad, fixed=T)
-sonad = gsub("^öde\\b", "meditsiiniõde", sonad, fixed=T)
-sonad = gsub("^juhataj\\b", "juhataja", sonad, fixed=T)
-sonad = gsub("^учитель\\b", "õpetaja", sonad, fixed=T)
-sonad = gsub("^бухгалтер\\b", "raamatupidaja", sonad, fixed=T)
-sonad = gsub("^ehitus\\b", "ehitaja", sonad, fixed=T)
-sonad = gsub("^abi\\b", "abitööline", sonad, fixed=T)
-sonad = gsub("^cto\\b", "tehnoloogiajuht", sonad, fixed=T)
 
-# mõned levinumad venekeelsed
-sonad = gsub("^медсестра\\b", "meditsiiniõde", sonad, fixed=T)
-sonad = gsub("^швея\\b", "õmbleja", sonad, fixed=T)
-sonad = gsub("^врач\\b", "arst", sonad, fixed=T)
+# mõned levinumad venekeelsed - ei tööta täielikult (tean juba miks, parandan esimesel võimalusel)
+sonad = gsub("^медсестра\\b", "meditsiiniõde", sonad, fixed=F)
+sonad = gsub("^швея\\b", "õmbleja", sonad, fixed=F)
+sonad = gsub("^врач\\b", "arst", sonad, fixed=F)
 sonad = gsub("^инженер\\b", "insener", sonad, fixed=T)
 sonad = gsub("^парикмахер\\b", "juuksur", sonad, fixed=T)
 sonad = gsub("^оператор\\b", "operaator", sonad, fixed=T)
 sonad = gsub("^администратор\\b", "administraator", sonad, fixed=T)
+sonad = gsub("^учитель\\b", "õpetaja", sonad, fixed=T)
+sonad = gsub("^бухгалтер\\b", "raamatupidaja", sonad, fixed=T)
 
 ## Maybe there are more synonyms to be replaced in one go?
 ## Levinumad venekeelsed võib ka kohe asendada, nt õpetajad jms - esialgu lisasin, aga siis on natuke segane, kui pool sõna eesti ja pool vene keeles, seega kustutasin ära
@@ -108,7 +103,7 @@ new$dist = stringdist::stringsim(new$new, new$suggestion)
 #new %>% filter(AtLeastTwo == 0) %>% select(scode, not.found:suggestion, dist) %>% arrange(desc(dist)) %>% filter(dist < .75) %>% slice(1:20)
 new %>% filter(AtLeastTwo == 0) %>% select(scode, not.found:suggestion, dist) %>% arrange(desc(dist)) %>% filter(dist < .85) %>% slice(1:20)
 
-### ma natuke vaatasin neid > .75 asendusi ja päris mõned tundusid natuke ikka liiga mööda asendused
+### ma natuke vaatasin neid > .75 asendusi ja päris mõned tundusid natuke ikka liiga mööda asendused, korrigeerisin .85-ks
 ## replace
 i = !is.na(new$dist) & (new$dist > .85)
 new$new[i] = new$suggestion[i]
@@ -163,6 +158,7 @@ new$new = asendaja(new$new, "pere","õde", excl1 = "ämmaemaja", replace = "medi
 new$new = asendaja(new$new, "anestesist","", replace = "meditsiiniõde")
 new$new = asendaja(new$new, "ôde","", replace = "meditsiiniõde")
 new$new = asendaja(new$new, "pereode","", replace = "meditsiiniõde")
+new$new = asendaja(new$new, "^öde$","", replace = "meditsiiniõde")
 
 unique(leidur(new$new, "õend", "juht"))
 new$new = asendaja(new$new, "õend","juht", excl1 = "pikka", replace = "õendusjuht")
@@ -800,6 +796,7 @@ unique(leidur(new$new, "ehitus", "tööline"))
 new$new = asendaja(new$new, "ehitus", "tööline", excl1 = "abi", excl2 = "lao", replace = "ehitaja")
 new$new = asendaja(new$new, "ehitusvaldkond", "",replace = "ehitaja")
 new$new = asendaja(new$new, "üldehitaja", "", excl1 = "keevitaja", replace = "ehitaja")
+new$new = asendaja(new$new, "^ehitus$", "", replace = "ehitaja")
 
 # siin jaotatakse neid ehitajaid veel mitmetesse gruppidesse - ilmselt oleks mõistlik midagi ühendada, nt ehitajad ja ehitusviimistlejad?
 new$new = asendaja(new$new, "ehitusviimistleja", "",replace = "ehitusviimistleja")
@@ -1902,7 +1899,7 @@ new$new = asendaja(new$new, "tarneahela", "juht", excl1 = "spetsialist", replace
 unique(leidur(new$new, "tarneahela", "spets"))
 new$new = asendaja(new$new, "tarneahela", "spets", replace = "tarneahelaspetsialist")
 new$new = asendaja(new$new, "tarneahela", "spets", replace = "hankespetsialist")
-new$new = asendaja(new$new, "ostja", "", excl1 = "vanaraua", excl2 = "testostja", excl3 =replace = "hankespetsialist")
+new$new = asendaja(new$new, "ostja", "", excl1 = "vanaraua", excl2 = "testostja", replace = "hankespetsialist")
 
 unique(leidur(new$new, "arendusspetsialist", "",))
 new$new = asendaja(new$new, "arendusspetsialist", "", excl1 = "toote", replace = "juhtimisanalüütik")
@@ -2263,6 +2260,7 @@ new$new = asendaja(new$new, "kostümee", "", replace = "muu kultuurivaldkonna sp
 new$new = asendaja(new$new, "digitaalsekinotehnik", "", replace = "muu kultuurivaldkonna spetsialist")
 new$new = asendaja(new$new, "teleprogrammikoordinaator", "", replace = "muu kultuurivaldkonna spetsialist")
 new$new = asendaja(new$new, "muukultuurivaldkonnaspetsialist", "", replace = "muu kultuurivaldkonna spetsialist")
+new$new = asendaja(new$new, "trupijuht", "", replace = "muu kultuurivaldkonna spetsialist")
 
 unique(leidur(new$new, "heakorra", ""))
 new$new = asendaja(new$new, "heakorra", "spets", replace = "haljastusespetsialist")
@@ -2719,6 +2717,8 @@ new$new = asendaja(new$new, "majutusettev", "juh", replace = "hotellijuht")
 table(leidur(new$new, "juhataja", "", "")) %>% sort(decreasing = T)
 new$new = asendaja(new$new, "talitusejuhataja", "", replace = "osakonnajuhataja")
 new$new = asendaja(new$new, "juhatajaasetä", "", excl1 = "nõunik", excl2 = "vahetusevanem", excl3 = "liiklus", excl4 = "resto", replace = "juhataja")
+new$new = asendaja(new$new, "^juhataj$", "", replace = "juhataja")
+
 new$new = asendaja(new$new, "filiaal", "juh", replace = "osakonnajuhataja")
 new$new = asendaja(new$new, "jaosk", "juh", excl1 = "mäetöö", excl2 = "politsei", replace = "osakonnajuhataja")
 new$new = asendaja(new$new, "oskonn", "juh", replace = "osakonnajuhataja")
@@ -3163,6 +3163,9 @@ new$new = asendaja(new$new, "infra", "insener", replace = "ehitusinsener")
 table(leidur(new$new, "abi", "töö")) %>% sort(decreasing = T)
 new$new = asendaja(new$new, "abi", "töö", excl1 = "staabi", excl2 = "töötuid", replace = "abitööline")
 new$new = asendaja(new$new, "abiline", "", excl1 = "kodu", excl2 = "köögi", replace = "abitööline")
+new$new = asendaja(new$new, "^abi$", "", replace = "abitööline")
+
+
 new$new = asendaja(new$new, "ostu", "abi", replace = "müügiesindaja")
 new$new = asendaja(new$new, "müügi", "abi", replace = "müügiesindaja")
 new$new = asendaja(new$new, "müügiedendaja", "", replace = "müügiesindaja")
@@ -3223,6 +3226,8 @@ new$new = asendaja(new$new, "vanemuurija", "", replace = "uurija")
 
 new$new = asendaja(new$new, "produtsent", "", replace = "filmi-teatriprodutsent")
 new$new = asendaja(new$new, "projektiinsener", "", replace = "insener")
+new$new = asendaja(new$new, "^cto$", "", replace = "insener")
+
 
 #### Stop and replace some more values
 
@@ -3237,9 +3242,9 @@ checked = checked %>% filter(!duplicated(row))
 kodeerimata$row = 1:nrow(kodeerimata)
 kodeerimata = left_join(kodeerimata %>% select(1:4,10:12), checked[,1:5], by = "row") %>% select(-row)
 kodeerimata$dist = stringdist::stringsim(kodeerimata$new, kodeerimata$suggestion)
-kodeerimata %>% select(scode:dist) %>% arrange(desc(dist)) %>% filter(dist > .90) %>% tail(20)
+kodeerimata %>% select(scode:dist) %>% arrange(desc(dist)) %>% filter(dist > .89) %>% tail(20)
 
-i = !is.na(kodeerimata$dist) & (kodeerimata$dist > .90)
+i = !is.na(kodeerimata$dist) & (kodeerimata$dist > .89)
 kodeerimata$new[i] = kodeerimata$suggestion[i]
 
 tmp = new
@@ -3279,7 +3284,7 @@ new_isco = left_join(new, ISCO, by = "new")
 new_isco$newWithISCO = ifelse(!is.na(new_isco$ISCO), new_isco$ISCO, new_isco$new)
 
 # vaatasin gruppide suuruseid ja korrigeerisin mõned nimetused/ISCO-koordid ülal koodis ja ISCO-tabelis
-vec_count(new_isco$newWithISCO)
+vec_count = vec_count(new_isco$newWithISCO)
 
 # vaatasin, kas tasub mõned ISCO-s kõrvuti asuvad väiksemad rühmad ühendada või mõned sama koodi all olevad rühmad analüüsides hoopis eristada (nt piisav N ja oletus, et võiksid erineda?)
 # samas pole võib-olla kõige parem lähenemine?
