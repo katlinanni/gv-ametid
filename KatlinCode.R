@@ -3226,7 +3226,7 @@ new$new = asendaja(new$new, "vanemuurija", "", replace = "uurija")
 
 new$new = asendaja(new$new, "produtsent", "", replace = "filmi-teatriprodutsent")
 new$new = asendaja(new$new, "projektiinsener", "", replace = "insener")
-new$new = asendaja(new$new, "^cto$", "", replace = "insener")
+new$new = asendaja(new$new, "^cto$", "", replace = "tehnoloogiajuht")
 
 
 #### Stop and replace some more values
