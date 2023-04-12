@@ -3209,7 +3209,6 @@ new$new = asendaja(new$new, "abi", "töö", excl1 = "staabi", excl2 = "töötuid
 new$new = asendaja(new$new, "abiline", "", excl1 = "kodu", excl2 = "köögi", replace = "abitööline")
 new$new = asendaja(new$new, "^abi$", "", replace = "abitööline")
 
-
 new$new = asendaja(new$new, "ostu", "abi", replace = "müügiesindaja")
 new$new = asendaja(new$new, "müügi", "abi", replace = "müügiesindaja")
 new$new = asendaja(new$new, "müügitugi", "", replace = "müügiesindaja")
@@ -3235,6 +3234,7 @@ new$new = asendaja(new$new, "letiteenindaja", "", excl1 = "info", replace = "tee
 
 new$new = asendaja(new$new, "vanemadministraator", "", replace = "administraator")
 new$new = asendaja(new$new, "peaadministraator", "", replace = "administraator")
+new$new = asendaja(new$new, "^administraator$", "", replace = "üldadministraator")
 
 new$new = asendaja(new$new, "vanemarendaja", "", replace = "arendaja")
 
@@ -3339,10 +3339,94 @@ new_isco$newWithISCO = ifelse(!is.na(new_isco$ISCO), new_isco$ISCO, new_isco$new
 # vaatasin gruppide suuruseid ja korrigeerisin mõned nimetused/ISCO-koordid ülal koodis ja ISCO-tabelis
 vec_count = vec_count(new_isco$newWithISCO)
 
-# vaatasin, kas tasub mõned ISCO-s kõrvuti asuvad väiksemad rühmad ühendada või mõned sama koodi all olevad rühmad analüüsides hoopis eristada (nt piisav N ja oletus, et võiksid erineda?)
-# samas pole võib-olla kõige parem lähenemine?
+# siin on nii new-tunnus kui ISCO-kood koos - selle põhjal panin veel mõned väga spetsiifilised ametinimetused ühe 4-koodilise nime alla
 new_count = vec_count(new$new)
 new_count = rename(new_count, new = key)
 new_count = left_join(new_count, ISCO, by = "new")
 
-# üksusejuht, ettevõttejuht, juht ja tegevjuht kõik kokku üheks "juhiks" teha?
+# unspecified managers, CEO-s (ISCO: 1)
+new$new = asendaja(new$new, "^ettevõttejuht$", "", replace = "juht")
+new$new = asendaja(new$new, "^tegevjuht$", "", replace = "juht")
+new$new = asendaja(new$new, "^juhataja$", "", replace = "juht")
+
+# ISCO: 1324
+new$new = asendaja(new$new, "^laojuhataja$", "", replace = "tarneahelajuht")
+
+# ISCO: 1342
+new$new = asendaja(new$new, "^õendusjuht$", "", replace = "tervishoiuteenustejuht")
+
+# ISCO: 1349
+new$new = asendaja(new$new, "^raamatukogujuht$", "", replace = "kutseteenustejuht")
+new$new = asendaja(new$new, "^laborijuht$", "", replace = "kutseteenustejuht")
+
+# ISCO: 1420
+new$new = asendaja(new$new, "^kauplusejuhataja$", "", replace = "kaubandusjuht")
+
+# ISCO: 2132
+new$new = asendaja(new$new, "^metsandusspetsialist$", "", replace = "agronoom")
+
+# ISCO: 2163
+new$new = asendaja(new$new, "^moedisainer$", "", replace = "disainer")
+new$new = asendaja(new$new, "^tootedisainer$", "", replace = "disainer")
+
+# ISCO: 2269
+new$new = asendaja(new$new, "^kiropraktik$", "", replace = "muu tervishoiu tippspetsialist")
+new$new = asendaja(new$new, "^loovterapeut$", "", replace = "muu tervishoiu tippspetsialist")
+new$new = asendaja(new$new, "^tegevusterapeut$", "", replace = "muu tervishoiu tippspetsialist")
+
+# ISCO: 23 (unspecified teachers)
+new$new = asendaja(new$new, "^muusikaõpetaja$", "", replace = "õpetaja")
+new$new = asendaja(new$new, "^reaalaineteõpetaja$", "", replace = "õpetaja")
+new$new = asendaja(new$new, "^kehalisekasvatuseõpetaja$", "", replace = "õpetaja")
+
+# ISCO: 2310
+new$new = asendaja(new$new, "^teadur$", "", replace = "õppejõud")
+new$new = asendaja(new$new, "^professor$", "", replace = "õppejõud")
+
+# ISCO: 2341
+new$new = asendaja(new$new, "^algkooliõpetaja$", "", replace = "põhikooliõpetaja")
+new$new = asendaja(new$new, "^käsitöö-kunstiõpetaja$", "", replace = "põhikooliõpetaja")
+
+# huvikooliõpetaja (ISCO: 2353-2355)
+new$new = asendaja(new$new, "^muusikakooliõpetaja$", "", replace = "huvikooliõpetaja")
+new$new = asendaja(new$new, "^tantsuõpetaja$", "", replace = "huvikooliõpetaja")
+
+# ISCO: 2421
+new$new = asendaja(new$new, "^kvaliteedijuht$", "", replace = "juhtimisanalüütik")
+
+# ISCO: 2422
+new$new = asendaja(new$new, "^haljastusespetsialist$", "", replace = "strateegiateväljatöötaja")
+
+# ISCO: 2632
+new$new = asendaja(new$new, "^arheoloog$", "", replace = "arheoloog-antropoloog-jmt")
+new$new = asendaja(new$new, "^sotsioloog$", "", replace = "arheoloog-antropoloog-jmt")
+new$new = asendaja(new$new, "^geograaf$", "", replace = "arheoloog-antropoloog-jmt")
+new$new = asendaja(new$new, "^antropoloog$", "", replace = "arheoloog-antropoloog-jmt")
+
+# ISCO: 2635
+new$new = asendaja(new$new, "^muu nõustaja$", "", replace = "sotsiaaltöötaja")
+
+# ISCO: 3112
+new$new = asendaja(new$new, "^ehitusprojekteerija$", "", replace = "ehitustehnik")
+new$new = asendaja(new$new, "^projekteerija$", "", replace = "ehitustehnik")
+
+# ISCO: 3212 - selles natuke kahtlen
+new$new = asendaja(new$new, "^laborispetsialist$", "", replace = "bioanalüütik")
+
+# ISCO: 3355
+new$new = asendaja(new$new, "^uurija$", "", replace = "politseiuurija")
+
+# ISCO: 3412
+new$new = asendaja(new$new, "^tegevusjuhendaja$", "", replace = "sotsiaaltööspetsialist")
+
+# ISCO: 4321 - selles natuke kahtlen
+new$new = asendaja(new$new, "^laotöötaja$", "", replace = "laoametnik")
+
+# ISCO: 5151
+new$new = asendaja(new$new, "^majandusjuhataja$", "", replace = "majapidaja")
+
+# ISCO: 7421
+new$new = asendaja(new$new, "^elektroonik$", "", replace = "elektroonikamehaanik")
+
+# ISCO: 8219
+new$new = asendaja(new$new, "^koostaja$", "", replace = "muukoostaja")
