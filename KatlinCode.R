@@ -3390,6 +3390,7 @@ new$new = asendaja(new$new, "^käsitöö-kunstiõpetaja$", "", replace = "põhik
 # huvikooliõpetaja (ISCO: 2353-2355)
 new$new = asendaja(new$new, "^muusikakooliõpetaja$", "", replace = "huvikooliõpetaja")
 new$new = asendaja(new$new, "^tantsuõpetaja$", "", replace = "huvikooliõpetaja")
+new$new = asendaja(new$new, "^draamaõpetaja$", "", replace = "huvikooliõpetaja")
 
 # ISCO: 2421
 new$new = asendaja(new$new, "^kvaliteedijuht$", "", replace = "juhtimisanalüütik")
@@ -3425,8 +3426,14 @@ new$new = asendaja(new$new, "^laotöötaja$", "", replace = "laoametnik")
 # ISCO: 5151
 new$new = asendaja(new$new, "^majandusjuhataja$", "", replace = "majapidaja")
 
+# ISCO: 5321
+new$new = asendaja(new$new, "^tugiisik$", "", replace = "hooldaja")
+
 # ISCO: 7421
 new$new = asendaja(new$new, "^elektroonik$", "", replace = "elektroonikamehaanik")
 
 # ISCO: 8219
 new$new = asendaja(new$new, "^koostaja$", "", replace = "muukoostaja")
+
+# ISCO: 0
+new$new = asendaja(new$new, "^ohvitser$", "", replace = "sõjaväelane")
