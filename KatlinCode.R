@@ -1175,10 +1175,6 @@ new$new = asendaja(new$new, "lukksepp", "remondi",replace = "remondilukksepp")
 new$new = asendaja(new$new, "lukksepp", "", excl1 = "auto", excl2 = "remondi", excl3 = "treial", excl4 = "toru", replace = "lukksepp")
 new$new = asendaja(new$new, "lukksepp-auto", "", replace = "lukksepp")
 
-# masinaoperaatoreid on u 10 erineva koodi all ja üsna keeruline eristada (ISCO-s muidu materjali järgi saab, proovin)
-# kuigi võib-olla mõistlik kõik kokku panna?
-unique(leidur(new$new, "operaator", "masina", ""))
-
 # see rühm kodeeritakse hiljem ümber 
 new$new = asendaja(new$new, "operaator", "masina", "trük", replace = "trükkal")
 
@@ -1230,8 +1226,7 @@ new$new = asendaja(new$new, "hakkurioperaator", "", replace = "masinaoperaator")
 new$new = asendaja(new$new, "operaator", "stants", replace = "masinaoperaator")
 new$new = asendaja(new$new, "operaator", "pakke", replace = "masinaoperaator")
 
-# kuna need erialdi grupid on üsna väikesed, siis võiks ikka kõik masinaoperaatorid kokku panna? 
-# Või siis cnc+puidu+metalli ja siis teised eraldi? Kuigi ilmselt ka nende teiste masinaoperaatorite seas on puidu-metallioperaatoreid
+# kuna need erialdi grupid on üsna väikesed, siis panin kõik masinaoperaatoriteks kokku
 unique(leidur(new$new, "masinaoperaator", ""))
 new$new = asendaja(new$new, "masinaoperaator", "", excl1 = "pesu", replace = "masinaoperaator")
 new$new = asendaja(new$new, "operaator", "masin", excl1 = "pesu", replace = "masinaoperaator")
@@ -2767,6 +2762,8 @@ new$new = asendaja(new$new, "tootmisekeskastmejuht", "", replace = "tööstusjuh
 new$new = asendaja(new$new, "tootmis-tehnikajuht", "", replace = "tööstusjuht")
 new$new = asendaja(new$new, "paigaldusjuht", "", replace = "tööstusjuht")
 new$new = asendaja(new$new, "tehnikajuht", "", replace = "tööstusjuht")
+new$new = asendaja(new$new, "tehniline", "juht", excl1 = "toote", replace = "tööstusjuht")
+new$new = asendaja(new$new, "tootmisjuht", "", replace = "tööstusjuht")
 
 new$new = asendaja(new$new, "juh", "ehitusfirma",  replace = "ehitusjuht")
 new$new = asendaja(new$new, "ehitustejuht", "",  replace = "ehitusjuht")
@@ -2894,6 +2891,7 @@ new$new = asendaja(new$new, "tiimijuht", "", replace = "tiimijuht")
 new$new = asendaja(new$new, "tiim", "liider", replace = "tiimijuht")
 
 new$new = asendaja(new$new, "vastavuskontroll", "", replace = "jurist")
+new$new = asendaja(new$new, "juriidilinenõustaja", "", replace = "jurist")
 
 new$new = asendaja(new$new, "juht", "klienditoe", replace = "klienditeenindusjuht")
 new$new = asendaja(new$new, "juht", "klienditeen", replace = "klienditeenindusjuht")
@@ -3107,6 +3105,7 @@ new$new = asendaja(new$new, "töötervish", "spets", replace = "töötervishoius
 new$new = asendaja(new$new, "arengunõustaja", "", replace = "muu nõustaja")
 new$new = asendaja(new$new, "muunõustaja", "", replace = "muu nõustaja")
 new$new = asendaja(new$new, "miljööterapeut", "", replace = "muu nõustaja")
+new$new = asendaja(new$new, "vaimsetervisenõustaja", "", replace = "muu nõustaja")
 
 new$new = asendaja(new$new, "astronoom", "", replace = "füüsik")
 new$new = asendaja(new$new, "füüsik", "", excl1 = "teadur", excl2 = "töö", excl3 = "geo", replace = "füüsik")
@@ -3117,6 +3116,7 @@ new$new = asendaja(new$new, "täiendmeditsiinispetsialist", "", replace = "täie
 new$new = asendaja(new$new, "kaubaladuja", "", replace = "veondustööline")
 new$new = asendaja(new$new, "veondustööline", "", replace = "veondustööline")
 new$new = asendaja(new$new, "kaubapaigutaja", "", replace = "veondustööline")
+new$new = asendaja(new$new, "transporditööline", "", replace = "veondustööline")
 
 new$new = asendaja(new$new, "liikumisterapeut", "", replace = "liikumisterapeut")
 
@@ -3269,6 +3269,7 @@ table(leidur(new$new, "õpetaja", "")) %>% sort(decreasing = T)
 new$new = asendaja(new$new, "^õpetaja.$", "", replace = "õpetaja")
 new$new = asendaja(new$new, "^tööõpetuseõpetaja$", "", replace = "käsitöö-kunstiõpetaja")
 new$new = asendaja(new$new, "^õpetajaõppejõud$", "", replace = "õpetaja")
+new$new = asendaja(new$new, "^cnc-pingioperaator$", "", replace = "masinaoperaator")
 
 #### Stop and replace some more values
 
@@ -3338,7 +3339,7 @@ new$new = asendaja(new$new, "^ettevõttejuht$", "", replace = "juht")
 new$new = asendaja(new$new, "^tegevjuht$", "", replace = "juht")
 new$new = asendaja(new$new, "^juhataja$", "", replace = "juht")
 
-# ISCO: 123
+# ISCO: 1223
 new$new = asendaja(new$new, "^tootearendusjuht$", "", replace = "arendusjuht")
 
 # ISCO: 1324
