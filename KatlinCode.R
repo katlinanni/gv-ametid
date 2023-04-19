@@ -2,6 +2,8 @@ require(tidyverse)
 require(fuzzyjoin)
 require(qdap)
 require(readr)
+require(writexl)
+require(vctrs)
 setwd("~/Private/gvpers")
 
 leidur = function(var,x,y,z=NULL, excl1 = NULL, excl2 = NULL) {
@@ -1149,8 +1151,9 @@ new$new = asendaja(new$new, "andme", "sisest", excl1 = "juhataja-", excl2 = "geo
 
 unique(leidur(new$new, "andme", "tead"))
 new$new = asendaja(new$new, "andme", "tead", excl1 = "juht", excl2 = "admin", replace = "andmeteadur")
+
 unique(leidur(new$new, "andme", "analüüt"))
-new$new = asendaja(new$new, "andme", "analüüt",replace = "andmeteadur")
+new$new = asendaja(new$new, "andme", "analüüt", excl1 = "baasi", replace = "andmeteadur")
 new$new = asendaja(new$new, "statistik", "", excl1 = "osakond", excl2 = "toimetaja", replace = "andmeteadur")
 new$new = asendaja(new$new, "aktuaar", "", replace = "andmeteadur")
 new$new = asendaja(new$new, "matemaatik", "",replace = "andmeteadur")
@@ -2289,7 +2292,7 @@ new$new = asendaja(new$new, "remonditööline", "", replace = "ehitaja")
 new$new = asendaja(new$new, "remondimees", "", replace = "ehitaja")
 
 unique(leidur(new$new, "autojuht", ""))
-new$new = asendaja(new$new, "autojuht", "", excl1 = "ehitaja", excl2 = "laborite", excl3 = "kaugsõidu", excl4 = "bussijuhta",  replace = "autojuht")
+new$new = asendaja(new$new, "autojuht", "", excl1 = "veo", excl2 = "laborite", excl3 = "kaugsõidu", replace = "autojuht")
 
 unique(leidur(new$new, "klenditeenendaja", ""))
 new$new = asendaja(new$new, "klenditeenendaja", "", replace = "klienditeenindaja")
@@ -3292,28 +3295,27 @@ kodeerimata$new[i] = kodeerimata$suggestion[i]
 tmp = new
 new = rbind(kodeerimata, kodeeritud) %>% arrange(match(scode, tmp$scode))
 
-### now you can use this to get some more ideas: which words are more coommon among those with unique jobs
-
 uh = table(new$new) %>% .[. == 1] %>% names
 kodeerimata = new %>% filter(new %in% uh)
 
-strsplit(kodeerimata$workPositionName, "\\W") %>% unlist %>% 
-  table %>% sort(decreasing = T) %>% .[. > 49]
+### now you can use this to get some more ideas: which words are more coommon among those with unique jobs
+#strsplit(kodeerimata$workPositionName, "\\W") %>% unlist %>% 
+#  table %>% sort(decreasing = T) %>% .[. > 49]
 
-table(leidur(kodeerimata$new, "klien","teeninda", excl1 = "juh")) 
-table(leidur(kodeerimata$new, "juht","osakonna")) 
-table(leidur(kodeerimata$new, "juht","müügi")) 
-table(leidur(kodeerimata$new, "juht","projekt")) 
-table(leidur(kodeerimata$new, "juht","klien")) 
-table(leidur(kodeerimata$new, "arst","")) 
-table(leidur(kodeerimata$new, "teadur","")) 
-table(leidur(kodeerimata$new, "nõunik","")) 
-table(leidur(kodeerimata$new, "","raamatupid")) 
-table(leidur(kodeerimata$new, "","spetsialist")) 
-table(leidur(kodeerimata$new, "","koordi")) 
-table(leidur(kodeerimata$new, "","operaator")) 
-table(leidur(kodeerimata$new, "","abi")) 
-table(leidur(kodeerimata$new, "","insener")) 
+#table(leidur(kodeerimata$new, "klien","teeninda", excl1 = "juh")) 
+#table(leidur(kodeerimata$new, "juht","osakonna")) 
+#table(leidur(kodeerimata$new, "juht","müügi")) 
+#table(leidur(kodeerimata$new, "juht","projekt")) 
+#table(leidur(kodeerimata$new, "juht","klien")) 
+#table(leidur(kodeerimata$new, "arst","")) 
+#table(leidur(kodeerimata$new, "teadur","")) 
+#table(leidur(kodeerimata$new, "nõunik","")) 
+#table(leidur(kodeerimata$new, "","raamatupid")) 
+#table(leidur(kodeerimata$new, "","spetsialist")) 
+#table(leidur(kodeerimata$new, "","koordi")) 
+#table(leidur(kodeerimata$new, "","operaator")) 
+#table(leidur(kodeerimata$new, "","abi")) 
+#table(leidur(kodeerimata$new, "","insener")) 
 
 
 
@@ -3329,10 +3331,12 @@ new_isco$newWithISCO = ifelse(!is.na(new_isco$ISCOcode), new_isco$ISCOcode, new_
 # vaatasin gruppide suuruseid ja korrigeerisin mõned nimetused/ISCO-koordid ülal koodis ja ISCO-tabelis
 vec_count = vec_count(new_isco$newWithISCO)
 
-# siin on nii new-tunnus kui ISCO-kood koos - selle põhjal moodustasin ISCO unit-groupid, kuna ilmselt detailsemaks pole mõistlik minna
+# siin on nii new-tunnus kui ISCO-kood koos - 
 unitg_count = vec_count(new$new)
 unitg_count = rename(unitg_count, new = key)
 unitg_count = left_join(unitg_count, ISCO, by = "new")
+
+# eelneva põhjal moodustasin ISCO unit-groupid, kuna ilmselt detailsemaks pole mõistlik minna
 
 # unspecified managers, CEO-s (ISCO: 1)
 new$new = asendaja(new$new, "^ettevõttejuht$", "", replace = "juht")
@@ -3430,6 +3434,27 @@ new$new = asendaja(new$new, "^koostaja$", "", replace = "muukoostaja")
 
 # ISCO: 0
 new$new = asendaja(new$new, "^ohvitser$", "", replace = "sõjaväelane")
+
+# mõned "-juht" lõpuga ametinimetused võivad olla tegelikult ka spetsialistid - proovin need eristada
+work_position = readxl::read_xlsx("C:/Users/K/Google Drive/GV/work_position.xlsx")
+subset = new[!is.na(new$new) & new$new %in% c("personalijuht", "turundusjuht", "müügijuht", "reklaamijuht", "arendusjuht", "hankejuht"),] %>% filter(!duplicated(scode))
+subset = left_join(subset, work_position, by = "scode")
+
+# panin neile nimetustele 1 lõppu, kes olid end määratlenud juhina
+subset$new = ifelse(subset$work_position_code == 1, paste0(subset$new, "1"), subset$new)
+new = left_join(new, subset[, c("scode", "new")], by = "scode") %>% mutate(new = ifelse(!is.na(new.y), new.y, new.x)) %>% select(-c(new.x, new.y))
+
+# nimetan need ümber vastava spetsialisti ametinimetusega, kes juhina end ei määratlenud
+new$new = asendaja(new$new, "^personalijuht$", "", replace = "personalispetsialist")
+new$new = asendaja(new$new, "^turundusjuht$", "", replace = "reklaamispetsialist")
+new$new = asendaja(new$new, "^müügijuht$", "", replace = "müügiesindaja")
+new$new = asendaja(new$new, "^reklaamijuht$", "", replace = "reklaamispetsialist")
+new$new = asendaja(new$new, "^arendusjuht$", "", replace = "juhtimisanalüütik")
+new$new = asendaja(new$new, "^hankejuht$", "", replace = "hankespetsialist")
+
+# ühendan mõned veel suuremate juhi-rühmadega
+new$new = asendaja(new$new, "^turundusjuht1$", "", replace = "müügijuht1")
+new$new = asendaja(new$new, "^hankejuht1$", "", replace = "tarneahelajuht")
 
 ### UNIT-GROUPS sizes
 ISCO = readxl::read_xlsx("C:/Users/K/Google Drive/GV/new_ISCO.xlsx", sheet = "UnitGroups") %>% select(new, ISCOcode, ISCOname)
