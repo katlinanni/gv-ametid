@@ -1165,6 +1165,7 @@ new$new = asendaja(new$new, "andme", "analüüt", excl1 = "baasi", replace = "an
 new$new = asendaja(new$new, "statistik", "", excl1 = "osakond", excl2 = "toimetaja", replace = "andmeteadur")
 new$new = asendaja(new$new, "aktuaar", "", replace = "andmeteadur")
 new$new = asendaja(new$new, "matemaatik", "",replace = "andmeteadur")
+new$new = asendaja(new$new, "datascientist", "",replace = "andmeteadur")
 
 unique(leidur(new$new, "auto", "remondi", ""))
 new$new = asendaja(new$new, "auto", "remondi", excl1 = "plekk", excl2 = "töökoja", replace = "automehaanik-lukksepp")
@@ -2947,6 +2948,7 @@ new$new = asendaja(new$new, "müügi", "juhataja", replace = "kaubandusjuht")
 new$new = asendaja(new$new, "tankla", "juh", replace = "kaubandusjuht")
 new$new = asendaja(new$new, "circlek", "juh", replace = "kaubandusjuht")
 new$new = asendaja(new$new, "kommertsjuht", "", replace = "kaubandusjuht")
+new$new = asendaja(new$new, "teenindusjaamajuhataja", "", replace = "kaubandusjuht")
 
 unique(leidur(new$new, "ametiühingu", ""))
 new$new = asendaja(new$new, "ametiühingu", "", replace = "ametiühinguesimees")
@@ -3147,6 +3149,7 @@ new$new = asendaja(new$new, "kaubaladuja", "", replace = "veondustööline")
 new$new = asendaja(new$new, "veondustööline", "", replace = "veondustööline")
 new$new = asendaja(new$new, "kaubapaigutaja", "", replace = "veondustööline")
 new$new = asendaja(new$new, "transporditööline", "", replace = "veondustööline")
+new$new = asendaja(new$new, "toidukuller", "", replace = "veondustööline")
 
 new$new = asendaja(new$new, "liikumisterapeut", "", replace = "liikumisterapeut")
 
@@ -3184,6 +3187,7 @@ new$new = asendaja(new$new, "kujundaja", "", excl1 = "sise", excl2 = "poliitika"
 new$new = asendaja(new$new, "arvutigraafik", "", replace = "multimeediadisainer")
 new$new = asendaja(new$new, "interaktsioonidisainer", "", replace = "multimeediadisainer")
 new$new = asendaja(new$new, "kasutajakogemusedisainer", "", replace = "multimeediadisainer")
+new$new = asendaja(new$new, "veebidisainer", "", replace = "multimeediadisainer")
 
 # panin kõik praktikandid kokku (neid on vähe nagunii)
 unique(leidur(new$new, "praktikant", ""))
@@ -3352,6 +3356,8 @@ kodeerimata = new %>% filter(new %in% uh)
 #table(leidur(kodeerimata$new, "","insener")) 
 
 
+### Gruppide moodustamise tegevused
+
 table(new$new) %>% sort(decreasing = T)
 library('vctrs')
 vec_count(new$new)
@@ -3472,7 +3478,7 @@ new$new = asendaja(new$new, "^koostaja$", "", replace = "muudkoostajad")
 new$new = asendaja(new$new, "^ohvitser$", "", replace = "sõjaväelane")
 new$new = asendaja(new$new, "^ülem$", "", replace = "sõjaväelane")
 
-# mõned "-juht" lõpuga ametinimetused võivad olla tegelikult ka spetsialistid - proovin need eristada
+# mõned "-juht" lõpuga ametinimetused võivad olla tegelikult ka spetsialistid - proovisin need eristada work_position määratluse järgi originaalandmestikust
 work_position = readxl::read_xlsx("C:/Users/K/Google Drive/GV/work_position.xlsx")
 subset = new[!is.na(new$new) & new$new %in% c("personalijuht", "turundusjuht", "müügijuht", "reklaamijuht", "arendusjuht", "hankejuht", "teenindusjuht"),] %>% filter(!duplicated(scode))
 subset = left_join(subset, work_position, by = "scode")
@@ -3515,4 +3521,4 @@ minorg_count = rename(minorg_count, ISCOcode_minor = key)
 ISCOminor$ISCOcode_minor <- as.character(ISCOminor$ISCOcode_minor)
 minorg_count = left_join(minorg_count, ISCOminor, by = "ISCOcode_minor")
 
-write_xlsx(list(unitg_count = unitg_count, minorg_count = minorg_count), path = "C:/Users/K/Google Drive/GV/sizesofgroups1.xlsx")
+write_xlsx(list(unitg_count = unitg_count, minorg_count = minorg_count), path = "C:/Users/K/Google Drive/GV/sizesofgroups2.xlsx")
