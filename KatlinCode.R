@@ -115,8 +115,8 @@ asendus = readxl::read_xlsx("C:/Users/K/Google Drive/GV/tmpAsendatud_KA2.xlsx") 
 new = left_join(new, asendus, by = "workPositionName")
 new$newWithManualReplacement = ifelse(!is.na(new$rewrite), new$rewrite, new$new)
 
-# selleks, et saaks kogu koodi ka neist käsitsi muudetud nimedest üle käia, siis nimetasin mõned tunnused ringi
-new = rename(new, new1 = new, new = newWithManualReplacement)
+# selleks, et saaks kogu koodi ka neist käsitsi muudetud nimedest üle käia, siis nimetasin mõned tunnused ringi (+ eemaldasin mõned scode duplikaat-read, mis kusagil tekkinud olid)
+new = rename(new, new1 = new, new = newWithManualReplacement) %>% filter(!duplicated(scode))
 new$new <- new$new %>% gsub(" ", "", ., fixed = TRUE) %>% tolower()
 
 ## start fishing
@@ -235,6 +235,7 @@ new$new = asendaja(new$new, "emoarst","", replace = "eriarst")
 new$new = asendaja(new$new, "embrüoloog","", replace = "eriarst")
 new$new = asendaja(new$new, "epidemioloog","", replace = "eriarst")
 new$new = asendaja(new$new, "oftalmoloog","", replace = "eriarst")
+new$new = asendaja(new$new, "patoloog","", replace = "eriarst")
 
 unique(leidur(new$new, "arst", "pea"))
 new$new = asendaja(new$new, "arst","pea", excl1 = "looma", replace = "tervishoiuteenustejuht")
@@ -247,6 +248,7 @@ new$new = asendaja(new$new, "haiglajuh", "", replace = "tervishoiuteenustejuht")
 new$new = asendaja(new$new, "haiglaosakonnajuh", "", replace = "tervishoiuteenustejuht")
 new$new = asendaja(new$new, "tervishoiuteenustejuht", "", replace = "tervishoiuteenustejuht")
 new$new = asendaja(new$new, "rehabilitatsioonikeskusejuh", "", replace = "tervishoiuteenustejuht")
+new$new = asendaja(new$new, "perearst", "juh", replace = "tervishoiuteenustejuht")
 
 unique(leidur(new$new, "arst", "resident"))
 new$new = asendaja(new$new, "arst","resident", replace = "eriarst")
@@ -330,6 +332,7 @@ new$new = asendaja(new$new, "massöö", "", excl1 = "toit", excl2 = "log",  excl
 new$new = asendaja(new$new, "massaažiterapeut", "", excl1 = "meister", excl2 = "salongi", excl3 = "jooga", excl4 = "õppejõud", replace = "massöör")
 new$new = asendaja(new$new, "massaaz", "", excl1 = "meister", replace = "massöör")
 new$new = asendaja(new$new, "lümfiterapeut", "", replace = "massöör")
+new$new = asendaja(new$new, "refleksoloog", "", replace = "massöör")
 
 unique(leidur(new$new, "ilu", "teenin"))
 new$new = asendaja(new$new, "ilu", "teenind", "", replace = "iluteenindaja")
@@ -346,6 +349,7 @@ new$new = asendaja(new$new, "püsimeigi", "", replace = "iluteenindaja")
 new$new = asendaja(new$new, "spaterapist", "", replace = "iluteenindaja")
 new$new = asendaja(new$new, "kosmeto", "", replace = "iluteenindaja")
 new$new = asendaja(new$new, "jalahooldusspetsialist", "", replace = "iluteenindaja")
+new$new = asendaja(new$new, "ilutegija", "", replace = "iluteenindaja")
 
 unique(leidur(new$new, "juuksur", ""))
 new$new = asendaja(new$new, "juuksur", "", excl1 = "koerte", excl2 = "kutseõpetaja", excl3 = "vallav", replace = "juuksur")
@@ -499,6 +503,7 @@ table(leidur(new$new, "töödejuhat", ""))
 
 unique(leidur(new$new, "puu", "sepp"))
 new$new = asendaja(new$new, "puu", "sepp", excl1 = "üldehi", excl2 = "ehitaja.", excl3 = "ehitaja-", replace = "puusepp")
+new$new = asendaja(new$new, "paadiehitaja", "", replace = "puusepp")
 
 unique(leidur(new$new, "politseinik", ""))
 new$new = asendaja(new$new, "politseinik", "", replace = "politseinik")
@@ -695,6 +700,8 @@ new$new = asendaja(new$new, "sotsiaaltöötaja-", "", replace = "sotsiaaltööta
 new$new = asendaja(new$new, "sotsiaalõpetaja", "", replace = "sotsiaaltöötaja")
 new$new = asendaja(new$new, "noortetööjuht", "", replace = "sotsiaaltöötaja")
 new$new = asendaja(new$new, "sotsiaalhoolekandetöötaja", "", replace = "sotsiaaltöötaja")
+new$new = asendaja(new$new, "noorteinstrukt", "", replace = "sotsiaaltöötaja")
+new$new = asendaja(new$new, "kriminaalametnik", "", replace = "sotsiaaltöötaja")
 
 unique(leidur(new$new, "müügisekretär", ""))
 new$new = asendaja(new$new, "müügisekretär", "", excl1 = "juhiabi", replace = "raamatupidamisekontoritöötaja")
@@ -747,6 +754,7 @@ new$new = asendaja(new$new, "analüütik", "finants", replace = "finantsanalüü
 new$new = asendaja(new$new, "arhitekt", "finants", replace = "finantsanalüütik")
 new$new = asendaja(new$new, "krediidianalüütik", "", replace = "finantsanalüütik")
 new$new = asendaja(new$new, "eelarveanalüütik", "", replace = "finantsanalüütik")
+new$new = asendaja(new$new, "investeerimisanalüütik", "", replace = "finantsanalüütik")
 
 unique(leidur(new$new, "analüütik", "tarkvara"))
 new$new = asendaja(new$new, "analüütik", "tarkvara", excl1 = "müük", replace = "programmeerija")
@@ -763,6 +771,7 @@ new$new = asendaja(new$new, "haldur", "andme", replace = "andmebaasianalüütik"
 new$new = asendaja(new$new, "spets", "andme", replace = "andmebaasianalüütik")
 new$new = asendaja(new$new, "andmeaidaarendaja", "", replace = "andmebaasianalüütik")
 new$new = asendaja(new$new, "dataengineer", "", replace = "andmebaasianalüütik")
+new$new = asendaja(new$new, "e-ressurss", "", replace = "andmebaasianalüütik")
 
 unique(leidur(new$new, "analüütik", "bio"))
 new$new = asendaja(new$new, "analüütik", "bio", replace = "bioanalüütik")
@@ -911,6 +920,7 @@ new$new = asendaja(new$new, "küjuh", "", replace = "kinnisvarahaldur")
 new$new = asendaja(new$new, "kinnisvaraspetsialist", "", replace = "kinnisvarahaldur")
 new$new = asendaja(new$new, "60korterigaelamujuhatusejuht", "", replace = "kinnisvarahaldur")
 new$new = asendaja(new$new, "korteriüh", "", excl1 = "erivaja", excl2 = "fie", replace = "kinnisvarahaldur")
+new$new = asendaja(new$new, "kinnisvarakonsult", "", replace = "kinnisvarahaldur")
 
 new$new = asendaja(new$new, "kinnisvara", "hoold", replace = "haldustöötaja")
 new$new = asendaja(new$new, "ruum", "hoold", replace = "haldustöötaja")
@@ -945,6 +955,7 @@ new$new = asendaja(new$new, "söökla", "juhataja", excl1 = "kokk-", replace = "
 new$new = asendaja(new$new, "toitlustus-jamaj", "", replace = "peakokk")
 new$new = asendaja(new$new, "toitlustusejuhataja", "", replace = "peakokk")
 new$new = asendaja(new$new, "toitlustusalajuhataja", "", replace = "peakokk")
+new$new = asendaja(new$new, "köögijuht", "", replace = "peakokk")
 
 new$new = asendaja(new$new, "kok", "abi", replace = "kokk")
 new$new = asendaja(new$new, "kokk", "pagar", replace = "kokk")
@@ -994,6 +1005,7 @@ new$new = asendaja(new$new, "kooriartist", "", replace = "muusik")
 new$new = asendaja(new$new, "ooperisolist", "", replace = "muusik")
 new$new = asendaja(new$new, "organist", "", replace = "muusik")
 new$new = asendaja(new$new, "interpreet", "", replace = "muusik")
+new$new = asendaja(new$new, "muusikajuht", "", replace = "muusik")
 
 unique(leidur(new$new, "raamatukogu","hoidja"))
 new$new = asendaja(new$new, "raamatukogu", "hoidja", excl1 = "õpetaja+", replace = "raamatukoguhoidja")
@@ -1013,10 +1025,11 @@ unique(leidur(new$new, "lao", ""))
 new$new = asendaja(new$new, "laooperaator", "", replace = "laoametnik")
 new$new = asendaja(new$new, "laohoidja", "", replace = "laoametnik")
 new$new = asendaja(new$new, "laospetsialist", "", replace = "laoametnik")
-new$new = asendaja(new$new, "laoarvestuses", "", replace = "laoametnik")
+new$new = asendaja(new$new, "laoarvest", "", replace = "laoametnik")
 new$new = asendaja(new$new, "laopidaja", "", replace = "laoametnik")
 new$new = asendaja(new$new, "laoametnik", "", replace = "laoametnik")
 new$new = asendaja(new$new, "laokordinaator", "", replace = "laoametnik")
+new$new = asendaja(new$new, "laomeister", "", replace = "laoametnik")
 
 new$new = asendaja(new$new, "laotöötaja", "", excl1 = "kontrolör", excl2 = "raamatup", excl3 = "logistik", replace = "laotöötaja")
 new$new = asendaja(new$new, "laomees", "", replace = "laotöötaja")
@@ -1082,8 +1095,10 @@ new$new = asendaja(new$new, "õmleja", "", excl1 = "jalatsite", excl2 = "teenind
 new$new = asendaja(new$new, "tikkija", "", replace = "õmbleja")
 new$new = asendaja(new$new, "ömbleja", "", replace = "õmbleja")
 new$new = asendaja(new$new, "ombleja", "", replace = "õmbleja")
+new$new = asendaja(new$new, "meisterõmblusvabrikus", "", replace = "õmbleja")
 
 new$new = asendaja(new$new, "juurdelõikaja", "", excl1 = "rätsep", excl2 = "kunstnik", replace = "juurdelõikaja")
+new$new = asendaja(new$new, "rõivakonstruktor", "", replace = "juurdelõikaja")
 new$new = asendaja(new$new, "rätsep", "", excl1 = "tipp", excl2 = "juurdelõikaja-", replace = "rätsep")
 new$new = asendaja(new$new, "^modist", "", replace = "rätsep")
 
@@ -1129,6 +1144,7 @@ new$new = asendaja(new$new, "kunstnik", "vaba", replace = "kunstnik")
 new$new = asendaja(new$new, "kunst", "tead", replace = "kunstnik")
 new$new = asendaja(new$new, "skulptor", "", replace = "kunstnik")
 new$new = asendaja(new$new, "^paberirestauraatorkeeleõpetaja$", "", replace = "kunstnik")
+new$new = asendaja(new$new, "^illustrator$", "", replace = "kunstnik")
 
 unique(leidur(new$new, "logistik", "juh", excl1 = "abi"))
 new$new = asendaja(new$new, "logistik", "juh", excl1 = "abi", excl2 = "auto", excl3 = "laadur", excl4 = "töödejuh", replace = "tarneahelajuht")
@@ -1141,6 +1157,7 @@ unique(leidur(new$new, "logistik", "", excl1 = "abi"))
 new$new = asendaja(new$new, "logistik", "", excl1 = "abi", excl2 = "juht", excl3 = "assis", excl4 = "raamatup",  replace = "logistik")
 new$new = asendaja(new$new, "logistikauto", "", replace = "logistik")
 new$new = asendaja(new$new, "veokorraldaja", "", replace = "logistik")
+new$new = asendaja(new$new, "jaamakorraldaja", "", replace = "logistik")
 
 # erinevate koodidega kvaliteedijuhte on - on nö juhtimisanalüütikute grupis ja tootmise kvaliteedijuhid (tehnika, tehnoloogia jne)
 unique(leidur(new$new, "kvaliteed", "juh", excl1 = "assist"))
@@ -1167,6 +1184,8 @@ new$new = asendaja(new$new, "heli", "kujund", excl1 = "majandus", replace = "aud
 new$new = asendaja(new$new, "tele", "operaa", excl1 = "telefoni", replace = "audiovisuaaltehnik")
 new$new = asendaja(new$new, "video", "operaa", excl1 = "valve", replace = "audiovisuaaltehnik")
 new$new = asendaja(new$new, "video", "tehn", excl1 = "erinev", replace = "audiovisuaaltehnik")
+new$new = asendaja(new$new, "helidisainer", "", replace = "audiovisuaaltehnik")
+new$new = asendaja(new$new, "heliinsener", "", replace = "audiovisuaaltehnik")
 
 unique(leidur(new$new, "elektrik", "auto"))
 new$new = asendaja(new$new, "elektrik", "auto", replace = "elektromehaanik")
@@ -1186,6 +1205,7 @@ new$new = asendaja(new$new, "elektr", "energ", replace = "elektrotehnik")
 new$new = asendaja(new$new, "elektr", "käidu", replace = "elektrotehnik")
 new$new = asendaja(new$new, "juht", "käidu", replace = "elektrotehnik")
 new$new = asendaja(new$new, "energeetik", "", excl1 = "meister", replace = "elektrotehnik")
+new$new = asendaja(new$new, "nõrkvoolutehnik", "", replace = "elektrotehnik")
 
 unique(leidur(new$new, "elektrik", "", excl1 = "kappide"))
 new$new = asendaja(new$new, "elektrik", "", excl1 = "kappide", excl2 = "kilp", excl3 = "keevitaja", replace = "elektrik")
@@ -1201,6 +1221,7 @@ new$new = asendaja(new$new, "hange", "koordin", replace = "hankespetsialist")
 new$new = asendaja(new$new, "hanke", "koordin", replace = "hankespetsialist")
 new$new = asendaja(new$new, "tellimustehaldur", "", replace = "hankespetsialist")
 new$new = asendaja(new$new, "varustusspetsialist", "", replace = "hankespetsialist")
+new$new = asendaja(new$new, "hankehaldur", "", replace = "hankespetsialist")
 
 table(leidur(new$new, "andme", "", "")) %>% sort(decreasing = T) %>% .[1:30]
 
@@ -1346,6 +1367,7 @@ new$new = asendaja(new$new, "finantsosakonnapeaspetsialist", "", replace = "pear
 
 new$new = asendaja(new$new, "personali", "arvest", excl1 = "raamatupidajap", excl2 = "juht", replace = "personalitöötaja")
 new$new = asendaja(new$new, "personali", "töötaja", excl1 = "raamatupid", excl2 = "sekretär", replace = "personalitöötaja")
+new$new = asendaja(new$new, "kaadri", "töötaja", replace = "personalitöötaja")
 
 unique(leidur(new$new, "geodeet", ""))
 new$new = asendaja(new$new, "geodeet", "", replace = "maamõõtja")
@@ -1363,6 +1385,7 @@ new$new = asendaja(new$new, "^gis$", "", replace = "maamõõtja")
 new$new = asendaja(new$new, "geodeesia", "", excl1 = "juh", excl2 = "andmete", replace = "maamõõtja")
 new$new = asendaja(new$new, "^maanõunik$", "", replace = "maamõõtja")
 new$new = asendaja(new$new, "^maaspetsialist$", "", replace = "maamõõtja")
+new$new = asendaja(new$new, "^maakorraldusspetsialist$", "", replace = "maamõõtja")
 
 unique(leidur(new$new, "veduri", "juh"))
 new$new = asendaja(new$new, "veduri", "juht", replace = "rongijuht")
@@ -1383,6 +1406,7 @@ new$new = asendaja(new$new, "finantskoord", "", replace = "finantsnõustaja")
 new$new = asendaja(new$new, "koord", "raha", replace = "finantsnõustaja")
 new$new = asendaja(new$new, "suurkliendihaldur", "", replace = "finantsnõustaja")
 new$new = asendaja(new$new, "finantskonsultant", "", replace = "finantsnõustaja")
+new$new = asendaja(new$new, "finantsabi", "", replace = "finantsnõustaja")
 
 unique(leidur(new$new, "tegevusjuhe", ""))
 new$new = asendaja(new$new, "tegevusjuhe", "", replace = "tegevusjuhendaja")
@@ -1421,6 +1445,7 @@ new$new = asendaja(new$new, "väärteom", "",  replace = "õigusekeskastmespetsi
 new$new = asendaja(new$new, "kohtu", "sekretär",  replace = "õigusekeskastmespetsialist")
 new$new = asendaja(new$new, "riigihangetespets", "",  replace = "õigusekeskastmespetsialist")
 new$new = asendaja(new$new, "kohtunikuabi", "",  replace = "õigusekeskastmespetsialist")
+new$new = asendaja(new$new, "menetleja", "väärt",  replace = "õigusekeskastmespetsialist")
 
 unique(leidur(new$new, "jurist", ""))
 new$new = asendaja(new$new, "jurist", "", excl1 = "kohtu", excl2 = "õpetaja", excl3 = "tegev", replace = "jurist")
@@ -1491,6 +1516,7 @@ new$new = asendaja(new$new, "itpeaspetsialist", "", replace = "süsteemiadminist
 new$new = asendaja(new$new, "itsüsteem", "spetsialist", replace = "süsteemiadministraator")
 new$new = asendaja(new$new, "sysadmin", "", replace = "süsteemiadministraator")
 new$new = asendaja(new$new, "süsadmin", "", replace = "süsteemiadministraator")
+new$new = asendaja(new$new, "infosüsteemidehaldur", "", replace = "süsteemiadministraator")
 
 unique(leidur(new$new, "itarhitekt", ""))
 new$new = asendaja(new$new, "itarhit", "", replace = "süsteemianalüütik")
@@ -1544,7 +1570,6 @@ new$new = asendaja(new$new, "arendusjuht", "info",  replace = "IKT-juht")
 new$new = asendaja(new$new, "juht", "infotehno", excl1 = "tiimi",  replace = "IKT-juht")
 new$new = asendaja(new$new, "itarend", "juht", excl1 = "projekt",  replace = "IKT-juht")
 new$new = asendaja(new$new, "it", "arendusjuht", excl1 = "linna", excl2 = "kinnisvara", excl3 = "grupi", excl4 = "koolitus",  replace = "IKT-juht")
-new$new = asendaja(new$new, "digi", "arendusjuht", replace = "IKT-juht")
 new$new = asendaja(new$new, "digi", "arendusjuht", replace = "IKT-juht")
 new$new = asendaja(new$new, "kasutajaliide", "arendusjuht", replace = "IKT-juht")
 new$new = asendaja(new$new, "veebi", "arendusjuht", replace = "IKT-juht")
@@ -1648,6 +1673,7 @@ new$new = asendaja(new$new, "müügi", "assis", replace = "raamatupidamisekontor
 unique(leidur(new$new, "audiitor",""))
 unique(leidur(new$new, "audiitor","sise"))
 new$new = asendaja(new$new, "siseaud", "", replace = "juhtimisanalüütik")
+new$new = asendaja(new$new, "sisekontrolör", "", replace = "juhtimisanalüütik")
 new$new = asendaja(new$new, "rektor", "nõunik", replace = "juhtimisanalüütik")
 new$new = asendaja(new$new, "andmekaitsespet", "", replace = "juhtimisanalüütik")
 new$new = asendaja(new$new, "ärikons", "", replace = "juhtimisanalüütik")
@@ -1658,8 +1684,10 @@ new$new = asendaja(new$new, "koordinaator", "arendus", replace = "juhtimisanalü
 new$new = asendaja(new$new, "nõun", "arendus", replace = "juhtimisanalüütik")
 new$new = asendaja(new$new, "äriarhitekt", "", replace = "juhtimisanalüütik")
 new$new = asendaja(new$new, "scrummaster", "", replace = "juhtimisanalüütik")
+new$new = asendaja(new$new, "sisekontroll", "", replace = "juhtimisanalüütik")
 
 new$new = asendaja(new$new, "audiitor", "", excl1 = "keskk", replace = "audiitor")
+new$new = asendaja(new$new, "auditi", "konsultant", replace = "audiitor")
 
 unique(leidur(new$new, "teenindusjuht",""))
 unique(leidur(new$new, "teenindusjuht","kauba"))
@@ -1735,7 +1763,8 @@ new$new = asendaja(new$new, "häirejuhtimiskeskusespetsialist", "", replace = "t
 new$new = asendaja(new$new, "valveteenistus", "", replace = "turvatöötaja")
 new$new = asendaja(new$new, "valve", "operaator", replace = "turvatöötaja")
 new$new = asendaja(new$new, "valveametnik", "", replace = "turvatöötaja")
-
+new$new = asendaja(new$new, "relvur", "", replace = "turvatöötaja")
+new$new = asendaja(new$new, "relvatehnik", "", replace = "turvatöötaja")
 
 unique(leidur(new$new, "metoodik", ""))
 new$new = asendaja(new$new, "metoodik", "", excl1 = "juht", excl2 = "arst", excl3 = "mängudi", replace = "õppemetoodikaspetsialist")
@@ -1888,6 +1917,7 @@ new$new = asendaja(new$new, "kirjanik", "", excl1 = "aja", replace = "kirjanik")
 new$new = asendaja(new$new, "kirjastaja", "", replace = "kirjanik")
 new$new = asendaja(new$new, "dramaturg", "", replace = "kirjanik")
 new$new = asendaja(new$new, "stsenarist", "", replace = "kirjanik")
+new$new = asendaja(new$new, "tehnilinekirjutaja", "", replace = "kirjanik")
 
 # lihtsalt toimetajaid on ka palju, kelle puhul raske otsustada, kas kirjanik, ajakirjanik või filoloog
 new$new = asendaja(new$new, "tegev", "toimetaja", replace = "toimetaja")
@@ -1904,6 +1934,7 @@ new$new = asendaja(new$new, "komplekteerija", "mootor", replace = "elektriseadme
 new$new = asendaja(new$new, "komplekteerija", "arvut", replace = "elektriseadmete koostaja")
 new$new = asendaja(new$new, "koostaja", "elekt", replace = "elektriseadmete koostaja")
 new$new = asendaja(new$new, "oper", "smd", replace = "elektriseadmete koostaja")
+new$new = asendaja(new$new, "transform", "valmis", replace = "elektriseadmete koostaja")
 
 new$new = asendaja(new$new, "komplekteerija", "kauba", replace = "pakkija")
 new$new = asendaja(new$new, "komplekteerija", "köögivilja", replace = "pakkija")
@@ -1922,7 +1953,7 @@ new$new = asendaja(new$new, "mööblipaigal", "", replace = "muudkoostajad")
 new$new = asendaja(new$new, "valgustitekoostaja", "", replace = "muudkoostajad")
 new$new = asendaja(new$new, "koost", "spetsialist", replace = "muudkoostajad")
 new$new = asendaja(new$new, "avatäide", "paigald", replace = "muudkoostajad")
-
+new$new = asendaja(new$new, "landivalmistaja", "", replace = "muudkoostajad")
 
 # variant ka kõik koostajad ühte panna? Kuna lihtsalt "koostajaid" on ka kõige rohkem
 
@@ -1987,10 +2018,10 @@ new$new = asendaja(new$new, "infospetsialist", "", excl1 = "karjäär", replace 
 new$new = asendaja(new$new, "info", "klienditee", replace = "klienditoe konsultant")
 new$new = asendaja(new$new, "klienditoe", "kons", replace = "klienditoe konsultant")
 new$new = asendaja(new$new, "klienditoe", "haldur", replace = "klienditoe konsultant")
-new$new = asendaja(new$new, "klienditoe", "haldur", replace = "klienditoe konsultant")
 new$new = asendaja(new$new, "klienditoe", "spets", replace = "klienditoe konsultant")
-new$new = asendaja(new$new, "infotöötaja", "", excl1 = "sadul", replace = "klienditoe konsultant")
+new$new = asendaja(new$new, "info", "töötaja", excl1 = "sadul", replace = "klienditoe konsultant")
 new$new = asendaja(new$new, "infosekretär", "", replace = "klienditoe konsultant")
+new$new = asendaja(new$new, "infokonsultant", "", replace = "klienditoe konsultant")
 
 unique(leidur(new$new, "kahjukäsitleja", ""))
 new$new = asendaja(new$new, "kahjukäsitleja", "", replace = "hindaja")
@@ -2000,6 +2031,9 @@ new$new = asendaja(new$new, "kinnisvara", "hind", replace = "hindaja")
 new$new = asendaja(new$new, "hindaja", "risk", excl1 = "taime", replace = "hindaja")
 new$new = asendaja(new$new, "hindaja", "", excl1 = "taime", excl2 = "kval", excl3 = "maakler", excl4 = "kliiniline", replace = "hindaja")
 new$new = asendaja(new$new, "taksaator", "", replace = "hindaja")
+new$new = asendaja(new$new, "hinnastaja", "", replace = "hindaja")
+new$new = asendaja(new$new, "hinnaspetsialist", "", replace = "hindaja")
+new$new = asendaja(new$new, "hinnaanalüütik", "", replace = "hindaja")
 
 unique(leidur(new$new, "reklaamispetsialist", ""))
 new$new = asendaja(new$new, "reklaami", "spets", replace = "reklaamispetsialist")
@@ -2081,6 +2115,7 @@ new$new = asendaja(new$new, "uurija", "kriminaal", replace = "politseiuurija")
 new$new = asendaja(new$new, "uurija", "eriasj", replace = "politseiuurija")
 new$new = asendaja(new$new, "uurija", "väärt", replace = "politseiuurija")
 new$new = asendaja(new$new, "jälitusametnik", "", replace = "politseiuurija")
+new$new = asendaja(new$new, "kriminalist", "", replace = "politseiuurija")
 # lihtsalt "uurijaid on >60, aga kas kõik on politseiuurijad? 
 
 # neid politsei-ameteid on veel, aga ei saa täpselt aru, mis tasemel need eraldi nimetused on (igatühte ka ainult üks)
@@ -2110,6 +2145,8 @@ unique(leidur(new$new, "bioloog", ""))
 new$new = asendaja(new$new, "kalandus", "tead", replace = "bioloog")
 new$new = asendaja(new$new, "bioloog", "", excl1 = "tootejuht", excl2 = "müügi", replace = "bioloog")
 new$new = asendaja(new$new, "botaanik", "", replace = "bioloog")
+new$new = asendaja(new$new, "kliinilisteuuringute", "spets", replace = "bioloog")
+new$new = asendaja(new$new, "zooloog", "", replace = "bioloog")
 
 unique(leidur(new$new, "autotehnik", ""))
 new$new = asendaja(new$new, "autotehnik", "", replace = "masinaehitustehnik")
@@ -2121,11 +2158,14 @@ new$new = asendaja(new$new, "mootor", "meh", excl1 = "pealik", excl2 = "juh", re
 new$new = asendaja(new$new, "hüdrotehnikainsener", "", replace = "masinaehitustehnik")
 new$new = asendaja(new$new, "masinaehitustehnik", "", replace = "masinaehitustehnik")
 new$new = asendaja(new$new, "aparaadiehitaja", "", replace = "masinaehitustehnik")
+new$new = asendaja(new$new, "külmatehnik", "", replace = "masinaehitustehnik")
 
 unique(leidur(new$new, "kiirabi","tehn"))
 new$new = asendaja(new$new, "kiirabi", "tehn", replace = "kiirabitehnik")
 new$new = asendaja(new$new, "erakorr", "tehn", replace = "kiirabitehnik")
 new$new = asendaja(new$new, "parameedik", "", replace = "kiirabitehnik")
+new$new = asendaja(new$new, "esmaabi", "", replace = "kiirabitehnik")
+new$new = asendaja(new$new, "kiirabivelsker", "", replace = "kiirabitehnik")
 
 unique(leidur(new$new, "ehitusjuht",""))
 new$new = asendaja(new$new, "ehitusjuht", "", excl1 = "projekteer", replace = "ehitusjuht")
@@ -2167,6 +2207,7 @@ new$new = asendaja(new$new, "balle", "õpetaja", replace = "tantsuõpetaja")
 unique(leidur(new$new, "trüki", "ette"))
 new$new = asendaja(new$new, "trüki", "ette", excl1 = "juht", replace = "trükiettevalmistaja")
 new$new = asendaja(new$new, "küljendaja", "", replace = "trükiettevalmistaja")
+new$new = asendaja(new$new, "brošeerija", "", replace = "trükiettevalmistaja")
 new$new = asendaja(new$new, "trüki", "järel", replace = "trükijäreltöötleja")
 new$new = asendaja(new$new, "köitja", "", replace = "trükijäreltöötleja")
 new$new = asendaja(new$new, "trüki", "töötleja", replace = "trükijäreltöötleja")
@@ -2185,6 +2226,8 @@ new$new = asendaja(new$new, "kredii", "hald", excl1 = "juht", replace = "laenuha
 new$new = asendaja(new$new, "laen", "assis", replace = "laenuhaldur")
 new$new = asendaja(new$new, "laen", "admin", replace = "laenuhaldur")
 new$new = asendaja(new$new, "laen", "spets", replace = "laenuhaldur")
+new$new = asendaja(new$new, "krediidi", "spets", replace = "laenuhaldur")
+new$new = asendaja(new$new, "laenu", "amet", replace = "laenuhaldur")
 
 unique(leidur(new$new, "sõiduõpetaja", ""))
 new$new = asendaja(new$new, "sõidu", "õp", replace = "sõiduõpetaja")
@@ -2238,6 +2281,7 @@ new$new = asendaja(new$new, "hooldaja", "arvut", replace = "elektroonikamehaanik
 new$new = asendaja(new$new, "hooldaja", "kudumis", replace = "elektroonikamehaanik") #??
 new$new = asendaja(new$new, "hooldaja", "tehnika", replace = "elektroonikamehaanik")
 new$new = asendaja(new$new, "meh", "õmblus", replace = "elektroonikamehaanik")
+new$new = asendaja(new$new, "raadiotehnik", "", replace = "elektroonikamehaanik")
 
 unique(leidur(new$new, "spordiväljak", "hoold"))
 new$new = asendaja(new$new, "spordiväljakutehool", "", replace = "välikoristaja")
@@ -2299,11 +2343,14 @@ new$new = asendaja(new$new, "perevanem", "", replace = "sotsiaaltööspetsialist
 new$new = asendaja(new$new, "eestkoste", "", replace = "sotsiaaltööspetsialist")
 new$new = asendaja(new$new, "^sotsiaaltöö$", "", replace = "sotsiaaltööspetsialist")
 new$new = asendaja(new$new, "hoolduspere", "", replace = "sotsiaaltööspetsialist")
+new$new = asendaja(new$new, "kovsotsiaalametispetsialist", "", replace = "sotsiaaltööspetsialist")
+new$new = asendaja(new$new, "pere", "tugi", replace = "sotsiaaltööspetsialist")
 
 unique(leidur(new$new, "elektroonik", ""))
 new$new = asendaja(new$new, "elektroonik", "raadio", replace = "elektrotehnik")
 new$new = asendaja(new$new, "elektroonik", "spets", excl1 = "menetlus", excl2 = "poolimis", excl3 = "itja", replace = "elektrotehnik")
 new$new = asendaja(new$new, "elektroonikatehnik", "", replace = "elektrotehnik")
+new$new = asendaja(new$new, "energia", "konsul", replace = "elektrotehnik")
 
 unique(leidur(new$new, "kauba", "vastuv"))
 new$new = asendaja(new$new, "kauba", "vastuv", excl1 = "juht", replace = "laoametnik")
@@ -2327,6 +2374,7 @@ new$new = asendaja(new$new, "viimistleja", "mööbli", replace = "tisler")
 new$new = asendaja(new$new, "tisler", "", replace = "tisler")
 new$new = asendaja(new$new, "viimistleja", "restaur", replace = "tisler")
 new$new = asendaja(new$new, "disler", "", replace = "tisler")
+new$new = asendaja(new$new, "laudsepp", "", replace = "tisler")
 
 new$new = asendaja(new$new, "viimistleja", "sise", replace = "ehitusviimistleja")
 new$new = asendaja(new$new, "viimistleja", "ehit", replace = "ehitusviimistleja")
@@ -2368,6 +2416,7 @@ new$new = asendaja(new$new, "ettevõtteasutaja", "", replace = "ettevõtja")
 new$new = asendaja(new$new, "eraettevotja", "", replace = "ettevõtja")
 new$new = asendaja(new$new, "ettevotja", "", replace = "ettevõtja")
 new$new = asendaja(new$new, "ettevôtja", "", replace = "ettevõtja")
+new$new = asendaja(new$new, "ettev", "osanik", replace = "ettevõtja")
 
 # siin tundub natuke kirjum seltskond, aga võib-olla ok (st ei leia nii spetsiifilisi koode ISCO-st)
 unique(leidur(new$new, "haldusjuht", ""))
@@ -2410,6 +2459,7 @@ new$new = asendaja(new$new, "teleprogrammikoordinaator", "", replace = "muu kult
 new$new = asendaja(new$new, "muukultuurivaldkonnaspetsialist", "", replace = "muu kultuurivaldkonna spetsialist")
 new$new = asendaja(new$new, "trupijuht", "", replace = "muu kultuurivaldkonna spetsialist")
 new$new = asendaja(new$new, "filmivõttekohatekordinaator", "", replace = "muu kultuurivaldkonna spetsialist")
+new$new = asendaja(new$new, "etendus", "juh", replace = "muu kultuurivaldkonna spetsialist")
 
 unique(leidur(new$new, "heakorra", ""))
 new$new = asendaja(new$new, "heakorra", "spets", replace = "haljastusespetsialist")
@@ -2429,6 +2479,7 @@ new$new = asendaja(new$new, "ehitusremont", "", replace = "ehitaja")
 new$new = asendaja(new$new, "remonditööline", "", replace = "ehitaja")
 new$new = asendaja(new$new, "remondimees", "", replace = "ehitaja")
 new$new = asendaja(new$new, "^ehitamine$", "", replace = "ehitaja")
+new$new = asendaja(new$new, "^lammut", "", replace = "ehitaja")
 
 unique(leidur(new$new, "autojuht", ""))
 new$new = asendaja(new$new, "autojuht", "", excl1 = "veo", excl2 = "laborite", excl3 = "kaugsõidu", replace = "autojuht")
@@ -2448,6 +2499,8 @@ new$new = asendaja(new$new, "klienditeenindaja-", "", excl1 = "juht", replace = 
 unique(leidur(new$new, "kontori", "töötaja"))
 new$new = asendaja(new$new, "kontori", "töötaja", excl1 = "raamatup", excl2 = "vanem", replace = "kontoritöötaja")
 new$new = asendaja(new$new, "", "bürootöötaja", replace = "kontoritöötaja")
+new$new = asendaja(new$new, "", "kontoriametnik", replace = "kontoritöötaja")
+new$new = asendaja(new$new, "kontoritööline", "", replace = "kontoritöötaja")
 
 unique(leidur(new$new, "teenindaja", "müüja"))
 new$new = asendaja(new$new, "teenindaja", "müüja", replace = "müüja")
@@ -2511,6 +2564,9 @@ new$new = asendaja(new$new, "kärup", "", replace = "muulihttööline")
 new$new = asendaja(new$new, "käskjalg", "", replace = "muulihttööline")
 new$new = asendaja(new$new, "piletör", "", replace = "muulihttööline")
 new$new = asendaja(new$new, "riidehoidja", "", replace = "muulihttööline")
+new$new = asendaja(new$new, "parkimiskorr", "", replace = "muulihttööline")
+new$new = asendaja(new$new, "parkla", "", replace = "muulihttööline")
+new$new = asendaja(new$new, "publikuteenindaja", "", replace = "muulihttööline")
 
 unique(leidur(new$new, "klienditeenindaja", "", excl1 = "juht"))
 new$new = asendaja(new$new, "kliendite", "aptee", excl1 = "juht", replace = "müüja")
@@ -2558,6 +2614,7 @@ new$new = asendaja(new$new, "promootor", "", replace = "äriteenusteagent")
 unique(leidur(new$new, "müüja", "", excl1 = "juht"))
 new$new = asendaja(new$new, "jaemüüja", "", replace = "müüja")
 new$new = asendaja(new$new, "müüja", "", excl1 = "juht", excl2 = "telefonimüüja", replace = "müüja")
+new$new = asendaja(new$new, "teenind", "kaup", replace = "müüja")
 
 unique(leidur(new$new, "spetsialist", "labori"))
 new$new = asendaja(new$new, "spetsialist", "labori", "haigla", replace = "bioanalüütik")
@@ -2765,6 +2822,7 @@ new$new = asendaja(new$new, "arendusjuht", "", excl1 = "tootearendus", excl2 = "
 new$new = asendaja(new$new, "arengujuht", "", replace = "arendusjuht")
 new$new = asendaja(new$new, "teadusjuht", "", replace = "arendusjuht")
 new$new = asendaja(new$new, "arendusprorektor", "", replace = "arendusjuht")
+new$new = asendaja(new$new, "arendus", "teadus", "juh", replace = "arendusjuht")
 
 new$new = asendaja(new$new, "osakonna", "juh", "energeet", replace = "tööstusjuht")
 new$new = asendaja(new$new, "osakonna", "juh", "enegreetika", replace = "tööstusjuht")
@@ -2841,6 +2899,7 @@ new$new = asendaja(new$new, "elektrijaama", "operaator", replace = "tööstusepr
 new$new = asendaja(new$new, "mehhatroonik", "", replace = "tööstuseprotsessijuhtimistehnik")
 new$new = asendaja(new$new, "mehatroonik", "", replace = "tööstuseprotsessijuhtimistehnik")
 new$new = asendaja(new$new, "protsessijuht", "", replace = "tööstuseprotsessijuhtimistehnik")
+new$new = asendaja(new$new, "protsessiinsener", "", replace = "tööstuseprotsessijuhtimistehnik")
 
 new$new = asendaja(new$new, "oper", "kaamer", replace = "audiovisuaaltehnik")
 new$new = asendaja(new$new, "oper", "tv", replace = "audiovisuaaltehnik")
@@ -2883,7 +2942,6 @@ new$new = asendaja(new$new, "puidutehnoloog", "", replace = "joonestaja")
 new$new = asendaja(new$new, "üritus", "koordina", replace = "üritustekorraldaja")
 new$new = asendaja(new$new, "üritus", "korr", excl1 = "sponsor", replace = "üritustekorraldaja")
 new$new = asendaja(new$new, "konver", "korr", replace = "üritustekorraldaja")
-new$new = asendaja(new$new, "pulm", "korr", replace = "üritustekorraldaja")
 new$new = asendaja(new$new, "pulm", "korr", replace = "üritustekorraldaja")
 new$new = asendaja(new$new, "sündmus", "korr", replace = "üritustekorraldaja")
 new$new = asendaja(new$new, "konver", "koord", replace = "üritustekorraldaja")
@@ -2986,6 +3044,7 @@ new$new = asendaja(new$new, "töödejuh", "tehnik", replace = "tootmistöödejuh
 new$new = asendaja(new$new, "töödejuh", "mehaan", replace = "tootmistöödejuhataja")
 new$new = asendaja(new$new, "tootmisobjektijuht", "", replace = "tootmistöödejuhataja")
 new$new = asendaja(new$new, "tootmistöödejuh", "", replace = "tootmistöödejuhataja")
+new$new = asendaja(new$new, "tootmis", "plan", excl1 = "müügi", replace = "tootmistöödejuhataja")
 
 new$new = asendaja(new$new, "töödejuh", "elektri", replace = "ehitustöödejuhataja")
 new$new = asendaja(new$new, "töödejuh", "el.", replace = "ehitustöödejuhataja")
@@ -3150,6 +3209,8 @@ new$new = asendaja(new$new, "ehitustehnik", "", excl1 = "masina", excl2 = "võrg
 new$new = asendaja(new$new, "ehitus", "järeleval", replace = "ehitustehnik")
 new$new = asendaja(new$new, "tuleohu", "inspekt", replace = "ehitustehnik")
 new$new = asendaja(new$new, "ehituskonstruktsioonidetehnik", "", replace = "ehitustehnik")
+new$new = asendaja(new$new, "tuleohutus", "spets", replace = "ehitustehnik")
+new$new = asendaja(new$new, "planeering", "spets", replace = "ehitustehnik")
 
 unique(leidur(new$new, "korstnapüh", ""))
 new$new = asendaja(new$new, "korstnapüh", "", replace = "ehitustarindite puhastaja")
@@ -3161,6 +3222,7 @@ new$new = asendaja(new$new, "elektr", "mont", replace = "elektriseadmete koostaj
 
 new$new = asendaja(new$new, "elektriliinide", "paigaldaja", replace = "elektriliinide paigaldaja")
 new$new = asendaja(new$new, "kaablikoostaja", "", replace = "elektriliinide paigaldaja")
+new$new = asendaja(new$new, "kaablimontöör", "", replace = "elektriliinide paigaldaja")
 
 unique(leidur(new$new, "geoloog", ""))
 new$new = asendaja(new$new, "geoloog", "", excl1 = "haldus", replace = "geoloog")
@@ -3196,6 +3258,7 @@ new$new = asendaja(new$new, "vallavaraspetsialist", "", replace = "valitsuse hal
 new$new = asendaja(new$new, "valitsusehaldusaladeametnik", "", replace = "valitsuse haldusalade ametnik")
 new$new = asendaja(new$new, "ametnik", "omavalits", replace = "valitsuse haldusalade ametnik")
 new$new = asendaja(new$new, "haldusametnik", "", replace = "valitsuse haldusalade ametnik")
+new$new = asendaja(new$new, "muinsuskaitsespetsialist", "", replace = "valitsuse haldusalade ametnik")
 
 unique(leidur(new$new, "kiropraktik", ""))
 new$new = asendaja(new$new, "kiropraktik", "", replace = "kiropraktik")
@@ -3210,6 +3273,7 @@ new$new = asendaja(new$new, "klaasija", "", replace = "klaasija")
 
 new$new = asendaja(new$new, "kohaliku", "tervis", replace = "kohaliku omavalitsuse tervisetöötaja")
 new$new = asendaja(new$new, "tervisedendaja", "", replace = "kohaliku omavalitsuse tervisetöötaja")
+new$new = asendaja(new$new, "abivahendispetsialist", "", replace = "kohaliku omavalitsuse tervisetöötaja")
 
 unique(leidur(new$new, "kuduja", ""))
 new$new = asendaja(new$new, "kuduja", "", replace = "tekstiilikäsitöömeister")
@@ -3255,6 +3319,7 @@ new$new = asendaja(new$new, "ametiühinguesimees", "", replace = "seadusandja")
 
 unique(leidur(new$new, "rautaja", ""))
 new$new = asendaja(new$new, "rautaja", "", replace = "sepp")
+new$new = asendaja(new$new, "käsisepp", "", replace = "sepp")
 
 new$new = asendaja(new$new, "sotsiaalkindlus", "", replace = "sotsiaalkindlustusametnik")
 
@@ -3276,6 +3341,8 @@ new$new = asendaja(new$new, "^tootmistöötaja$", "", replace = "tööstuselihtt
 
 new$new = asendaja(new$new, "telekommunikatsiooniinsener", "", replace = "telekommunikatsiooniinsener")
 new$new = asendaja(new$new, "raadioinsener", "", replace = "telekommunikatsiooniinsener")
+new$new = asendaja(new$new, "raadiooperaator", "", replace = "telekommunikatsiooniinsener")
+
 new$new = asendaja(new$new, "telekommunikatsioonitehnik", "", replace = "telekommunikatsioonitehnik")
 new$new = asendaja(new$new, "sidetehnik", "", replace = "telekommunikatsioonitehnik")
 
@@ -3300,6 +3367,7 @@ new$new = asendaja(new$new, "tootearendustehnoloog", "", replace = "tööstusins
 new$new = asendaja(new$new, "tootearendaja", "tehno", replace = "tööstusinsener")
 new$new = asendaja(new$new, "tootearendusinsener", "", replace = "tööstusinsener")
 new$new = asendaja(new$new, "materjalitehnoloog", "", replace = "tööstusinsener")
+new$new = asendaja(new$new, "mööbliprojekteerija", "", replace = "tööstusinsener")
 
 unique(leidur(new$new, "töötervish", "spets"))
 new$new = asendaja(new$new, "töötervish", "spets", replace = "töötervishoiuspetsialist")
@@ -3329,10 +3397,14 @@ new$new = asendaja(new$new, "liikumisterapeut", "", replace = "liikumisterapeut"
 new$new = asendaja(new$new, "keskkonnaanalüütik", "", replace = "keskkonnatehnikaspetsialist")
 new$new = asendaja(new$new, "keskkonnatehnikaspetsialist", "", replace = "keskkonnatehnikaspetsialist")
 new$new = asendaja(new$new, "keskkonnainsener", "", replace = "keskkonnatehnikaspetsialist")
+new$new = asendaja(new$new, "^keskkonnatehnik$", "", replace = "keskkonnatehnikaspetsialist")
+new$new = asendaja(new$new, "^keskonnatehnik$", "", replace = "keskkonnatehnikaspetsialist")
 
 new$new = asendaja(new$new, "kaubamaakler", "", replace = "kaubamaakler")
 
 new$new = asendaja(new$new, "laskur", "", replace = "sportlane")
+new$new = asendaja(new$new, "sportlane", "", replace = "sportlane")
+new$new = asendaja(new$new, "pokker", "", replace = "sportlane")
 new$new = asendaja(new$new, "spordiinstruktor", "", replace = "spordiinstruktor")
 
 new$new = asendaja(new$new, "valuutamaakler", "", replace = "valuutamaakler")
@@ -3416,7 +3488,7 @@ new$new = asendaja(new$new, "müügikonsuldant", "", replace = "müügiesindaja"
 new$new = asendaja(new$new, "müügihaldur", "", replace = "müügiesindaja")
 new$new = asendaja(new$new, "müügitoespetsialist", "", replace = "müügiesindaja")
 new$new = asendaja(new$new, "müügikontsultant", "", replace = "müügiesindaja")
-new$new = asendaja(new$new, "müügispetialist", "", replace = "müügiesindaja")
+new$new = asendaja(new$new, "müügi", "spet", replace = "müügiesindaja")
 
 new$new = asendaja(new$new, "koolitaja", "", replace = "töötajate koolitusspetsialist")
 
@@ -3441,6 +3513,7 @@ new$new = asendaja(new$new, "^administraatorkontoris$", "", replace = "üldadmin
 new$new = asendaja(new$new, "^ujulaadministraator$", "", replace = "üldadministraator")
 new$new = asendaja(new$new, "^spordikeskuseadministraator$", "", replace = "üldadministraator")
 new$new = asendaja(new$new, "^admistraator$", "", replace = "üldadministraator")
+new$new = asendaja(new$new, "^registraator$", "", replace = "üldadministraator")
 
 new$new = asendaja(new$new, "vanemarendaja", "", replace = "arendaja")
 
@@ -3448,6 +3521,9 @@ new$new = asendaja(new$new, "automaatik", "", excl1 = "juht", replace = "elektro
 
 new$new = asendaja(new$new, "politsei", "", excl1 = "amet", excl2 = "uurija", replace = "politseinik")
 new$new = asendaja(new$new, "korrakaitse", "", replace = "politseinik")
+new$new = asendaja(new$new, "kiirreag", "", replace = "politseinik")
+new$new = asendaja(new$new, "liiklusjärelev", "", replace = "politseinik")
+new$new = asendaja(new$new, "operatiivkorrapidaja", "", replace = "politseinik")
 
 new$new = asendaja(new$new, "pottsepp", "", replace = "müürsepp")
 new$new = asendaja(new$new, "müürsepp", "", replace = "müürsepp")
@@ -3470,9 +3546,12 @@ new$new = asendaja(new$new, "kantselei", "", replace = "kontoriabiline")
 new$new = asendaja(new$new, "mehhanisaator", "", replace = "mehhanisaator")
 new$new = asendaja(new$new, "mehanisaator", "", replace = "mehhanisaator")
 
+new$new = asendaja(new$new, "põranda", "", replace = "põrandategija")
+
 new$new = asendaja(new$new, "vanemmeister", "", replace = "meister")
 
 new$new = asendaja(new$new, "disainer-", "", replace = "disainer")
+new$new = asendaja(new$new, "peadisainer", "", replace = "disainer")
 new$new = asendaja(new$new, "peauurija", "", replace = "uurija")
 new$new = asendaja(new$new, "vaneminsener", "", replace = "insener")
 new$new = asendaja(new$new, "vanemuurija", "", replace = "uurija")
@@ -3534,7 +3613,7 @@ checked = checked %>% filter(!duplicated(row))
 kodeerimata$row = 1:nrow(kodeerimata)
 kodeerimata = left_join(kodeerimata %>% select(1:4,10:12), checked[,1:5], by = "row") %>% select(-row)
 kodeerimata$dist = stringdist::stringsim(kodeerimata$new, kodeerimata$suggestion)
-kodeerimata %>% select(scode:dist) %>% arrange(desc(dist)) %>% filter(dist > .89) %>% tail(20)
+kodeerimata %>% select(scode:dist) %>% arrange(desc(dist)) %>% filter(dist > .89) %>% tail(30)
 
 i = !is.na(kodeerimata$dist) & (kodeerimata$dist > .89)
 kodeerimata$new[i] = kodeerimata$suggestion[i]
@@ -3568,7 +3647,6 @@ kodeerimata = new %>% filter(new %in% uh)
 ### Gruppide moodustamise tegevused
 
 table(new$new) %>% sort(decreasing = T)
-library('vctrs')
 vec_count(new$new)
 
 # panin new-tunnuse ISCO-koodidega kokku
@@ -3712,6 +3790,7 @@ new$new = asendaja(new$new, "^teenindusjuht1$", "", replace = "teenustejuht")
 ### UNIT-GROUPS sizes
 ISCO = readxl::read_xlsx("C:/Users/K/Google Drive/GV/new_ISCO.xlsx", sheet = "UnitGroups") %>% select(new, ISCOcode, ISCOname)
 new_isco = left_join(new, ISCO, by = "new")
+new_isco <- distinct(new_isco, scode, .keep_all = TRUE)
 new_isco$newWithISCO = ifelse(!is.na(new_isco$ISCOcode), new_isco$ISCOcode, new_isco$new)
 
 unitg_count = vec_count(new$new)
