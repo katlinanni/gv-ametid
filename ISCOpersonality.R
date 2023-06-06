@@ -1,5 +1,6 @@
 require(tidyverse)
 
+
 B5 = read_csv("B5_scores_selfreport.csv")
 # see BG-fail on sul vist natuke teine
 BG = read.csv("dataall.csv", header=T, sep = ";", dec =".") %>% select(c("person_skood","person_gender_code", "pt_answerset_age_at_agreement","pt_answerset_questionnaire_language_code")) %>%
