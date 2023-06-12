@@ -100,7 +100,7 @@ i = !is.na(new$dist) & (new$dist > .85)
 new$new[i] = new$suggestion[i]
 
 # siin on käsitsi asendatud faili lisamine - st muudab need nimetused ära, mis käsitsi muudeti
-asendus = readxl::read_xlsx("C:/Users/K/Google Drive/GV/tmpAsendatud_KA2.xlsx") %>% filter(asendatud %in% 1) %>% select(workPositionName, rewrite)
+asendus = readxl::read_xlsx("C:/Users/K/Google Drive/GV/manuallyRenamed.xlsx") %>% filter(asendatud %in% 1) %>% select(workPositionName, rewrite)
 new = left_join(new, asendus, by = "workPositionName")
 new$newWithManualReplacement = ifelse(!is.na(new$rewrite), new$rewrite, new$new)
 
@@ -618,6 +618,7 @@ new$new = asendaja(new$new, "autojuht-", "", replace = "autojuht")
 new$new = asendaja(new$new, "autojuht", "kutse", excl1 = "rasket", replace = "autojuht")
 new$new = asendaja(new$new, "taksojuht", "", replace = "autojuht")
 new$new = asendaja(new$new, "autokuht", "", replace = "autojuht")
+new$new = asendaja(new$new, "autojht", "", replace = "autojuht")
 
 unique(leidur(new$new, "traktori", ""))
 new$new = asendaja(new$new, "traktori", "", excl1 = "auto", excl2 = "raamatupidaja", excl3 = "hoold", excl4 = "ensvaja", replace = "põllujametsamasinajuht")
@@ -2529,6 +2530,7 @@ new$new = asendaja(new$new, "raamatupida", "abi", replace = "raamatupidamisespet
 unique(leidur(new$new, "revident", ""))
 new$new = asendaja(new$new, "revident", "", replace = "pearaamatupidaja")
 new$new = asendaja(new$new, "raamatupida", "vastutav", replace = "pearaamatupidaja")
+new$new = asendaja(new$new, "^audiitor$", "", replace = "pearaamatupidaja")
 
 unique(leidur(new$new, "raamatupidaja", "", excl1 = "juht"))
 new$new = asendaja(new$new, "raamatupidaja", "", excl1 = "juh", excl2 = "pearaamatupidaja", replace = "raamatupidaja")
@@ -3199,6 +3201,7 @@ new$new = asendaja(new$new, "^tootmistõõline$", "", replace = "tööstuselihtt
 new$new = asendaja(new$new, "^tehasetööline$", "", replace = "tööstuselihttööline")
 new$new = asendaja(new$new, "^tootmistöötaja$", "", replace = "tööstuselihttööline")
 new$new = asendaja(new$new, "^tootmisabi$", "", replace = "tööstuselihttööline")
+new$new = asendaja(new$new, "^liinitõõline$", "", replace = "tööstuselihttööline")
 
 new$new = asendaja(new$new, "telekommunikatsiooniinsener", "", replace = "telekommunikatsiooniinsener")
 new$new = asendaja(new$new, "raadioinsener", "", replace = "telekommunikatsiooniinsener")
