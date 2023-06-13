@@ -3579,6 +3579,7 @@ new$new = asendaja(new$new, "leksikograaf", "", replace = "kirjanik")
 
 new$new = asendaja(new$new, "tervishoiutöötaja", "", replace = "meditsiinitöötaja")
 new$new = asendaja(new$new, "^meditsiin$", "", replace = "meditsiinitöötaja")
+new$new = asendaja(new$new, "^meedik$", "", replace = "meditsiinitöötaja")
 new$new = asendaja(new$new, "^meditsiinispetsialist$", "", replace = "meditsiinitöötaja")
 new$new = asendaja(new$new, "meditsiini", "nõustaja", replace = "meditsiinitöötaja")
 new$new = asendaja(new$new, "^tervishoid$", "", replace = "meditsiinitöötaja")
