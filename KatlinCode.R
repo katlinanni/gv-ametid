@@ -597,6 +597,7 @@ unique(leidur(new$new, "tooteomanik", "it"))
 new$new = asendaja(new$new, "tooteomanik", "it", excl1 = "andmekaitse", replace = "süsteemianalüütik")
 new$new = asendaja(new$new, "ittootejuht", "", replace = "süsteemianalüütik")
 new$new = asendaja(new$new, "tarkvaratootejuht", "", replace = "süsteemianalüütik")
+new$new = asendaja(new$new, "tarkvaratooteomanik", "", replace = "süsteemianalüütik")
 
 unique(leidur(new$new, "liini", "töö"))
 new$new = asendaja(new$new, "liini", "töö", excl1 = "kliin", excl2 = "operaator", excl3 = "montöör", replace = "tööstuselihttööline")
@@ -3090,7 +3091,6 @@ new$new = asendaja(new$new, "müügi", "juhataja", replace = "kaubandusjuht")
 new$new = asendaja(new$new, "tankla", "juh", replace = "kaubandusjuht")
 new$new = asendaja(new$new, "kommertsjuht", "", replace = "kaubandusjuht")
 new$new = asendaja(new$new, "teenindusjaamajuhataja", "", replace = "kaubandusjuht")
-new$new = asendaja(new$new, "^teenindusjuht$", "", replace = "kaubandusjuht")
 
 unique(leidur(new$new, "ametiühingu", ""))
 new$new = asendaja(new$new, "ametiühingu", "", replace = "ametiühinguesimees")
@@ -3604,6 +3604,9 @@ new$new = asendaja(new$new, "teenindaja-", "", replace = "teenindaja")
 
 new$new = asendaja(new$new, "tehnoloog", "", excl1 = "keele", excl2 = "juht",  replace = "tehnoloog")
 
+new$new = asendaja(new$new, "tooteomanik", "",  replace = "tootejuht")
+new$new = asendaja(new$new, "tootejuht", "",  replace = "tootejuht")
+
 # varasemalt liigitamata peaspetsialistid panin kõik kokku määratlemata "peaspetsialistidega"
 table(leidur(new$new, "peaspetsialist", "")) %>% sort(decreasing = T)
 new$new = asendaja(new$new, "peaspetsialist", "", replace = "peaspetsialist")
@@ -3803,7 +3806,7 @@ new$new = asendaja(new$new, "^ülem$", "", replace = "sõjaväelane")
 
 # mõned "-juht" lõpuga ametinimetused võivad olla tegelikult ka spetsialistid - proovisin need eristada work_position määratluse järgi originaalandmestikust
 work_position = readxl::read_xlsx("C:/Users/K/Google Drive/GV/work_position.xlsx")
-subset = new[!is.na(new$new) & new$new %in% c("personalijuht", "turundusjuht", "müügijuht", "reklaamijuht", "arendusjuht", "hankejuht", "teenindusjuht"),] %>% filter(!duplicated(scode))
+subset = new[!is.na(new$new) & new$new %in% c("personalijuht", "turundusjuht", "müügijuht", "reklaamijuht", "arendusjuht", "hankejuht", "teenindusjuht", "tootejuht"),] %>% filter(!duplicated(scode))
 subset = left_join(subset, work_position, by = "scode")
 
 # panin neile nimetustele 1 lõppu, kes olid end määratlenud juhina
@@ -3817,9 +3820,12 @@ new$new = asendaja(new$new, "^müügijuht$", "", replace = "müügiesindaja")
 new$new = asendaja(new$new, "^reklaamijuht$", "", replace = "reklaamispetsialist")
 new$new = asendaja(new$new, "^arendusjuht$", "", replace = "juhtimisanalüütik")
 new$new = asendaja(new$new, "^hankejuht$", "", replace = "hankespetsialist")
+new$new = asendaja(new$new, "^teenindusjuht$", "", replace = "kontorijuhataja")
+new$new = asendaja(new$new, "^tootejuht$", "", replace = "tooteomanik")
 
 # ühendan mõned veel suuremate juhi-rühmadega
 new$new = asendaja(new$new, "^turundusjuht1$", "", replace = "müügijuht1")
+new$new = asendaja(new$new, "^tootejuht1$", "", replace = "müügijuht1")
 new$new = asendaja(new$new, "^hankejuht1$", "", replace = "tarneahelajuht")
 new$new = asendaja(new$new, "^teenindusjuht1$", "", replace = "teenustejuht")
 
@@ -3845,5 +3851,5 @@ minorg_count = rename(minorg_count, ISCOcode_minor = key)
 ISCOminor$ISCOcode_minor <- as.character(ISCOminor$ISCOcode_minor)
 minorg_count = left_join(minorg_count, ISCOminor, by = "ISCOcode_minor")
 
-write_xlsx(list(unitg_count = unitg_count, minorg_count = minorg_count), path = "C:/Users/K/Google Drive/GV/sizesofgroups3.xlsx")
+write_xlsx(list(unitg_count = unitg_count, minorg_count = minorg_count), path = "C:/Users/K/Google Drive/GV/sizesofgroups4.xlsx")
 
