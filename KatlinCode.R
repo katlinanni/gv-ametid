@@ -932,6 +932,8 @@ new$new = asendaja(new$new, "kajuti", "", replace = "reisisaatja")
 
 unique(leidur(new$new, "giid", ""))
 new$new = asendaja(new$new, "giid", "", excl1 = "tõlkja", excl2 = "firmaomanik", replace = "giid")
+new$new = asendaja(new$new, "külastusjuht", "muuseum", replace = "giid")
+new$new = asendaja(new$new, "^külastusjuht$", "", replace = "giid")
 
 unique(leidur(new$new, "apteek", ""))
 new$new = asendaja(new$new, "apteeker", "", excl1 = "omanik", replace = "apteeker")
@@ -2363,7 +2365,7 @@ new$new = asendaja(new$new, "^mööblirestauraator$", "", replace = "tisler")
 new$new = asendaja(new$new, "viimistleja", "sise", replace = "ehitusviimistleja")
 new$new = asendaja(new$new, "viimistleja", "ehit", replace = "ehitusviimistleja")
 new$new = asendaja(new$new, "viimistleja", "akend", replace = "ehitusviimistleja")
-# lihtsalt "viimistlejaid" on ka 21 tk
+new$new = asendaja(new$new, "^viimistleja$", "", replace = "ehitusviimistleja")
 
 unique(leidur(new$new, "kliend", "haldu", excl1 = "juh"))
 new$new = asendaja(new$new, "kliend", "haldu", "spets", excl1 = "juh", replace = "klienditoe konsultant")
@@ -2640,7 +2642,6 @@ new$new = asendaja(new$new, "kino", "meh", replace = "elektroonikamehaanik")
 
 unique(leidur(new$new, "insener", "hoold",))
 new$new = asendaja(new$new, "insener", "hoold", "seadme", replace = "elektroonikamehaanik")
-# jääb veel 27 hooldusinseneri, keda ei oska liigitada - võib olla IT-hooldus või mis iganes
 
 unique(leidur(new$new, "mehaanik", "",))
 new$new = asendaja(new$new, "meh", "jalgr", replace = "jalgrattamehaanik")
@@ -3303,6 +3304,8 @@ new$new = asendaja(new$new, "materjalitehnoloog", "", replace = "tööstusinsene
 new$new = asendaja(new$new, "mööbliprojekteerija", "", replace = "tööstusinsener")
 new$new = asendaja(new$new, "tekstiilitehnoloog", "", replace = "tööstusinsener")
 new$new = asendaja(new$new, "^kvaliteediinsener$", "", replace = "tööstusinsener")
+new$new = asendaja(new$new, "^hooldusinsener$", "", replace = "tööstusinsener")
+new$new = asendaja(new$new, "^tehnohooldevalveinsener$", "", replace = "tööstusinsener")
 
 unique(leidur(new$new, "töötervish", "spets"))
 new$new = asendaja(new$new, "töötervish", "spets", replace = "töötervishoiuspetsialist")
@@ -3601,6 +3604,7 @@ new$new = asendaja(new$new, "^tervishoid$", "", replace = "meditsiinitöötaja")
 new$new = asendaja(new$new, "^tervishoiu-sotsiaalalaspetsialist$", "", replace = "meditsiinitöötaja")
 
 new$new = asendaja(new$new, "teenindaja-", "", replace = "teenindaja")
+new$new = asendaja(new$new, "^kaubandustöötaja$", "", replace = "teenindaja")
 
 new$new = asendaja(new$new, "tehnoloog", "", excl1 = "keele", excl2 = "juht",  replace = "tehnoloog")
 
