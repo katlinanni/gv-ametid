@@ -2856,9 +2856,10 @@ new$new = asendaja(new$new, "sotsiaalmeedia", "spetsialist", "", replace = "rekl
 new$new = asendaja(new$new, "digiturund", "", excl1 = "juh", replace = "reklaamispetsialist")
 new$new = asendaja(new$new, "turundaja", "", "", replace = "reklaamispetsialist")
 new$new = asendaja(new$new, "digi", "meed", "spets", replace = "reklaamispetsialist")
-new$new = asendaja(new$new, "avalikudsuhted", "", replace = "reklaamispetsialist")
 new$new = asendaja(new$new, "digitalmarketing", "", replace = "reklaamispetsialist")
 new$new = asendaja(new$new, "meediaplaneerija", "", replace = "reklaamispetsialist")
+
+new$new = asendaja(new$new, "avalikudsuhted", "", replace = "kommunikatsioonispetsialist")
 
 # projektijuhid tunduvad ikka nii ebamäärane grupp, raske neile mingi koodi leida (mõned projektijuhid on ka ISCO-s need kodeerisin juba varasemalt)
 # kõik ülejäänud lihtsalt projektijuhtideks?
