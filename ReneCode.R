@@ -450,6 +450,7 @@ new$new = asendaja(new$new, "politsei", "ametnik", replace = "politseinik")
 new$new = asendaja(new$new, "politsei", "patrull", replace = "politseinik")
 new$new = asendaja(new$new, "politsei", "krinaal", replace = "politseinik")
 new$new = asendaja(new$new, "koerajuht", "", replace = "politseinik")
+new$new = asendaja(new$new, "välijuht", "", replace = "politseinik")
 
 unique(leidur(new$new, "valla", "sekretär"))
 new$new = asendaja(new$new, "valla", "sekretär", excl1 = "abi", replace = "kõrgem valitsusametnik")
@@ -539,6 +540,8 @@ new$new = asendaja(new$new, "it-konsultant", "", replace = "süsteemianalüütik
 new$new = asendaja(new$new, "informaatik", "", replace = "süsteemianalüütik")
 new$new = asendaja(new$new, "^ärianalüütik$", "", replace = "süsteemianalüütik")
 new$new = asendaja(new$new, "infohald", "", replace = "infohaldur")
+new$new = asendaja(new$new, "^sitereliabilityengineer$", "", replace = "süsteemianalüütik")
+new$new = asendaja(new$new, "^keeletehnoloog$", "", replace = "süsteemianalüütik")
 
 unique(leidur(new$new, "tooteomanik", "it"))
 new$new = asendaja(new$new, "tooteomanik", "it", excl1 = "andmekaitse", replace = "süsteemianalüütik")
@@ -697,6 +700,7 @@ new$new = asendaja(new$new, "arhitekt", "finants", replace = "finantsanalüütik
 new$new = asendaja(new$new, "krediidianalüütik", "", replace = "finantsanalüütik")
 new$new = asendaja(new$new, "eelarveanalüütik", "", replace = "finantsanalüütik")
 new$new = asendaja(new$new, "investeerimisanalüütik", "", replace = "finantsanalüütik")
+new$new = asendaja(new$new, "^riskispetsialist$", "", replace = "finantsanalüütik")
 
 unique(leidur(new$new, "analüütik", "tarkvara"))
 new$new = asendaja(new$new, "analüütik", "tarkvara", excl1 = "müük", replace = "programmeerija")
@@ -2121,6 +2125,7 @@ new$new = asendaja(new$new, "perenaine", "", excl1 = "koduperenaine", excl2 = "�
 new$new = asendaja(new$new, "haldusspets", "", excl1 = "it-hal", excl2 = "dokhal", excl3 = "kontroh", excl4 = "võlah", replace = "majapidaja")
 new$new = asendaja(new$new, "õpilaskod", "juh", excl1 = "üliõp", replace = "majapidaja")
 new$new = asendaja(new$new, "^majapidamisjuht$", "", replace = "majapidaja")
+new$new = asendaja(new$new, "^majandustöötaja$", "", replace = "majapidaja")
 
 # täpsemalt määratlemata puidutöölised ja puidutöötlejad (ISCO-kood 752)
 unique(leidur(new$new, "puidutöö", ""))
@@ -2790,9 +2795,10 @@ new$new = asendaja(new$new, "sotsiaalmeedia", "spetsialist", "", replace = "rekl
 new$new = asendaja(new$new, "digiturund", "", excl1 = "juh", replace = "reklaamispetsialist")
 new$new = asendaja(new$new, "turundaja", "", "", replace = "reklaamispetsialist")
 new$new = asendaja(new$new, "digi", "meed", "spets", replace = "reklaamispetsialist")
-new$new = asendaja(new$new, "avalikudsuhted", "", replace = "reklaamispetsialist")
 new$new = asendaja(new$new, "digitalmarketing", "", replace = "reklaamispetsialist")
 new$new = asendaja(new$new, "meediaplaneerija", "", replace = "reklaamispetsialist")
+
+new$new = asendaja(new$new, "avalikudsuhted", "", replace = "kommunikatsioonispetsialist")
 
 # projektijuhid tunduvad ikka nii ebamäärane grupp, raske neile mingi koodi leida (mõned projektijuhid on ka ISCO-s need kodeerisin juba varasemalt)
 # kõik ülejäänud lihtsalt projektijuhtideks?
@@ -3233,6 +3239,7 @@ new$new = asendaja(new$new, "toitumisspetsialist", "", replace = "toitumisspetsi
 new$new = asendaja(new$new, "toitumisnõustaja", "", replace = "toitumisspetsialist")
 
 new$new = asendaja(new$new, "toodete", "testija", replace = "toodetetestija")
+new$new = asendaja(new$new, "kvaliteediinspektor", "", replace = "toodetetestija")
 
 new$new = asendaja(new$new, "tootmis", "tehnik", replace = "tootmistehnik")
 new$new = asendaja(new$new, "robot", "tehnik", replace = "tootmistehnik")
@@ -3561,6 +3568,9 @@ new$new = asendaja(new$new, "peaspetsialist", "", replace = "peaspetsialist")
 new$new = asendaja(new$new, "^komplekteerija$", "", replace = "pakkija")
 new$new = asendaja(new$new, "^e-poekomplekteerija$", "", replace = "pakkija")
 
+new$new = asendaja(new$new, "ravimiteregistreerimisespetsialist", "",  replace = "farmaatsiatehnik")
+new$new = asendaja(new$new, "kasiino", "",  replace = "kasiinodiiler")
+
 # Mõned levinumad venekeelsed, et oleks lihtsalt tehtud
 new$new = asendaja(new$new, "^медсестра$", "", replace = "meditsiiniõde")
 new$new = asendaja(new$new, "^швея$", "", replace = "õmbleja")
@@ -3713,9 +3723,9 @@ new$new = ifelse(new$new == "hankejuht" & new$workPosition > 1, "hankespetsialis
 ## Vt ülapool tabelit: vbl on veel mõned "juhid" kes tegelikult pole "juhid? Tööstusjuht? Kaubandusjuht? Projektijuht? Finantsjuht? (Päris finantsjuhtidega võiks liita ka pangajuhid)
 
 # ühendan mõned veel suuremate juhi-rühmadega
-new$new = asendaja(new$new, "^turundusjuht1$", "", replace = "müügijuht1")
-new$new = asendaja(new$new, "^hankejuht1$", "", replace = "tarneahelajuht")
-new$new = asendaja(new$new, "^teenindusjuht1$", "", replace = "teenustejuht")
+new$new = asendaja(new$new, "^turundusjuht$", "", replace = "müügijuht")
+new$new = asendaja(new$new, "^hankejuht$", "", replace = "tarneahelajuht")
+new$new = asendaja(new$new, "^teenindusjuht$", "", replace = "teenustejuht")
 
 ### UNIT-GROUPS sizes
 ISCO = readxl::read_xlsx("new_ISCO.xlsx", sheet = "UnitGroups") %>% select(new, ISCOcode, ISCOname)
