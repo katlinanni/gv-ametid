@@ -1,6 +1,6 @@
 source("JobHelpers.R")
 
-new = read_tsv("Occupations.tsv")
+new = read_tsv("Occupations.tsv") %>% filter(!is.na(workPositionName))
 
 sonad = tolower(new$workPositionName)
 
@@ -8,16 +8,16 @@ sonad = tolower(new$workPositionName)
 for(i in 1: length(replaceImmediately))
   sonad = gsub(replaceImmediately[[i]][1], replaceImmediately[[i]][2], sonad, fixed=T)
 
-## when multiple jobs are mentioned, separated by ",", ";", or "/", pick the first
+## When multiple jobs are mentioned, separated by ",", ";", or "/", pick the first
 sonad = sonad %>% strsplit(",") %>% lapply(function(x) x[1]) %>% unlist
 sonad = sonad %>% strsplit(";") %>% lapply(function(x) x[1]) %>% unlist
 sonad = sonad %>% strsplit("/") %>% lapply(function(x) x[1]) %>% unlist
 
-## remove spaces and empty rows
+## Remove spaces and empty rows
 new$new = gsub(" ", "", sonad, fixed=T)
 new = new %>% filter(!is.na(new))
 
-## replace those with unique labels with sufficiently similar common labels
+## Replace unique job titles labels with sufficiently similar common titles
 dictionary = new %>% filter(duplicated(new)) %>% pull(new) %>% unique
 checked = check_spelling(strtrim(new$new, 30), dictionary = dictionary,range = 2, assume.first.correct = F) %>% 
   filter(!duplicated(row)) 
@@ -29,8 +29,8 @@ new %>% filter(dist >= .85) %>% arrange(dist) %>% slice(1:20)
 i = !is.na(new$dist) & (new$dist >= .85)
 new$new[i] = new$suggestion[i]
 
-## next we read all remaining unique responses and "manually" corrected them where possible
-manualReplacement = read_xlsx("manuallyRenamed.xlsx") %>% filter(replaced %in% 1) %>% select(workPositionName, rewrite)
+## We read all unique titles and "manually" corrected or reclassified them where possible
+manualReplacement = read_xlsx("manuallyRenamed.xlsx")
 new = left_join(new, manualReplacement, by = "workPositionName") %>%
   mutate(
     new = ifelse(!is.na(rewrite), rewrite, new) %>% 
@@ -38,7 +38,7 @@ new = left_join(new, manualReplacement, by = "workPositionName") %>%
       tolower) %>% 
   select(1:4)
 
-## run the automatic similarity-based replacement again, this time also using the manually replaced values
+## Run the automatic similarity-based replacement again, this time also using the manually replaced values
 dictionary = new %>% filter(duplicated(new)) %>% pull(new) %>% unique
 checked = check_spelling(strtrim(new$new, 30), dictionary = dictionary,range = 2, assume.first.correct = F) %>% 
   filter(!duplicated(row)) 
@@ -50,7 +50,6 @@ new %>% filter(dist >= .90) %>% arrange(dist) %>% slice(1:20)
 i = !is.na(new$dist) & (new$dist >= .90)
 new$new[i] = new$suggestion[i]
 new = new %>% select(1:4)
-
 
 #### Now we start combining occupations into bigger groups ####
 
