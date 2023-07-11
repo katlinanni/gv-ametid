@@ -53,11 +53,6 @@ new = new %>% select(1:4)
 
 #### Now we start combining occupations into bigger groups ####
 
-#FIE-d -- valdkondade kaupa määratlenud end ainult üksikud, seega mõistlikum kas kõik FIE-d kokku panna või siis valdkonna määratlenud FIE-d ameti järgi gruppi panna
-table(leidur(new$new, "fie", "")) 
-new$new = asendaja(new$new, "füüsilisest", "", replace = "fie")
-new$new = asendaja(new$new, "fie", "", replace = "fie")
-
 unique(leidur(new$new, "eisoovi", ""))
 new$new = asendaja(new$new, "eisoovi", "", replace = "NA")
 new$new = asendaja(new$new, "eitööta", "", replace = "NA")
@@ -65,7 +60,7 @@ new$new = asendaja(new$new, "ei", "avalda", replace = "NA")
 new$new = asendaja(new$new, "^-$", "", replace = "NA")
 
 unique(leidur(new$new, "tudeng", ""))
-new$new = asendaja(new$new, "tudeng","", excl1 = "nõust", excl2 = "assist", excl3 = "spetsial", replace = "tudeng")
+new$new = asendaja(new$new, "tudeng","", excl1 = "nõust", excl2 = "assist", excl3 = "spetsial", excl4 = "abiõde", replace = "tudeng")
 new$new = asendaja(new$new, "üliõpilane","", excl1 = "ema", excl2 = "abiarst", excl3 = "õpetaja", replace = "tudeng")
 
 unique(leidur(new$new, "õpilane", ""))
@@ -1662,7 +1657,7 @@ new$new = asendaja(new$new, "põllu", "töö", excl1 = "juh", excl2 = "ettevõtj
 new$new = asendaja(new$new, "talu", "töö", replace = "põllumajandustöötaja")
 new$new = asendaja(new$new, "talunik", "", excl1 = "abikaasa", excl2 = "peaenergeetik", excl3 = "riiklik", replace = "põllumajandustöötaja")
 new$new = asendaja(new$new, "talupida", "", excl1 = "turismi", replace = "põllumajandustöötaja")
-new$new = asendaja(new$new, "farmi", "", excl1 = "juh", excl2 = "operaator", excl3 = "sekretär", replace = "põllumajandustöötaja")
+new$new = asendaja(new$new, "farmi", "", excl1 = "juh", excl2 = "operaator", excl3 = "sekretär", excl4 = "lüps", replace = "põllumajandustöötaja")
 
 new$new = asendaja(new$new, "lüps", "", excl1 = "robot", replace = "loomakasvataja")
 new$new = asendaja(new$new, "loomakasvat", "", excl1 = "mehhan", replace = "loomakasvataja")
@@ -2717,6 +2712,7 @@ new$new = asendaja(new$new, "osakonna", "juh", "müügi", excl1 = "tellimuste", 
 new$new = asendaja(new$new, "osakonna", "juh", "turundus", replace = "müügijuht")
 new$new = asendaja(new$new, "müügijuhataja", "", excl1 = "trainee", replace = "müügijuht")
 new$new = asendaja(new$new, "müügujuht", "", replace = "müügijuht")
+new$new = asendaja(new$new, "ekspordijuht", "", replace = "müügijuht")
 
 new$new = asendaja(new$new, "itosakonnajuhataja", "", replace = "IKT-juht")
 new$new = asendaja(new$new, "osakonna", "juh", "tarkvara", replace = "IKT-juht")
@@ -2852,6 +2848,7 @@ new$new = asendaja(new$new, "poliitikakujundaja", "", replace = "strateegiatevä
 new$new = asendaja(new$new, "bim", "koordina", replace = "joonestaja")
 new$new = asendaja(new$new, "joonestaja", "", excl1 = "disainer", replace = "joonestaja")
 new$new = asendaja(new$new, "puidutehnoloog", "", replace = "joonestaja")
+new$new = asendaja(new$new, "cadspetsialist", "", replace = "joonestaja")
 
 new$new = asendaja(new$new, "üritus", "koordina", replace = "üritustekorraldaja")
 new$new = asendaja(new$new, "üritus", "korr", excl1 = "sponsor", replace = "üritustekorraldaja")
@@ -2962,7 +2959,7 @@ new$new = asendaja(new$new, "spordialal", "juh", replace = "vabaajakeskustejuht"
 new$new = asendaja(new$new, "kinojuh", "", replace = "vabaajakeskustejuht")
 new$new = asendaja(new$new, "kasiinojuh", "", replace = "vabaajakeskustejuht")
 new$new = asendaja(new$new, "joogast", "juh", replace = "vabaajakeskustejuht")
-new$new = asendaja(new$new, "spordijuht", "", excl1 = "sõjaväe", excl2 = "eksprodi", excl3 = "transpordi", replace = "vabaajakeskustejuht")
+new$new = asendaja(new$new, "^spordijuht$", "", replace = "vabaajakeskustejuht")
 new$new = asendaja(new$new, "kultuurikorraldaja", "", replace = "vabaajakeskustejuht")
 new$new = asendaja(new$new, "kultuurikorraldus", "", replace = "vabaajakeskustejuht")
 new$new = asendaja(new$new, "turismitalu", "juh", replace = "vabaajakeskustejuht")
