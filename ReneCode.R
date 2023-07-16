@@ -1829,6 +1829,7 @@ new$new = asendaja(new$new, "insener", "elektri", replace = "elektriinsener")
 new$new = asendaja(new$new, "vanem", "projekteerija", replace = "projekteerija")
 new$new = asendaja(new$new, "pea", "projekteerija", replace = "projekteerija")
 new$new = asendaja(new$new, "^projekteerimine$", "", replace = "projekteerija")
+new$new = asendaja(new$new, "projekteerimis", "projektijuht", replace = "projekteerija")
 unique(leidur(new$new, "projekteerija", ""))
 
 unique(leidur(new$new, "kutseõpetaja", ""))
