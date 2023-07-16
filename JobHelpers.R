@@ -60,7 +60,7 @@ replaceImmediately = list(
   c("pedagoog", "õpetaja"),
   c("opetaja", "õpetaja"),
   c("elukutseline", " "),
-  c("juhatuseesimees", "juht"),
+  c("juhatuse esimees", "juht"),
   c("esimees", "juht"),
   c("peadirektor", "direktor"),
   c("direktori", "juhi"),
@@ -77,5 +77,6 @@ replaceImmediately = list(
   c("õpetja", "õpetaja"),
   c("klienditeenintaja", "klienditeenindaja"),
   c("klienditeeindaja", "klienditeenindaja"),
-  c("peaspetsilist", "peaspetsialist")
+  c("peaspetsilist", "peaspetsialist"),
+  c("juhatuse liige,", "")
 )
