@@ -181,7 +181,7 @@ unique(leidur(new$new, "arst", "resident"))
 new$new = asendaja(new$new, "arst","resident", replace = "eriarst")
 
 unique(leidur(new$new, "arst", "hamba"))
-new$new = asendaja(new$new, "arst","hamba", excl1 = "abil", excl2="assist", replace = "hambaarst")
+new$new = asendaja(new$new, "arst","hamba", excl1 = "abi", excl2="assist", replace = "hambaarst")
 new$new = asendaja(new$new, "stomatoloog","", replace = "hambaarst")
 new$new = asendaja(new$new, "ortodont","", replace = "hambaarst")
 new$new = asendaja(new$new, "suukirurg","", replace = "hambaarst")
@@ -905,7 +905,7 @@ new$new = asendaja(new$new, "toitlustusjuht", "", excl1 = "rekreatsioon", replac
 new$new = asendaja(new$new, "söökla", "juhataja", excl1 = "kokk-", replace = "peakokk")
 new$new = asendaja(new$new, "köögijuht", "", replace = "peakokk")
 
-new$new = asendaja(new$new, "kok", "abi", replace = "kokk")
+new$new = asendaja(new$new, "kok", "abi", excl1 = "tööline", replace = "kokk")
 new$new = asendaja(new$new, "kokk", "pagar", replace = "kokk")
 new$new = asendaja(new$new, "kokk", "kondiiter", replace = "kokk")
 new$new = asendaja(new$new, "kokk", "restoran", replace = "kokk")
@@ -2290,6 +2290,7 @@ unique(leidur(new$new, "nõu", "pesi"))
 new$new = asendaja(new$new, "nõu", "pesi", replace = "köögiabiline")
 new$new = asendaja(new$new, "köögi", "abi", replace = "köögiabiline")
 new$new = asendaja(new$new, "köögitööline", "", replace = "köögiabiline")
+new$new = asendaja(new$new, "koka", "abitööline", replace = "köögiabiline")
 
 unique(leidur(new$new, "perevanem", ""))
 new$new = asendaja(new$new, "perevanem", "", replace = "sotsiaaltööspetsialist")
@@ -3387,9 +3388,13 @@ new$new = asendaja(new$new, "ehitus", "peaspets", replace = "ehitusinsener")
 new$new = asendaja(new$new, "insener", "konstruktor", replace = "ehitusinsener")
 
 table(leidur(new$new, "abi", "töö")) %>% sort(decreasing = T)
-new$new = asendaja(new$new, "abi", "töö", excl1 = "staabi", excl2 = "töötuid", replace = "abitööline")
-new$new = asendaja(new$new, "abiline", "", excl1 = "kodu", excl2 = "köögi", replace = "abitööline")
+new$new = asendaja(new$new, "abi", "töö", excl1 = "töötuid", replace = "abitööline")
+new$new = asendaja(new$new, "abiline", "", excl1 = "kontori", excl2 = "köögi", replace = "abitööline")
 new$new = asendaja(new$new, "^abi$", "", replace = "abitööline")
+
+# Nimetasin tagasi "assistendiks" need assistendid, kes ei olnud end määratlenud lihttöölisena (kui workPosition = 8, siis jäid abitöölisteks)
+# Hiljem nimetab assistendid juhiabiks
+new$new = ifelse(tolower(new$workPositionName) == "assistent" & new$workPosition < 8, "assistent", new$new)
 
 new$new = asendaja(new$new, "ostu", "abi", replace = "müügiesindaja")
 new$new = asendaja(new$new, "müügi", "abi", replace = "müügiesindaja")
@@ -3751,6 +3756,9 @@ new$new = ifelse(new$new == "hankejuht" & new$workPosition > 1, "hankespetsialis
 new$new = asendaja(new$new, "^turundusjuht$", "", replace = "müügijuht")
 new$new = asendaja(new$new, "^hankejuht$", "", replace = "tarneahelajuht")
 new$new = asendaja(new$new, "^teenindusjuht$", "", replace = "teenustejuht")
+
+# Nimetasin tagasi "assistendiks" need assistendid, kes ei olnud end määratlenud lihttöölisena (kui workPosition = 8, siis jäid abitöölisteks)
+new$new = ifelse(tolower(new$workPositionName) == "assistent" & new$workPosition < 8, "assistent", new$new)
 
 ### UNIT-GROUPS sizes
 ISCO = readxl::read_xlsx("new_ISCO.xlsx", sheet = "UnitGroups") %>% select(new, ISCOcode, ISCOname)
