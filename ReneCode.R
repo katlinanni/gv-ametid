@@ -465,6 +465,7 @@ new$new = asendaja(new$new, "kõrgemvalitsusametnik", "", replace = "kõrgem val
 new$new = asendaja(new$new, "volikogujuht", "", replace = "kõrgem valitsusametnik")
 new$new = asendaja(new$new, "omavalitsus", "juh", replace = "kõrgem valitsusametnik")
 new$new = asendaja(new$new, "vabariigi", "president", replace = "kõrgem valitsusametnik")
+new$new = asendaja(new$new, "^konsul$", "", replace = "kõrgem valitsusametnik")
 
 unique(leidur(new$new, "jurist", "kohtu"))
 new$new = asendaja(new$new, "jurist", "kohtu", replace = "advokaat-prokurör")
@@ -1165,6 +1166,8 @@ new$new = asendaja(new$new, "juht", "käidu", replace = "elektrotehnik")
 new$new = asendaja(new$new, "energeetik", "", excl1 = "meister", excl2 = "juh", replace = "elektrotehnik")
 new$new = asendaja(new$new, "nõrkvoolutehnik", "", replace = "elektrotehnik")
 new$new = asendaja(new$new, "turva", "tehnik", replace = "elektrotehnik")
+new$new = asendaja(new$new, "elektrivõrgudispetser", "", replace = "elektrotehnik")
+new$new = asendaja(new$new, "elektrivõrgujuht", "", replace = "elektrotehnik")
 
 unique(leidur(new$new, "elektrik", "", excl1 = "kappide"))
 new$new = asendaja(new$new, "elektrik", "", excl1 = "kappide", excl2 = "kilp", excl3 = "keevitaja", excl4 = "valmist", replace = "elektrik")
@@ -1767,6 +1770,7 @@ new$new = asendaja(new$new, "sekretär", "patoloogia", replace = "meditsiinisekr
 new$new = asendaja(new$new, "sekretär", "medits", replace = "meditsiinisekretär")
 new$new = asendaja(new$new, "sekretär", "sünnitusos", replace = "meditsiinisekretär")
 
+new$new = asendaja(new$new, "peasekretär", "", excl1 = "müüja", replace = "juht")
 new$new = asendaja(new$new, "sekretär-", "", excl1 = "juhatusel", replace = "sekretär")
 new$new = asendaja(new$new, "sekrtär", "", excl1 = "meditsiini", excl2 = "müüja", excl3 = "klienditeenindaja", replace = "sekretär")
 
@@ -2168,11 +2172,8 @@ new$new = asendaja(new$new, "esmaabi", "", replace = "kiirabitehnik")
 new$new = asendaja(new$new, "kiirabivelsker", "", replace = "kiirabitehnik")
 
 unique(leidur(new$new, "ehitusjuht",""))
-new$new = asendaja(new$new, "ehitusjuht", "", excl1 = "projekteer", replace = "ehitusjuht")
-new$new = asendaja(new$new, "ehitus", "juht", "ettevõtt", excl1 = "kvaliteedi", replace = "ehitusjuht")
-new$new = asendaja(new$new, "ehitusprojektijuht", "", replace = "ehitusjuht")
-new$new = asendaja(new$new, "projektijuhteh", "", replace = "ehitusjuht")
-new$new = asendaja(new$new, "kinnisvaraarendusjuht", "", replace = "ehitusjuht")
+new$new = asendaja(new$new, "ehitus", "juht", excl1 = "projekteer", excl2 = "masina", replace = "ehitusjuht")
+new$new = asendaja(new$new, "kinnisvaraarendus", "juht", replace = "ehitusjuht")
 
 unique(leidur(new$new, "laborijuh",""))
 new$new = asendaja(new$new, "laborijuh", "", excl1 = "koondis", replace = "laborijuht")
@@ -3361,6 +3362,7 @@ new$new = asendaja(new$new, "materjalitehnoloog", "", replace = "tööstusinsene
 new$new = asendaja(new$new, "mööbliprojekteerija", "", replace = "tööstusinsener")
 new$new = asendaja(new$new, "tekstiilitehnoloog", "", replace = "tööstusinsener")
 new$new = asendaja(new$new, "^kvaliteediinsener$", "", replace = "tööstusinsener")
+new$new = asendaja(new$new, "^kvaliteedikontrolliinsener$", "", replace = "tööstusinsener")
 new$new = asendaja(new$new, "^tehnilineinsener$", "", replace = "tööstusinsener")
 
 unique(leidur(new$new, "töötervish", "spets"))
@@ -3514,6 +3516,7 @@ new$new = asendaja(new$new, "^teenindus$", "", replace = "teenindaja")
 new$new = asendaja(new$new, "letiteenindaja", "", excl1 = "info", replace = "teenindaja")
 new$new = asendaja(new$new, "^teenidaja", "", excl1 = "info", replace = "teenindaja")
 
+new$new = asendaja(new$new, "valveadministraator", "", replace = "administraator")
 new$new = asendaja(new$new, "vanemadministraator", "", replace = "administraator")
 new$new = asendaja(new$new, "peaadministraator", "", replace = "administraator")
 new$new = asendaja(new$new, "^administraator$", "", replace = "üldadministraator")
@@ -3545,7 +3548,7 @@ new$new = asendaja(new$new, "laboritehnik", "", replace = "keemiatööstustehnik
 table(leidur(new$new, "terapeut", ""))
 new$new = asendaja(new$new, "liikumisterapeut", "", replace = "loovterapeut")
 new$new = asendaja(new$new, "mänguterapeut", "", replace = "loovterapeut")
-new$new = asendaja(new$new, "terapeut", "", excl1 = "loov", excl2 = "füsio", excl3 = "tegevus", replace = "muu nõustaja")
+new$new = asendaja(new$new, "terapeut", "", excl1 = "loov", excl2 = "füsio", excl3 = "tegevus", replace = "muu tervishoiu tippspetsialist")
 
 new$new = asendaja(new$new, "peatehnoloog", "", replace = "tehnoloog")
 
@@ -3634,7 +3637,6 @@ new$new = asendaja(new$new, "^juhendaja$", "", replace = "superviisor")
 new$new = asendaja(new$new, "^supervisor$", "", replace = "superviisor")
 new$new = asendaja(new$new, "^productmanager", "", replace = "tootejuht")
 new$new = asendaja(new$new, "^peakonstruktor", "", replace = "konstruktor")
-new$new = asendaja(new$new, "^kvaliteedikontroll", "", replace = "kvaliteedikontroll")
 new$new = asendaja(new$new, "^inspektor-kontaktisik$", "", replace = "inspektor")
 new$new = asendaja(new$new, "^tehnilinespetsialist$", "", replace = "tehnik")
 new$new = asendaja(new$new, "^tehnik-tehnoloog$", "", replace = "tehnik")
@@ -3705,6 +3707,16 @@ new$new = asendaja(new$new, "areenimeister", "",  replace = "meister")
 new$new = asendaja(new$new, "jaoskonnameister", "",  replace = "meister")
 
 new$new = asendaja(new$new, "kosmeetikavalmistaja", "",  replace = "keemiatoodetevalmistaja")
+new$new = asendaja(new$new, "tarrendtoodetevalmistaja", "",  replace = "toiduainetöötleja")
+
+table(leidur(new$new, "vahetusevanem", "")) %>% sort(decreasing = T)
+new$new = asendaja(new$new, "vahetusevanem", "", excl1 = "müüjate",  replace = "vahetusevanem")
+new$new = asendaja(new$new, "vahetusejuht", "",  replace = "vahetusevanem")
+
+new$new = asendaja(new$new, "kliinilisteuuringute", "monitor",  replace = "muu tervishoiu tippspetsialist")
+
+table(leidur(new$new, "kvaliteedikontroll", "")) %>% sort(decreasing = T)
+new$new = asendaja(new$new, "^kvaliteedikontroll", "", replace = "kvaliteedikontroll")
 
 # Mõned levinumad venekeelsed, et oleks lihtsalt tehtud
 new$new = asendaja(new$new, "^медсестра$", "", replace = "meditsiiniõde")
@@ -3843,7 +3855,7 @@ uncoded = new %>% filter(new %in% uniqueJobs)
 
 ## Kas sa siin tahad kõik personali, turundus ja muud juhid, kes enanast juhtideks ei määra, spetsialistideks teha?
 
-juhid = c("personalijuht", "turundusjuht", "müügijuht", "reklaamijuht", "arendusjuht", "hankejuht", "teenustejuht", "projektijuht", "kaubandusjuht","tööstusjuht","finantsjuht","haridusasutustejuht", "kommunikatsioonijuht")
+juhid = c("personalijuht", "ehitusjuht", "turundusjuht", "müügijuht", "reklaamijuht", "arendusjuht", "hankejuht", "teenustejuht", "projektijuht", "kaubandusjuht","tööstusjuht","finantsjuht","haridusasutustejuht", "kommunikatsioonijuht")
 subset = new %>% filter(new %in% juhid )
 subset %>% filter(workPosition < 9) %>% select(workPosition, new) %>% table
 
@@ -3856,6 +3868,7 @@ new$new = ifelse(new$new == "arendusjuht" & new$workPosition > 1, "juhtimisanal�
 new$new = ifelse(new$new == "hankejuht" & new$workPosition > 1, "hankespetsialist", new$new)
 new$new = ifelse(new$new == "kommunikatsioonijuht" & new$workPosition > 1, "kommunikatsioonispetsialist", new$new)
 new$new = ifelse(new$new == "finantsjuht" & new$workPosition > 1, "finantsanalüütik", new$new)
+new$new = ifelse(new$new == "ehitusjuht" & new$workPosition > 1, "ehitustöödejuhataja", new$new)
 
 ## Vt ülapool tabelit: vbl on veel mõned "juhid" kes tegelikult pole "juhid? Tööstusjuht? Kaubandusjuht? Projektijuht? Finantsjuht? (Päris finantsjuhtidega võiks liita ka pangajuhid)
 
@@ -3888,5 +3901,5 @@ minorg_count = rename(minorg_count, ISCOcode_minor = key)
 ISCOminor$ISCOcode_minor <- as.character(ISCOminor$ISCOcode_minor)
 minorg_count = left_join(minorg_count, ISCOminor, by = "ISCOcode_minor")
 
-write_xlsx(list(unitg_count = unitg_count, minorg_count = minorg_count), path = "sizesofgroups3.xlsx")
+write_xlsx(list(unitg_count = unitg_count, minorg_count = minorg_count), path = "sizesofgroups4.xlsx")
 
