@@ -3913,6 +3913,13 @@ new$new = asendaja(new$new, "^muudatustejuht$", "",  replace = "juht")
 new$new = asendaja(new$new, "^ettevõtetejuht$", "",  replace = "ettevõttejuht")
 
 # siin veel koondan grupeerimata ameteid laiadesse ebamäärastesse gruppidesse (äkki vaja muuta?)
+table(leidur(new$new, "konsultant", "")) %>% sort(decreasing = T)
+new$new = asendaja(new$new, "vabaühendustekonsultant", "",  replace = "konsultant")
+new$new = asendaja(new$new, "teenus", "konsultant",  replace = "konsultant")
+new$new = asendaja(new$new, "ärikliendikonsultant", "",  replace = "konsultant")
+
+new$new = asendaja(new$new, "tehnilinetugi", "",  replace = "tehnilisetoespetsialist")
+
 table(leidur(new$new, "spetsialist", "")) %>% sort(decreasing = T)
 new$new = asendaja(new$new, "^maateenusespetsialist$", "",  replace = "spetsialist")
 new$new = asendaja(new$new, "^lisaväärtustöödespetsialist$", "",  replace = "spetsialist")
@@ -3947,11 +3954,10 @@ new$new = asendaja(new$new, "^toitlustusspetsialist$", "",  replace = "spetsiali
 new$new = asendaja(new$new, "^menetlusspetsialist$", "",  replace = "spetsialist")
 new$new = asendaja(new$new, "^tugiteenustespetsialist$", "",  replace = "spetsialist")
 new$new = asendaja(new$new, "^projektispetsialist$", "",  replace = "spetsialist")
-new$new = asendaja(new$new, "järelevalvespetsialist", "", replace = "valitsuse haldusalade ametnik")
-new$new = asendaja(new$new, "järelvalvespetsialist", "", replace = "valitsuse haldusalade ametnik")
-table(leidur(new$new, "konsultant", "")) %>% sort(decreasing = T)
-new$new = asendaja(new$new, "vabaühendustekonsultant", "",  replace = "konsultant")
-new$new = asendaja(new$new, "teenus", "konsultant",  replace = "konsultant")
+new$new = asendaja(new$new, "järelevalvespetsialist", "", replace = "spetsialist")
+new$new = asendaja(new$new, "järelvalvespetsialist", "", replace = "spetsialist")
+new$new = asendaja(new$new, "operationsspecialist", "", replace = "spetsialist")
+new$new = asendaja(new$new, "tehnilisetoespetsialist", "", replace = "spetsialist")
 
 table(leidur(new$new, "analüütik", "")) %>% sort(decreasing = T)
 new$new = asendaja(new$new, "analyst", "",  replace = "analüütik")
@@ -3977,6 +3983,7 @@ new$new = asendaja(new$new, "^kategooriakoordinaator$", "",  replace = "koordina
 new$new = asendaja(new$new, "^teenusekoordinaator$", "",  replace = "koordinaator")
 new$new = asendaja(new$new, "^teenustekoordinaator$", "",  replace = "koordinaator")
 new$new = asendaja(new$new, "^kriisikoordinaator$", "",  replace = "koordinaator")
+new$new = asendaja(new$new, "^businesscoordinator$", "",  replace = "koordinaator")
 
 new$new = asendaja(new$new, "jäämeister", "",  replace = "meister")
 new$new = asendaja(new$new, "^meistrimees$", "",  replace = "meister")
@@ -3984,8 +3991,21 @@ new$new = asendaja(new$new, "^osakonnameister$", "",  replace = "meister")
 new$new = asendaja(new$new, "areenimeister", "",  replace = "meister")
 new$new = asendaja(new$new, "jaoskonnameister", "",  replace = "meister")
 
+new$new = asendaja(new$new, "testiinsener", "",  replace = "insener")
 new$new = asendaja(new$new, "kvaliteeditehnik", "",  replace = "tehnik")
 new$new = asendaja(new$new, "eriprojektidejuht", "",  replace = "projektijuht")
+new$new = asendaja(new$new, "naiskodukaitseinstruktor", "",  replace = "instruktor")
+new$new = asendaja(new$new, "kvaliteedilaborant", "",  replace = "laborant")
+
+new$new = asendaja(new$new, "teenustehaldur", "",  replace = "haldur")
+new$new = asendaja(new$new, "teenusehaldur", "",  replace = "haldur")
+new$new = asendaja(new$new, "teabehaldur", "",  replace = "haldur")
+new$new = asendaja(new$new, "kontohaldur", "",  replace = "haldur")
+new$new = asendaja(new$new, "tootehaldur", "",  replace = "haldur")
+new$new = asendaja(new$new, "bilansihaldur", "",  replace = "haldur")
+new$new = asendaja(new$new, "^varahaldur$", "",  replace = "haldur")
+new$new = asendaja(new$new, "^lepinguhaldur$", "",  replace = "haldur")
+new$new = asendaja(new$new, "^infohaldur$", "",  replace = "haldur")
 
 # Mõned levinumad venekeelsed, et oleks lihtsalt tehtud
 new$new = asendaja(new$new, "^медсестра$", "", replace = "meditsiiniõde")
@@ -4124,28 +4144,27 @@ uncoded = new %>% filter(new %in% uniqueJobs)
 
 ## Kas sa siin tahad kõik personali, turundus ja muud juhid, kes enanast juhtideks ei määra, spetsialistideks teha?
 
-juhid = c("personalijuht", "ehitusjuht", "turundusjuht", "müügijuht", "reklaamijuht", "arendusjuht", "hankejuht", "teenustejuht", "projektijuht", "kaubandusjuht","tööstusjuht","finantsjuht","haridusasutustejuht", "kommunikatsioonijuht")
-subset = new %>% filter(new %in% juhid )
-subset %>% filter(workPosition < 9) %>% select(workPosition, new) %>% table
+#juhid = c("juht", "personalijuht", "ehitusjuht", "turundusjuht", "müügijuht", "reklaamijuht", "arendusjuht", "hankejuht", "teenustejuht", "projektijuht", "kaubandusjuht","tööstusjuht","finantsjuht","haridusasutustejuht", "kommunikatsioonijuht")
+#subset = new %>% filter(new %in% juhid )
+#subset %>% filter(workPosition < 9) %>% select(workPosition, new) %>% table
 
 ## Kui soovid seda teha, siis on vahest lihtsam nii?
-new$new = ifelse(new$new == "personalijuht" & new$workPosition > 1, "personalispetsialist", new$new)
-new$new = ifelse(new$new == "turundusjuht" & new$workPosition > 1, "reklaamispetsialist", new$new)
-new$new = ifelse(new$new == "müügijuht" & new$workPosition > 1, "müügiesindaja", new$new)
-new$new = ifelse(new$new == "reklaamijuht" & new$workPosition > 1, "reklaamispetsialist", new$new)
-new$new = ifelse(new$new == "arendusjuht" & new$workPosition > 1, "juhtimisanalüütik", new$new)
-new$new = ifelse(new$new == "hankejuht" & new$workPosition > 1, "hankespetsialist", new$new)
-new$new = ifelse(new$new == "kommunikatsioonijuht" & new$workPosition > 1, "kommunikatsioonispetsialist", new$new)
-new$new = ifelse(new$new == "finantsjuht" & new$workPosition > 1, "finantsanalüütik", new$new)
-new$new = ifelse(new$new == "ehitusjuht" & new$workPosition > 1, "ehitustöödejuhataja", new$new)
+#new$new = ifelse(new$new == "personalijuht" & new$workPosition > 1, "personalispetsialist", new$new)
+#new$new = ifelse(new$new == "turundusjuht" & new$workPosition > 1, "reklaamispetsialist", new$new)
+#new$new = ifelse(new$new == "müügijuht" & new$workPosition > 1, "müügiesindaja", new$new)
+#new$new = ifelse(new$new == "reklaamijuht" & new$workPosition > 1, "reklaamispetsialist", new$new)
+#new$new = ifelse(new$new == "arendusjuht" & new$workPosition > 1, "juhtimisanalüütik", new$new)
+#new$new = ifelse(new$new == "hankejuht" & new$workPosition > 1, "hankespetsialist", new$new)
+#new$new = ifelse(new$new == "kommunikatsioonijuht" & new$workPosition > 1, "kommunikatsioonispetsialist", new$new)
+#new$new = ifelse(new$new == "finantsjuht" & new$workPosition > 1, "finantsanalüütik", new$new)
+#new$new = ifelse(new$new == "ehitusjuht" & new$workPosition > 1, "ehitustöödejuhataja", new$new)
 
 ## Vt ülapool tabelit: vbl on veel mõned "juhid" kes tegelikult pole "juhid? Tööstusjuht? Kaubandusjuht? Projektijuht? Finantsjuht? (Päris finantsjuhtidega võiks liita ka pangajuhid)
 
-# ühendan mõned veel suuremate juhi-rühmadega
+# ühendan mõned veel suuremate juhi-rühmadega (selle võiks alles jätta)
 new$new = asendaja(new$new, "^turundusjuht$", "", replace = "müügijuht")
 new$new = asendaja(new$new, "^hankejuht$", "", replace = "tarneahelajuht")
 new$new = asendaja(new$new, "^kommunikatsioonijuht$", "", replace = "reklaamijuht") #ISCO-s on need juhtide valdkonnas kokku pandud - kuna reklaamijuhte on ka väga vähe, siis tundub ka mõistlik ühendada
-
 
 ### UNIT-GROUPS sizes
 ISCO = readxl::read_xlsx("new_ISCO.xlsx", sheet = "UnitGroups") %>% select(new, ISCOcode, ISCOname)
@@ -4169,5 +4188,5 @@ minorg_count = rename(minorg_count, ISCOcode_minor = key)
 ISCOminor$ISCOcode_minor <- as.character(ISCOminor$ISCOcode_minor)
 minorg_count = left_join(minorg_count, ISCOminor, by = "ISCOcode_minor")
 
-write_xlsx(list(unitg_count = unitg_count, minorg_count = minorg_count), path = "sizesofgroups2.xlsx")
+write_xlsx(list(unitg_count = unitg_count, minorg_count = minorg_count), path = "sizesofgroups.xlsx")
 
