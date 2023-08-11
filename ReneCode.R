@@ -2843,6 +2843,7 @@ new$new = asendaja(new$new, "juh", "muuseum", excl1 = "külastus", excl2 = "tege
 new$new = asendaja(new$new, "juh", "galerii", excl1 = "külastus", replace = "kultuuriteenustejuht")
 new$new = asendaja(new$new, "raamatukogujuht", "", replace = "kultuuriteenustejuht")
 
+new$new = asendaja(new$new, "kultuuriteenustejuht", "", replace = "kutseteenustejuht")
 new$new = asendaja(new$new, "osakonna", "juh", "raamatup", replace = "kutseteenustejuht")
 new$new = asendaja(new$new, "osakonna", "juh", "arhiiv", replace = "kutseteenustejuht")
 new$new = asendaja(new$new, "osakonna", "juh", "õigus", replace = "kutseteenustejuht")
@@ -4165,6 +4166,9 @@ uncoded = new %>% filter(new %in% uniqueJobs)
 new$new = asendaja(new$new, "^turundusjuht$", "", replace = "müügijuht")
 new$new = asendaja(new$new, "^hankejuht$", "", replace = "tarneahelajuht")
 new$new = asendaja(new$new, "^kommunikatsioonijuht$", "", replace = "reklaamijuht") #ISCO-s on need juhtide valdkonnas kokku pandud - kuna reklaamijuhte on ka väga vähe, siis tundub ka mõistlik ühendada
+
+save(new, file = "new.Rdata")
+
 
 ### UNIT-GROUPS sizes
 ISCO = readxl::read_xlsx("new_ISCO.xlsx", sheet = "UnitGroups") %>% select(new, ISCOcode, ISCOname)
