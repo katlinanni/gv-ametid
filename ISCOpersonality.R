@@ -236,3 +236,19 @@ ggplot(centers_long, aes(x = trait, y = mean_value, group = cluster, color = fac
        color = "Cluster") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Proovisin huvi pärast vaadata kahe ameti isiksuseprofiilide sarnasust (enamik katsetusi näitas, et sarnased ISCO-koodid ei pruugi olla väga sarnase profiiliga, all üks suurema sarnasusega)
+# Extract mean personality scores for the two ISCOname values
+isco1_values <- c(means_N[["Specialist Medical Practitioners"]][1], means_E[["Specialist Medical Practitioners"]][1], means_O[["Specialist Medical Practitioners"]][1], 
+                  means_A[["Specialist Medical Practitioners"]][1], means_C[["Specialist Medical Practitioners"]][1])
+
+isco2_values <- c(means_N[["Medical Doctors (unspecified)"]][1], 
+                  means_E[["Medical Doctors (unspecified)"]][1], 
+                  means_O[["Medical Doctors (unspecified)"]][1], 
+                  means_A[["Medical Doctors (unspecified)"]][1], 
+                  means_C[["Medical Doctors (unspecified)"]][1])
+
+
+# Compute cosine similarity
+cosine_similarity <- sum(isco1_values * isco2_values) / (sqrt(sum(isco1_values^2)) * sqrt(sum(isco2_values^2)))
+cosine_similarity
