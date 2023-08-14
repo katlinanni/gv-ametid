@@ -1621,7 +1621,7 @@ new$new = asendaja(new$new, "reklaamiosa", "juht", replace = "reklaamijuht")
 #new$new = asendaja(new$new, "kommunikatsiooni", "juh", excl1 = "müügi", excl2 = "omanik", excl3 = "äriarendus", excl4 = "telekomm", replace = "reklaamijuht")
 #new$new = asendaja(new$new, "^meediajuht$", "", replace = "reklaamijuht")
 
-# Nii on parem (lõpus eraldatakse kommunikatsioonijuhid ja -spetsialistid ka niimoodi täpsemalt):
+# Nii on ilmselt parem:
 new$new = asendaja(new$new, "kommunikatsioonijuh", "", excl1 = "ettevõtja", excl2 = "äriarendus", replace = "kommunikatsioonijuht")
 new$new = asendaja(new$new, "kommunikatsioonios", "juh", replace = "kommunikatsioonijuht")
 new$new = asendaja(new$new, "kommunikatsiooni", "juh", excl1 = "müügi", excl2 = "omanik", excl3 = "äriarendus", excl4 = "telekomm", replace = "kommunikatsioonijuht")
@@ -2843,7 +2843,7 @@ new$new = asendaja(new$new, "juh", "muuseum", excl1 = "külastus", excl2 = "tege
 new$new = asendaja(new$new, "juh", "galerii", excl1 = "külastus", replace = "kultuuriteenustejuht")
 new$new = asendaja(new$new, "raamatukogujuht", "", replace = "kultuuriteenustejuht")
 
-new$new = asendaja(new$new, "kultuuriteenustejuht", "", replace = "kutseteenustejuht")
+#new$new = asendaja(new$new, "kultuuriteenustejuht", "", replace = "kutseteenustejuht")
 new$new = asendaja(new$new, "osakonna", "juh", "raamatup", replace = "kutseteenustejuht")
 new$new = asendaja(new$new, "osakonna", "juh", "arhiiv", replace = "kutseteenustejuht")
 new$new = asendaja(new$new, "osakonna", "juh", "õigus", replace = "kutseteenustejuht")
