@@ -4191,6 +4191,10 @@ new$new = asendaja(new$new, "^laborijuht$", "", replace = "kutseteenustejuht")
 # ISCO: 1420
 new$new = asendaja(new$new, "^kauplusejuhataja$", "", replace = "kaubandusjuht")
 
+# ISCO: 106x
+new$new = asendaja(new$new, "^haldur$", "", replace = "hooldusjuht")
+new$new = asendaja(new$new, "^hooldusnõunik$", "", replace = "hooldusjuht")
+
 # ISCO: 2132
 new$new = asendaja(new$new, "^metsandusspetsialist$", "", replace = "agronoom")
 
@@ -4223,6 +4227,10 @@ new$new = asendaja(new$new, "^muusikakooliõpetaja$", "", replace = "huvikooliõ
 new$new = asendaja(new$new, "^tantsuõpetaja$", "", replace = "huvikooliõpetaja")
 new$new = asendaja(new$new, "^draamaõpetaja$", "", replace = "huvikooliõpetaja")
 
+# ISCO: 235x
+new$new = asendaja(new$new, "^instruktor$", "", replace = "haridustöötaja")
+new$new = asendaja(new$new, "^superviisor$", "", replace = "haridustöötaja")
+
 # ISCO: 2421
 new$new = asendaja(new$new, "^kvaliteedijuht$", "", replace = "juhtimisanalüütik")
 
@@ -4248,6 +4256,9 @@ new$new = asendaja(new$new, "^laborispetsialist$", "", replace = "bioanalüütik
 # ISCO: 3355
 new$new = asendaja(new$new, "^uurija$", "", replace = "politseiuurija")
 
+# ISCO: 3356
+new$new = asendaja(new$new, "^tolliinspektor$", "", replace = "piirivalvur")
+
 # ISCO: 3412
 new$new = asendaja(new$new, "^tegevusjuhendaja$", "", replace = "sotsiaaltööspetsialist")
 
@@ -4262,6 +4273,9 @@ new$new = asendaja(new$new, "^tugiisik$", "", replace = "hooldaja")
 
 # ISCO: 7421
 new$new = asendaja(new$new, "^elektroonik$", "", replace = "elektroonikamehaanik")
+
+# ISCO: 8332
+new$new = asendaja(new$new, "^kaugsõiduautojuht$", "", replace = "veoautojuht")
 
 # ISCO: 8219
 new$new = asendaja(new$new, "^koostaja$", "", replace = "muudkoostajad")
@@ -4304,10 +4318,9 @@ new$new = asendaja(new$new, "^turundusjuht$", "", replace = "müügijuht")
 new$new = asendaja(new$new, "^hankejuht$", "", replace = "tarneahelajuht")
 new$new = asendaja(new$new, "^kommunikatsioonijuht$", "", replace = "reklaamijuht") #ISCO-s on need juhtide valdkonnas kokku pandud - kuna reklaamijuhte on ka väga vähe, siis tundub ka mõistlik ühendada
 
-save(new, file = "new.Rdata")
+#save(new, file = "new.Rdata")
 
-
-### UNIT-GROUPS sizes
+### UNIT-GROUPS
 ISCO = readxl::read_xlsx("new_ISCO.xlsx", sheet = "UnitGroups") %>% select(new, ISCOcode, ISCOname)
 new_isco = left_join(new, ISCO, by = "new")
 new_isco <- distinct(new_isco, scode, .keep_all = TRUE)
@@ -4317,17 +4330,18 @@ unitg_count = vec_count(new$new)
 unitg_count = rename(unitg_count, new = key)
 unitg_count = left_join(unitg_count, ISCO, by = "new")
 
-### MINOR-GROUPS sizes
-new_isco$ISCOcode_minor = floor(new_isco$ISCOcode/10)
+### MINOR-GROUPS
 
 ISCOminor = readxl::read_xlsx("new_ISCO.xlsx", sheet = "MinorGroups") %>% select(ISCOcode_minor, ISCOname_minor)
-new_isco$newWithISCOminor = ifelse(!is.na(new_isco$ISCOcode_minor), new_isco$ISCOcode_minor, new_isco$new)
-new_isco = left_join(new_isco, ISCOminor, by = "ISCOcode_minor")
+new_isco = ISCO %>% mutate(ISCOcode_minor = as.numeric(strtrim(ISCOcode,3))) %>% left_join(ISCOminor, by = "ISCOcode_minor")
 
-minorg_count = vec_count(new_isco$newWithISCOminor)
-minorg_count = rename(minorg_count, ISCOcode_minor = key)
-ISCOminor$ISCOcode_minor <- as.character(ISCOminor$ISCOcode_minor)
-minorg_count = left_join(minorg_count, ISCOminor, by = "ISCOcode_minor")
+#new_isco$newWithISCOminor = ifelse(!is.na(new_isco$ISCOcode_minor), new_isco$ISCOcode_minor, new_isco$new)
+#new_isco = left_join(new_isco, ISCOminor, by = "ISCOcode_minor")
+
+#minorg_count = vec_count(new_isco$newWithISCOminor)
+#minorg_count = rename(minorg_count, ISCOcode_minor = key)
+#ISCOminor$ISCOcode_minor <- as.character(ISCOminor$ISCOcode_minor)
+#minorg_count = left_join(minorg_count, ISCOminor, by = "ISCOcode_minor")
 
 write_xlsx(list(unitg_count = unitg_count, minorg_count = minorg_count), path = "sizesofgroups.xlsx")
 
