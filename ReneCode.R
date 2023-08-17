@@ -4136,6 +4136,15 @@ new$new = asendaja(new$new, "^hooldejuht$", "", replace = "hooldusjuht")
 new$new = asendaja(new$new, "^ui$", "", replace = "multimeediadisainer")
 new$new = asendaja(new$new, "^sourcingquoteleader$", "", replace = "hankespetsialist")
 
+new$new = asendaja(new$new, "^eksamineerija$", "", replace = "haridustöötaja")
+new$new = asendaja(new$new, "^projekteerijaabi$", "", replace = "juhiabi")
+new$new = asendaja(new$new, "^välisriigikvalifikatsioonidehindaja$", "", replace = "juhiabi")
+new$new = asendaja(new$new, "^väljastaja$", "", replace = "laoametnik")
+new$new = asendaja(new$new, "^pildiraamija$", "", replace = "tisler")
+new$new = asendaja(new$new, "^ristsõnakoostaja$", "", replace = "toimetaja")
+new$new = asendaja(new$new, "^tehnilinedokumenteerija$", "", replace = "kontoritöötaja")
+new$new = asendaja(new$new, "^tehnilisedokumentatsioonikoostaja$", "", replace = "kontoritöötaja")
+
 # Mõned levinumad venekeelsed, et oleks lihtsalt tehtud
 new$new = asendaja(new$new, "^медсестра$", "", replace = "meditsiiniõde")
 new$new = asendaja(new$new, "^швея$", "", replace = "õmbleja")
