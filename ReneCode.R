@@ -896,7 +896,7 @@ new$new = asendaja(new$new, "finantsjuh", "", excl1 = "abi", excl2 = "praktikal"
 new$new = asendaja(new$new, "cfo", "", replace = "finantsjuht")
 
 unique(leidur(new$new, "turundusjuh", "",))
-new$new = asendaja(new$new, "turundusjuh", "", excl1 = "abi", replace = "turundusjuht")
+new$new = asendaja(new$new, "turundusjuh", "", excl1 = "abi", excl2 = "kommunikatsiooni", replace = "turundusjuht")
 new$new = asendaja(new$new, "turundus-", "juht", excl1 = "ettevõtja", replace = "turundusjuht")
 new$new = asendaja(new$new, "turundu-", "juht", excl1 = "ettevõtja", replace = "turundusjuht")
 
