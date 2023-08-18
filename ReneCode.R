@@ -2141,7 +2141,7 @@ new$new = asendaja(new$new, "maakler", "tolli", replace = "tollimaakler")
 new$new = asendaja(new$new, "dekla", "tolli", replace = "tollimaakler")
 new$new = asendaja(new$new, "spets", "tolli", replace = "tollimaakler")
 new$new = asendaja(new$new, "tolliagent", "", excl1 = "juh", replace = "tollimaakler")
-new$new = asendaja(new$new, "ekspedeerija", "", replace = "logistik")
+new$new = asendaja(new$new, "ekspedeerija", "", excl1 = "autojuht", replace = "logistik")
 new$new = asendaja(new$new, "ekspediitor", "", replace = "logistik")
 new$new = asendaja(new$new, "^deklarant$", "", replace = "tollimaakler")
 
