@@ -3905,7 +3905,7 @@ new$new = asendaja(new$new, "tooterühmajuht", "", replace = "tootejuht")
 new$new = asendaja(new$new, "tooterühmavanem", "", replace = "tootejuht")
 new$new = asendaja(new$new, "tootevaldkonnajuht", "", replace = "tootejuht")
 
-new$new = asendaja(new$new, "finantsametnik", "", replace = "rahandusekontoritöötaja")
+new$new = asendaja(new$new, "finantsametnik", "", replace = "raamatupidamisekontoritöötaja")
 
 new$new = asendaja(new$new, "taara", "operaator", replace = "laoametnik")
 new$new = asendaja(new$new, "restaureerija", "", replace = "restauraator")
@@ -4144,6 +4144,8 @@ new$new = asendaja(new$new, "^pildiraamija$", "", replace = "tisler")
 new$new = asendaja(new$new, "^ristsõnakoostaja$", "", replace = "toimetaja")
 new$new = asendaja(new$new, "^tehnilinedokumenteerija$", "", replace = "kontoritöötaja")
 new$new = asendaja(new$new, "^tehnilisedokumentatsioonikoostaja$", "", replace = "kontoritöötaja")
+new$new = asendaja(new$new, "^kontoriabiline$", "", replace = "kontoritöötaja")
+new$new = asendaja(new$new, "^masinakirjutaja$", "", replace = "kontoritöötaja")
 
 # Mõned levinumad venekeelsed, et oleks lihtsalt tehtud
 new$new = asendaja(new$new, "^медсестра$", "", replace = "meditsiiniõde")
@@ -4271,14 +4273,27 @@ new$new = asendaja(new$new, "^majandusjuhataja$", "", replace = "majapidaja")
 # ISCO: 5321
 new$new = asendaja(new$new, "^tugiisik$", "", replace = "hooldaja")
 
+# ISCO: 6130
+new$new = asendaja(new$new, "köögiviljakasvataja", "", replace = "põllumajandustöötaja")
+new$new = asendaja(new$new, "taimekasvataja", "", replace = "põllumajandustöötaja")
+
 # ISCO: 7421
 new$new = asendaja(new$new, "^elektroonik$", "", replace = "elektroonikamehaanik")
+
+# ISCO: 8100
+new$new = asendaja(new$new, "^pesumasinaoperaator$", "", replace = "masinaoperaator")
 
 # ISCO: 8332
 new$new = asendaja(new$new, "^kaugsõiduautojuht$", "", replace = "veoautojuht")
 
 # ISCO: 8219
 new$new = asendaja(new$new, "^koostaja$", "", replace = "muudkoostajad")
+
+# ISCO: 9000 
+new$new = asendaja(new$new, "^abitööline$", "", replace = "lihttööline")
+new$new = asendaja(new$new, "^autopesija$", "", replace = "lihttööline")
+new$new = asendaja(new$new, "^pesupesija$", "", replace = "lihttööline")
+new$new = asendaja(new$new, "^välikoristaja$", "", replace = "lihttööline")
 
 # ISCO: 0
 new$new = asendaja(new$new, "^ohvitser$", "", replace = "sõjaväelane")
