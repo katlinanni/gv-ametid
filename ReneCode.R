@@ -2476,7 +2476,8 @@ unique(leidur(new$new, "ettevõtja", "väike", ""))
 new$new = asendaja(new$new, "ettevõtja", "väike", "", replace = "väikeettevõtja")
 
 unique(leidur(new$new, "osaühing", "juh"))
-new$new = asendaja(new$new, "osaühing", "juh", excl1 = "disainer", replace = "ettevõtja")
+new$new = asendaja(new$new, "osaühing", "juh", excl1 = "disainer", excl2 = "liige", replace = "juht")
+new$new = asendaja(new$new, "osaühing", "juhatuseliige", replace = "juhatuseliige")
 
 # siin on mõned ka täpsustanud valdkonda, aga vist ei hakka eristama?
 unique(leidur(new$new, "ettevõ", "oman", ""))
@@ -4158,7 +4159,7 @@ new$new = asendaja(new$new, "^бухгалтер$", "", replace = "raamatupidaja
 new$new = asendaja(new$new, "^администратор$", "", replace = "üldadministraator")
 new$new = asendaja(new$new, "^учитель$", "", replace = "õpetaja")
 new$new = asendaja(new$new, "^продавец$", "", replace = "müüja")
-new$new = asendaja(new$new, "^повар$", "", replace = "müüja")
+new$new = asendaja(new$new, "^повар$", "", replace = "kokk")
 new$new = asendaja(new$new, "^главныйбухгалтер$", "", replace = "pearaamatupidaja")
 new$new = asendaja(new$new, "^программист$", "", replace = "programmeerija")
 new$new = asendaja(new$new, "^директор$", "", replace = "juht")
