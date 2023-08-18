@@ -909,8 +909,8 @@ new$new = asendaja(new$new, "kinnisvaraspetsialist", "", replace = "kinnisvaraha
 new$new = asendaja(new$new, "korteriüh", "", excl1 = "erivaja", excl2 = "fie", replace = "kinnisvarahaldur")
 new$new = asendaja(new$new, "kinnisvarakonsult", "", replace = "kinnisvarahaldur")
 
-new$new = asendaja(new$new, "kinnisvara", "hoold", replace = "haldustöötaja")
-new$new = asendaja(new$new, "ruum", "hoold", replace = "haldustöötaja")
+new$new = asendaja(new$new, "kinnisvara", "hoold", replace = "hoonehaldaja")
+new$new = asendaja(new$new, "ruum", "hoold", replace = "hoonehaldaja")
 
 new$new = asendaja(new$new, "piloot", "", replace = "piloot")
 new$new = asendaja(new$new, "lennuki", "kapten", replace = "piloot")
