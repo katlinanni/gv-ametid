@@ -19,10 +19,12 @@ B5$C = scale(residuals(lm(C ~ gender + age, B5))) %>% as.numeric
 
 ## More fine-grained groups give bigger effects, so less variability in sample means for broader groups. 
 ## This means later Bayesian averaging will generally push means and variances in smaller samples towards the population means
-eta_squared(aov(B5$O ~ XXXX_code, B5),alternative = "two.sided")
-eta_squared(aov(B5$O ~ XXX_code, B5),alternative = "two.sided")
-eta_squared(aov(B5$O ~ XX_code, B5),alternative = "two.sided")
-eta_squared(aov(B5$O ~ X_code, B5),alternative = "two.sided")
+eta_squared(aov(O ~ XXXX_code, B5),alternative = "two.sided")
+eta_squared(aov(O ~ XXX_code, B5),alternative = "two.sided")
+eta_squared(aov(O ~ XX_code, B5),alternative = "two.sided")
+eta_squared(aov(O ~ X_code, B5),alternative = "two.sided")
+
+B5 = B5 %>% mutate_at(c("N","A","E","C", "O"), scale)
 
 new_means = B5 %>% group_by(new) %>% summarise_at(6:10, c(mean, sd, length))
 XXXX_means = B5 %>% group_by(XXXX_code) %>% summarise_at(6:10, c(mean, sd, length)) %>% mutate(XXX_code = strtrim(XXXX_code,3)) %>%
@@ -134,3 +136,12 @@ res %>% select(XXXX_name, N_mean:O_sd, N_N_XXXX, -ends_with(".y")) %>% mutate_at
 
 cor(XXXX_means %>% select(N_mean_XXXX:O_mean_XXXX), XXXX_means %>% select(N_sd_XXXX:O_sd_XXXX), method="spearman")
 cor(res %>% select(N_mean:O_mean), res %>% select(N_sd:O_sd), method="spearman")
+
+
+### wolfram comparison
+
+wolfram = read_xlsx("~/Downloads/wolfram.xlsx") %>% mutate(XXXX_code = as.character(strtrim(Occupation,4)))
+
+wolfram = res %>% select(XXXX_code, XXXX_name, N_mean:O_sd, N_N_XXXX, -ends_with(".y")) %>% left_join(wolfram, by="XXXX_code")
+
+cor(select(wolfram, N_mean:O_mean), select(wolfram, contains("Big 5")), use="pairwise") %>% round(2)
