@@ -51,19 +51,82 @@ posteriors(.5, 1.1^2, 0, 1, (n/k)^2 * k, k)
 
 ### just trying the analyses on real data, messy code ...
 
-tmp = XXXX_means %>% filter(N_N_XXX >= 100) %>% select(contains("XXXX"), ends_with("XXX")) ## almost all observations
-#XXXX_means %>% filter(N_N_XXX < 100 & N_N_XX >= 100)  %>% select(contains("XXXX"), ends_with("_XX"))
-#XXXX_means %>% filter(N_N_XX < 100 & N_N_X >= 100)  %>% select(contains("XXXX"), ends_with("_X"))
+tmp1 = XXXX_means %>% filter(N_N_XXX >= 100) %>% select(contains("XXXX"), ends_with("XXX")) ## almost all observations
+tmp2 = XXXX_means %>% filter(N_N_XXX < 100 & N_N_XX >= 100)  %>% select(contains("XXXX"), ends_with("_XX"))
+tmp3 = XXXX_means %>% filter(N_N_XX < 100 & N_N_X >= 100)  %>% select(contains("XXXX"), ends_with("_X"))
 
 k = 25 ## To understand, try also 100, 50, etc
 plot(xlim=c(-1,1),ylim=c(-1,1),xlab="Posterior",ylab="Data",
   posteriors(
-    m_data = tmp$N_mean_XXXX, var_data = tmp$N_sd_XXXX^2, 
-    m_prior = tmp$N_mean_XXX, var_prior = tmp$N_sd_XXX^2, 
-    n_data = (tmp$N_N_XXXX/k)^2 * k, n_prior = k )$m_posterior,
-  tmp$N_mean_XXXX)
+    m_data = tmp1$A_mean_XXXX, var_data = tmp1$A_sd_XXXX^2, 
+    m_prior = tmp1$A_mean_XXX, var_prior = tmp1$A_sd_XXX^2, 
+    n_data = (tmp1$A_N_XXXX/k)^2 * k, n_prior = k )$m_posterior,
+  tmp1$A_mean_XXXX)
 lines(c(-10,10), c(-10,10))
+
+### Let's smooth everyone for final results
+
+k = 25
+smoothed1 = posteriors(
+  select(tmp1, ends_with("mean_XXXX")),select(tmp1, ends_with("sd_XXXX"))^2,
+  select(tmp1, ends_with("mean_XXX")),select(tmp1, ends_with("sd_XXX"))^2,
+  k * (select(tmp1, ends_with("_N_XXXX"))/k)^2, k) 
+
+smoothed1_means = smoothed1$m_posterior %>% as_tibble %>%
+  mutate(XXXX_code = tmp1$XXXX_code, XXXX_name = tmp1$XXXX_name)
+
+smoothed1_sds = sqrt(smoothed1$var_posterior) %>% as_tibble %>%
+  mutate(XXXX_code = tmp1$XXXX_code, XXXX_name = tmp1$XXXX_name)
+
+smoothed2 = posteriors(
+  select(tmp2, ends_with("mean_XXXX")),select(tmp2, ends_with("sd_XXXX"))^2,
+  select(tmp2, ends_with("mean_XX")),select(tmp2, ends_with("sd_XX"))^2,
+  k * (select(tmp2, ends_with("_N_XXXX"))/k)^2, k) 
+
+smoothed2_means = smoothed2$m_posterior %>% as_tibble %>%
+  mutate(XXXX_code = tmp2$XXXX_code, XXXX_name = tmp2$XXXX_name)
+
+smoothed2_sds = sqrt(smoothed2$var_posterior) %>% as_tibble %>%
+  mutate(XXXX_code = tmp2$XXXX_code, XXXX_name = tmp2$XXXX_name)
+
+smoothed3 = posteriors(
+  select(tmp3, ends_with("mean_XXXX")),select(tmp3, ends_with("sd_XXXX"))^2,
+  select(tmp3, ends_with("mean_X")),select(tmp3, ends_with("sd_X"))^2,
+  k * (select(tmp3, ends_with("_N_XXXX"))/k)^2, k) 
+
+smoothed3_means = smoothed3$m_posterior %>% as_tibble %>%
+  mutate(XXXX_code = tmp3$XXXX_code, XXXX_name = tmp3$XXXX_name)
+
+smoothed3_sds = sqrt(smoothed3$var_posterior) %>% as_tibble %>%
+  mutate(XXXX_code = tmp3$XXXX_code, XXXX_name = tmp3$XXXX_name)
+
+names(smoothed1_means) = names(smoothed2_means) = names(smoothed3_means) = c("N_mean","A_mean","E_mean","C_mean", "O_mean", "XXXX_code","XXXX_name")
+names(smoothed1_sds) = names(smoothed2_sds) = names(smoothed3_sds) = c("N_sd","A_sd","E_sd","C_sd", "O_sd", "XXXX_code","XXXX_name")
+
+smoothed_means = rbind(smoothed1_means, smoothed2_means, smoothed3_means)
+smoothed_sds = rbind(smoothed1_sds, smoothed2_sds, smoothed3_sds)
+
+res = XXXX_means %>% left_join(smoothed_means, by="XXXX_code") %>% left_join(smoothed_sds, by="XXXX_code")
+
+
+### Sanity check
+
+cor(select(res, N_mean_XXXX:O_mean_XXXX), select(res, N_mean:O_mean))
+cor(select(res, N_sd_XXXX:O_sd_XXXX), select(res, N_sd:O_sd))
+
+plot(res$N_mean, res$N_mean_XXXX)
+lines(c(-10,10),c(-10,10))
+
+plot(res$N_sd, res$N_sd_XXXX)
+lines(c(0,2),c(0,2))
+
+###
+
+res %>% arrange(desc(N_mean)) %>% select(XXXX_name, N_mean:O_sd, N_N_XXXX) %>% slice(1:20)
+
+res %>% filter(XXXX_name %in% "Psychologists") %>% select(XXXX_name, N_mean:O_sd, N_N_XXXX) %>% slice(1:20)
 
 ### Are means and variances correlated, suggesting scores with higher/lower Big Five trait levels are more selection?
 
 cor(XXXX_means %>% select(N_mean_XXXX:O_mean_XXXX), XXXX_means %>% select(N_sd_XXXX:O_sd_XXXX), method="spearman")
+cor(res %>% select(N_mean:O_mean), res %>% select(N_sd:O_sd), method="spearman")
