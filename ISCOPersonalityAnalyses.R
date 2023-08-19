@@ -126,6 +126,10 @@ res %>% arrange(desc(N_mean)) %>% select(XXXX_name, N_mean:O_sd, N_N_XXXX) %>% s
 
 res %>% filter(XXXX_name %in% "Psychologists") %>% select(XXXX_name, N_mean:O_sd, N_N_XXXX) %>% slice(1:20)
 
+require(DT)
+
+res %>% select(XXXX_name, N_mean:O_sd, N_N_XXXX, -ends_with(".y")) %>% mutate_at(2:11, ~round(.,2)) %>% datatable %>% saveWidget("Means.html")
+
 ### Are means and variances correlated, suggesting scores with higher/lower Big Five trait levels are more selection?
 
 cor(XXXX_means %>% select(N_mean_XXXX:O_mean_XXXX), XXXX_means %>% select(N_sd_XXXX:O_sd_XXXX), method="spearman")
