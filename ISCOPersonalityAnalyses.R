@@ -38,7 +38,7 @@ XXXX_means = ISCO %>% select(XXXX_code, XXXX_name) %>% right_join(XXXX_means, by
 XXXX_means %>% arrange(desc(N_mean_XXXX))
 
 ## Function here for trialing. Later to be moved to the helpers file.
-poseriors = function(m_data, var_data, m_prior, var_prior, n_data, n_prior) {
+posteriors = function(m_data, var_data, m_prior, var_prior, n_data, n_prior) {
   m_posterior = (n_prior * m_prior + n_data * m_data) / (n_prior + n_data)
   var_posterior = (n_prior * var_prior + (n_data - 1) * var_data + (n_data * n_prior * (m_data - m_prior)^2) / (n_prior + n_data)) / (n_prior + n_data - 1)
   return(list(m_posterior = m_posterior, var_posterior = var_posterior))
