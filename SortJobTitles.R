@@ -4340,4 +4340,3 @@ count <- new$new %>%
   left_join(ISCO, by = "new")
 
 write_xlsx(count, path = "count.xlsx")
-
