@@ -51,6 +51,11 @@ for(current_var in nuanceVars) {
 
 results_df <- do.call(rbind, results)
 
+item_names = readxl::read_xlsx("item_names.xlsx")
+results_df <- results_df %>%
+  as_tibble(rownames = "Kood")
+results_df <- left_join(results_df, item_names, by = "Kood")
+
 nuanceVars <- colnames(persn[, which(names(persn) == "neuroticism01"):which(names(persn) == "others29")])
 
 XXXX_means <- persn %>%
