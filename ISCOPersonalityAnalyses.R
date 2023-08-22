@@ -141,3 +141,16 @@ res %>% filter(XXXX_name %in% "Psychologists") %>% select(XXXX_name, N_mean:C_sd
 
 #res %>% select(XXXX_name, N_mean:C_sd, N_N_XXXX, -ends_with(".y")) %>% mutate_at(2:11, ~round(.,2)) %>% datatable %>% saveWidget("Means.html")
 
+### MDS
+
+d = dist(res %>% select(N_mean:C_mean))
+fit = cmdscale(d,eig=TRUE, k=2)
+plot(fit$points, cex=0)
+text(fit$points, res$XXXX_name, cex=.6)
+cor(fit$points, select(res, N_mean:C_mean))
+new = unclass(psych::target.rot(fit$points, select(res, E_mean,O_mean))$load)
+cor(new,select(res, N_mean:C_mean))
+svg("jobs.svg", width=25, height=25)
+plot(new, cex=0, xlab="~ E+,C+,N-,A- ", ylab="~ O+,C-,A+")
+text(new, strtrim(res$XXXX_name,50), cex=.5)
+dev.off()
