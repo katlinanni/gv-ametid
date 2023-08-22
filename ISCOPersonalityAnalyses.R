@@ -27,6 +27,15 @@ eta_squared(aov(O ~ XXX_code, B5),alternative = "two.sided")
 eta_squared(aov(O ~ XX_code, B5),alternative = "two.sided")
 eta_squared(aov(O ~ X_code, B5),alternative = "two.sided")
 
+eta_squared(aov(E ~ XXXX_code, B5),alternative = "two.sided")
+eta_squared(aov(E ~ XXX_code, B5),alternative = "two.sided")
+eta_squared(aov(E ~ XX_code, B5),alternative = "two.sided")
+eta_squared(aov(E ~ X_code, B5),alternative = "two.sided")
+
+eta_squared(aov(A ~ XXXX_code, B5),alternative = "two.sided")
+eta_squared(aov(N ~ XXXX_code, B5),alternative = "two.sided")
+eta_squared(aov(C ~ XXXX_code, B5),alternative = "two.sided")
+
 XXXX_means = B5 %>% group_by(XXXX_code) %>% summarise_at(pVars, c(mean, sd, length)) %>% mutate(XXX_code = strtrim(XXXX_code,3)) %>%
   left_join(B5 %>% group_by(XXX_code) %>% summarise_at(pVars, c(mean, sd, length)) %>% mutate(XX_code = strtrim(XXX_code,2)), by = "XXX_code") %>% 
   left_join(B5 %>% group_by(XX_code) %>% summarise_at(pVars, c(mean, sd, length))%>% mutate(X_code = strtrim(XX_code,1)), by = "XX_code") %>% 
@@ -151,6 +160,13 @@ cor(fit$points, select(res, N_mean:C_mean))
 new = unclass(psych::target.rot(fit$points, select(res, E_mean,O_mean))$load)
 cor(new,select(res, N_mean:C_mean))
 svg("jobs.svg", width=25, height=25)
+
 plot(new, cex=0, xlab="~ E+,C+,N-,A- ", ylab="~ O+,C-,A+")
 text(new, strtrim(res$XXXX_name,50), cex=.5)
+dev.off()
+
+svg("jobs.svg", width=25, height=25)
+plot(new, cex=0, xlab="~ E+,C+,N-,A- ", ylab="~ O+,C-,A+")
+text(new, strtrim(res$XXXX_name,50), cex=.5,
+     col=c("black","red")[as.factor(strtrim(res$XXXX_code,2)==23)])
 dev.off()
