@@ -168,5 +168,57 @@ dev.off()
 svg("jobs.svg", width=25, height=25)
 plot(new, cex=0, xlab="~ E+,C+,N-,A- ", ylab="~ O+,C-,A+")
 text(new, strtrim(res$XXXX_name,50), cex=.5,
-     col=c("black","red")[as.factor(strtrim(res$XXXX_code,2)==23)])
+     col=c("black","red")[as.factor(strtrim(res$XXXX_code,2)==83)])
 dev.off()
+
+
+### K-Means Clustering?
+means <- res[, c("N_mean", "E_mean", "O_mean", "A_mean", "C_mean")]
+wss <- sapply(1:20, function(k) {
+  kmeans(means, centers = k, nstart = 10)$tot.withinss
+})
+
+plot(1:20, wss, type = "b", xlab = "Number of clusters", ylab = "Within groups sum of squares")
+
+set.seed(123)
+kmeans_result <- kmeans(means, centers = 5, nstart = 10)
+
+clusters <- kmeans_result$cluster
+results_df1 <- data.frame(res$XXXX_name, clusters)
+
+cluster_centers <- kmeans_result$centers
+print(cluster_centers)
+
+# visualising
+library(factoextra)
+fviz_cluster(kmeans_result, data = means)
+
+pca_result <- prcomp(means)
+pca_scores <- pca_result$x[, 1:2]
+pca_df <- data.frame(pca_scores, cluster = kmeans_result$cluster)
+
+ggplot(pca_df, aes(x = PC1, y = PC2, color = as.factor(cluster))) +
+  geom_point(alpha = 0.7, size = 3) +
+  scale_color_discrete(name = "Cluster") +
+  labs(title = "PCA Plot with K-means Clusters", x = "Principal Component 1", y = "Principal Component 2") +
+  theme_minimal()
+
+centers_long <- kmeans_result$centers %>% 
+  as.data.frame() %>%
+  rownames_to_column("cluster") %>%
+  gather(trait, mean_value, N_mean:C_mean)
+
+ggplot(centers_long, aes(x = trait, y = mean_value, group = cluster, color = factor(cluster))) +
+  geom_line(size = 1) +
+  geom_point(size = 3) +
+  labs(title = "Cluster Centers across Personality Traits",
+       x = "Personality Trait",
+       y = "Mean Value",
+       color = "Cluster") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+cluster_assignment <- res %>%
+  select(XXXX_name) %>%
+  mutate(cluster = kmeans_result$cluster) %>%
+  arrange(cluster, XXXX_name)

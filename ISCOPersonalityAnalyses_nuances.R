@@ -180,11 +180,11 @@ fit = cmdscale(d,eig=TRUE, k=2)
 plot(fit$points, cex=0)
 text(fit$points, res_nuances$XXXX_name, cex=.6)
 cor(fit$points, select(res_nuances, extraversion12_mean:openness11_mean))
-new = unclass(psych::target.rot(fit$points, select(res_nuances, extraversion12_mean:openness11_mean))$load)
+new = unclass(psych::target.rot(fit$points, select(res_nuances, openness09R_mean, openness18_mean))$load)
 cor(new,select(res_nuances, extraversion12_mean:openness11_mean))
 svg("jobs.svg", width=25, height=25)
 
-plot(new, cex=0, xlab="~ E+,C+,N-,A- ", ylab="~ O+,C-,A+")
+plot(new, cex=0, xlab="~ ", ylab="~ ")
 text(new, strtrim(res$XXXX_name,50), cex=.5)
 dev.off()
 
