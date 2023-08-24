@@ -55,7 +55,37 @@ results_df <- results_df %>%
   as_tibble(rownames = "Kood")
 results_df <- left_join(results_df, item_names, by = "Kood")
 
-nuanceVars <- colnames(persn[, which(names(persn) == "neuroticism01"):which(names(persn) == "others29")])
+# Items with eta2 >= 0.4
+vars_eta <- c("extraversion12", "neuroticism12", "extraversion09", 
+                      "openness13", "openness18", "openness20", 
+                      "agreeableness09R", "openness19", "openness15", 
+                      "openness03", "extraversion33", "openness09R", 
+                      "agreeableness36", "agreeableness06R", "neuroticism52", 
+                      "conscientiousness19", "neuroticism28", 
+                      "agreeableness44R", "neuroticism31", "others12", "openness11")
+
+# Exclude items with correlations > .50
+cor_matrix <- persn %>%
+  select(all_of(vars_eta)) %>%
+  cor(use = "complete.obs")
+
+high_correlations_df <- cor_matrix %>%
+  as.data.frame() %>%
+  rownames_to_column("Var1") %>%
+  gather(Var2, Correlation, -Var1) %>%
+  filter(Correlation > 0.50, Var1 != Var2) 
+
+high_correlations_df
+# Exluding extraversion09 and extraversion33
+
+
+# Bayesian averaging for nuances
+nuanceVars <- persn %>%
+  select(extraversion12, neuroticism12, openness13, openness18, openness20, 
+         agreeableness09R, openness19, openness15, openness03, openness09R, 
+         agreeableness36, agreeableness06R, neuroticism52, conscientiousness19, 
+         neuroticism28, agreeableness44R, neuroticism31, others12, openness11) %>%
+  colnames()
 
 XXXX_means_nuances <- persn %>%
   group_by(XXXX_code) %>%
@@ -92,9 +122,9 @@ n = 100 ## data
 k = 25 ## the sample size at which data and prior have equal weight
 posteriors(.5, 1.1^2, 0, 1, (n/k)^2 * k, k)
 
-tmp1 = XXXX_means_nuances %>% filter(neuroticism01_N_XXX >= 100) %>% select(contains("XXXX"), ends_with("XXX")) ## almost all observations
-tmp2 = XXXX_means_nuances %>% filter(neuroticism01_N_XXX < 100 & neuroticism01_N_XX >= 100)  %>% select(contains("XXXX"), ends_with("_XX"))
-tmp3 = XXXX_means_nuances %>% filter(neuroticism01_N_XX < 100 & neuroticism01_N_X >= 100)  %>% select(contains("XXXX"), ends_with("_X"))
+tmp1 = XXXX_means_nuances %>% filter(extraversion12_N_XXX >= 100) %>% select(contains("XXXX"), ends_with("XXX")) ## almost all observations
+tmp2 = XXXX_means_nuances %>% filter(extraversion12_N_XXX < 100 & extraversion12_N_XX >= 100)  %>% select(contains("XXXX"), ends_with("_XX"))
+tmp3 = XXXX_means_nuances %>% filter(extraversion12_N_XX < 100 & extraversion12_N_X >= 100)  %>% select(contains("XXXX"), ends_with("_X"))
 
 k = 25
 smoothed1 = posteriors(
@@ -138,9 +168,30 @@ smoothed_sds = rbind(smoothed1_sds, smoothed2_sds, smoothed3_sds)
 
 res_nuances = XXXX_means_nuances %>% left_join(smoothed_means, by="XXXX_code") %>% left_join(smoothed_sds, by="XXXX_code")
 
+# Explore
+res_nuances %>% arrange(desc(extraversion12_mean)) %>% select(XXXX_name, extraversion12_mean:openness11_sd, extraversion12_N_XXXX) %>% slice(1:10)
+res_nuances %>% select(XXXX_name, extraversion12_mean:openness11_sd, extraversion12_N_XXXX, -ends_with(".y")) %>% mutate_at(2:39, ~round(.,2)) %>% datatable %>% saveWidget("Means_nuances.html")
 
-res_nuances %>% arrange(desc(extraversion12_mean)) %>% select(XXXX_name) %>% slice(1:10)
-res_nuances %>% arrange(extraversion12_mean) %>% select(XXXX_name) %>% slice(1:10)
 
-res_nuances %>% arrange(desc(neuroticism12_mean)) %>% select(XXXX_name) %>% slice(1:10)
-res_nuances %>% arrange(neuroticism12_mean) %>% select(XXXX_name) %>% slice(1:10)
+### MDS - siin jäi pooleli, ei tulnud välja
+
+d = dist(res_nuances %>% select(extraversion12_mean:openness11_mean))
+fit = cmdscale(d,eig=TRUE, k=2)
+plot(fit$points, cex=0)
+text(fit$points, res_nuances$XXXX_name, cex=.6)
+cor(fit$points, select(res_nuances, extraversion12_mean:openness11_mean))
+new = unclass(psych::target.rot(fit$points, select(res_nuances, extraversion12_mean:openness11_mean))$load)
+cor(new,select(res_nuances, extraversion12_mean:openness11_mean))
+svg("jobs.svg", width=25, height=25)
+
+plot(new, cex=0, xlab="~ E+,C+,N-,A- ", ylab="~ O+,C-,A+")
+text(new, strtrim(res$XXXX_name,50), cex=.5)
+dev.off()
+
+svg("jobs.svg", width=25, height=25)
+plot(new, cex=0, xlab="~ E+,C+,N-,A- ", ylab="~ O+,C-,A+")
+text(new, strtrim(res$XXXX_name,50), cex=.5,
+     col=c("black","red")[as.factor(strtrim(res$XXXX_code,2)==23)])
+dev.off()
+
+
