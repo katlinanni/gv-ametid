@@ -171,6 +171,22 @@ text(new, strtrim(res$XXXX_name,50), cex=.5,
      col=c("black","red")[as.factor(strtrim(res$XXXX_code,2)==83)])
 dev.off()
 
+colored_groups <- ifelse(strtrim(res$XXXX_code, 2) == "83", "red", 
+                         ifelse(strtrim(res$XXXX_code, 2) == "23", "green", 
+                                ifelse(strtrim(res$XXXX_code, 2) == "12", "orange",
+                                ifelse(strtrim(res$XXXX_code, 2) == "25", "blue", "black"))))
+
+svg("jobs.svg", width=25, height=25)
+plot(new, cex=0, xlab="~ E+,C+,N-,A- ", ylab="~ O+,C-,A+")
+text(new, strtrim(res$XXXX_name,50), cex=1, col=colored_groups)
+
+legend("topright",                   
+       legend = c("ISCO 83 (Drivers and Mobile Plant Operators)", "ISCO 23 (Teaching Professionals)", "ISCO 12 (Administrative and Commercial Managers)", "ISCO 25 (IT-professionals)", "Other"),
+       fill = c("red", "green", "orange", "blue", "black"), 
+       cex = 2,                    
+       title = "Groups",             
+       box.lwd = 1)
+dev.off()
 
 ### K-Means Clustering?
 means <- res[, c("N_mean", "E_mean", "O_mean", "A_mean", "C_mean")]
