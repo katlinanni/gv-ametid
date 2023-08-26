@@ -172,6 +172,45 @@ res_nuances = XXXX_means_nuances %>% left_join(smoothed_means, by="XXXX_code") %
 res_nuances %>% arrange(desc(extraversion12_mean)) %>% select(XXXX_name, extraversion12_mean:openness11_sd, extraversion12_N_XXXX) %>% slice(1:10)
 res_nuances %>% select(XXXX_name, extraversion12_mean:openness11_sd, extraversion12_N_XXXX, -ends_with(".y")) %>% mutate_at(2:39, ~round(.,2)) %>% datatable %>% saveWidget("Means_nuances.html")
 
+rename_vector <- setNames(item_names$ENG, item_names$Kood)
+modified_rename_vector <- c(
+  setNames(paste0(rename_vector, "_mean"), paste0(names(rename_vector), "_mean")),
+  setNames(paste0(rename_vector, "_sd"), paste0(names(rename_vector), "_sd"))
+)
+
+# Väidete nimedega tabel ka
+subset_res_nuances <- res_nuances %>%
+  select(XXXX_name, extraversion12_mean:openness11_sd, extraversion12_N_XXXX)
+
+rename_columns <- function(column_name, item_names) {
+  # Extract the base variable (part before _mean or _sd)
+  base_var <- gsub("_mean|_sd|_N_XXXX", "", column_name)
+  
+  # If base_var exists in item_names$Kood, replace it
+  if (base_var %in% item_names$Kood) {
+    new_name <- item_names$ENG[item_names$Kood == base_var]
+    
+    # Construct the new column name
+    if (grepl("_mean$", column_name)) {
+      return(paste0(new_name, "_mean"))
+    } else if (grepl("_sd$", column_name)) {
+      return(paste0(new_name, "_sd"))
+    } else {
+      return(column_name)
+    }
+  } else {
+    return(column_name)
+  }
+}
+
+new_colnames <- sapply(names(subset_res_nuances), rename_columns, item_names = item_names)
+colnames(subset_res_nuances) <- new_colnames
+head(subset_res_nuances)
+
+subset_res_nuances <- subset_res_nuances %>%
+  select(-XXXX_name.y)
+
+subset_res_nuances %>% mutate_at(2:39, ~round(.,2)) %>% datatable %>% saveWidget("Means_nuances.html")
 
 ### MDS
 
@@ -195,3 +234,19 @@ text(new, strtrim(res$XXXX_name,50), cex=.5,
 dev.off()
 
 
+colored_groups <- ifelse(strtrim(res$XXXX_code, 2) == "83", "red", 
+                         ifelse(strtrim(res$XXXX_code, 2) == "23", "green", 
+                                ifelse(strtrim(res$XXXX_code, 2) == "12", "orange",
+                                       ifelse(strtrim(res$XXXX_code, 2) == "25", "blue", "black"))))
+
+svg("jobs.svg", width=25, height=25)
+plot(new, cex=0, xlab="~ ", ylab="~ ")
+text(new, strtrim(res$XXXX_name,50), cex=1, col=colored_groups)
+
+legend("topright",                   
+       legend = c("ISCO 83 (Drivers and Mobile Plant Operators)", "ISCO 23 (Teaching Professionals)", "ISCO 12 (Administrative and Commercial Managers)", "ISCO 25 (IT-professionals)", "Other"),
+       fill = c("red", "green", "orange", "blue", "black"), 
+       cex = 2,                    
+       title = "Groups",             
+       box.lwd = 1)
+dev.off()
