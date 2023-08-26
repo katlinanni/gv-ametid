@@ -173,14 +173,14 @@ res_nuances %>% arrange(desc(extraversion12_mean)) %>% select(XXXX_name, extrave
 res_nuances %>% select(XXXX_name, extraversion12_mean:openness11_sd, extraversion12_N_XXXX, -ends_with(".y")) %>% mutate_at(2:39, ~round(.,2)) %>% datatable %>% saveWidget("Means_nuances.html")
 
 
-### MDS - siin jäi pooleli, ei tulnud välja
+### MDS
 
 d = dist(res_nuances %>% select(extraversion12_mean:openness11_mean))
 fit = cmdscale(d,eig=TRUE, k=2)
 plot(fit$points, cex=0)
 text(fit$points, res_nuances$XXXX_name, cex=.6)
 cor(fit$points, select(res_nuances, extraversion12_mean:openness11_mean))
-new = unclass(psych::target.rot(fit$points, select(res_nuances, openness09R_mean, openness18_mean))$load)
+new = unclass(psych::target.rot(fit$points, select(res_nuances, openness09R_mean, extraversion12_mean))$load)
 cor(new,select(res_nuances, extraversion12_mean:openness11_mean))
 svg("jobs.svg", width=25, height=25)
 
@@ -189,9 +189,9 @@ text(new, strtrim(res$XXXX_name,50), cex=.5)
 dev.off()
 
 svg("jobs.svg", width=25, height=25)
-plot(new, cex=0, xlab="~ E+,C+,N-,A- ", ylab="~ O+,C-,A+")
+plot(new, cex=0, xlab="~ ", ylab="~ ")
 text(new, strtrim(res$XXXX_name,50), cex=.5,
-     col=c("black","red")[as.factor(strtrim(res$XXXX_code,2)==23)])
+     col=c("black","red")[as.factor(strtrim(res$XXXX_code,3)==265)])
 dev.off()
 
 
