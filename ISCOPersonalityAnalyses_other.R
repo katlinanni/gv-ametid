@@ -121,16 +121,16 @@ smoothed_sds = rbind(smoothed1_sds, smoothed2_sds, smoothed3_sds)
 
 ## Combine Bayesian-averaged group means with the raw means
 
-res_others = XXXX_means %>% left_join(smoothed_means, by="XXXX_code") %>% left_join(smoothed_sds, by="XXXX_code")
+res_other = XXXX_means %>% left_join(smoothed_means, by="XXXX_code") %>% left_join(smoothed_sds, by="XXXX_code")
 
 ### Sanity check
 
-cor(select(res_others, N_mean_XXXX:C_mean_XXXX), select(res_others, N_mean:C_mean))
-cor(select(res_others, N_sd_XXXX:C_sd_XXXX), select(res_others, N_sd:C_sd))
+cor(select(res_other, N_mean_XXXX:C_mean_XXXX), select(res_other, N_mean:C_mean))
+cor(select(res_other, N_sd_XXXX:C_sd_XXXX), select(res_other, N_sd:C_sd))
 
 
 # Correlations with self-report scores
-res_joined <- left_join(res, res_others, by = "XXXX_code")
+res_joined <- left_join(res, res_other, by = "XXXX_code")
 cor(select(res_joined, N_mean.x:C_mean.x), select(res_joined, N_mean.y:C_mean.y), use = "complete.obs")
 
 

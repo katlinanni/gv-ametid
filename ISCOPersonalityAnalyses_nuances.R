@@ -210,7 +210,13 @@ head(subset_res_nuances)
 subset_res_nuances <- subset_res_nuances %>%
   select(-XXXX_name.y)
 
-subset_res_nuances %>% mutate_at(2:39, ~round(.,2)) %>% datatable %>% saveWidget("Means_nuances.html")
+subset_res_nuances %>%
+  mutate_at(2:39, ~round(.,2)) %>%
+  datatable(extensions = 'FixedColumns', options = list(
+    scrollX = TRUE,
+    fixedColumns = list(leftColumns = 2)
+  )) %>%
+  saveWidget("Means_nuances.html")
 
 ### MDS
 
@@ -234,18 +240,25 @@ text(new, strtrim(res$XXXX_name,50), cex=.5,
 dev.off()
 
 
-colored_groups <- ifelse(strtrim(res$XXXX_code, 2) == "83", "red", 
+colored_groups <- ifelse(strtrim(res$XXXX_code, 2) == "12", "red", 
                          ifelse(strtrim(res$XXXX_code, 2) == "23", "green", 
-                                ifelse(strtrim(res$XXXX_code, 2) == "12", "orange",
-                                       ifelse(strtrim(res$XXXX_code, 2) == "25", "blue", "black"))))
+                                ifelse(strtrim(res$XXXX_code, 2) == "42", "orange",
+                                       ifelse(strtrim(res$XXXX_code, 2) == "72", "purple",
+                                              ifelse(strtrim(res$XXXX_code, 2) == "83", "seagreen3",
+                                                  ifelse(strtrim(res$XXXX_code, 1) == "9", "blue", "black"))))))
 
-svg("jobs.svg", width=25, height=25)
-plot(new, cex=0, xlab="~ ", ylab="~ ")
-text(new, strtrim(res$XXXX_name,50), cex=1, col=colored_groups)
+svg("jobs.svg", width=35, height=30)
+plot(new, cex=0, xlab="Avoid philosophical discussions; See myself as an average person", ylab="Want to be in charge; Become anxious in new situations (-)")
+text(new, strtrim(res$XXXX_name,50), cex=1.5, col=colored_groups)
 
 legend("topright",                   
-       legend = c("ISCO 83 (Drivers and Mobile Plant Operators)", "ISCO 23 (Teaching Professionals)", "ISCO 12 (Administrative and Commercial Managers)", "ISCO 25 (IT-professionals)", "Other"),
-       fill = c("red", "green", "orange", "blue", "black"), 
+       legend = c("ISCO 12 (Administrative and Commercial Managers)", 
+                  "ISCO 23 (Teaching Professionals)", 
+                  "ISCO 42 (Customer Services Clerks)", 
+                  "ISCO 72 (Metal, Machinery and Related Trades Workers)", 
+                  "ISCO 83 (Drivers and Mobile Plant Operators)", 
+                  "ISCO 9 (Elementary Occupations)", "Other"),
+       fill = c("red", "green", "orange", "purple", "seagreen3", "blue", "black"), 
        cex = 2,                    
        title = "Groups",             
        box.lwd = 1)
