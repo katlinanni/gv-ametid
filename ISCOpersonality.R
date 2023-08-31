@@ -71,7 +71,6 @@ ggplot(B5, aes(x = reorder(ISCOname, C), y = C)) +
   ylab("C") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-
 ### Lineaarsed mudelid (Wolfram, 2023 eeskujul)
 
 model_E <- lmer(E ~ (1 | ISCOname), data = B5)
@@ -184,7 +183,7 @@ mean_scores_matrix <- as.matrix(mean_scores[, -1])
 
 pheatmap(mean_scores_matrix, 
          main = "Mean Personality Scores by Occupation", 
-         color = colorRampPalette(c("blue", "white", "red"))(50),  # Gradient of colors
+         color = colorRampPalette(c("blue", "white", "green"))(50),  # Gradient of colors
          scale = "row", 
          clustering_distance_rows = "euclidean",
          clustering_distance_cols = "euclidean", 
@@ -252,3 +251,4 @@ isco2_values <- c(means_N[["Medical Doctors (unspecified)"]][1],
 # Compute cosine similarity
 cosine_similarity <- sum(isco1_values * isco2_values) / (sqrt(sum(isco1_values^2)) * sqrt(sum(isco2_values^2)))
 cosine_similarity
+
