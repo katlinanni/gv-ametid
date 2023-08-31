@@ -2,6 +2,7 @@ require(tidyverse)
 require(splitstackshape)
 require(effectsize)
 require(DT)
+require(focusedMDS)
 
 pVars = c("N","E","O","A","C")
 
@@ -12,7 +13,8 @@ B5 = read.csv("~/.gvpers/otherQuestionnaireResponses.csv") %>%
   filter(language == "et") %>%
   right_join(new_isco, "scode") %>% 
   as_tibble %>% 
-  filter(!is.na(N)) %>% 
+  filter(!is.na(N)) %>%
+  filter(!is.na(XXXX_code)) %>%
   rename(O = `O-`) %>%
   stratified("XXXX_code", 1000) %>%
   mutate_at(pVars, ~scale(residuals(lm(. ~ gender + age, ,)))) %>%
