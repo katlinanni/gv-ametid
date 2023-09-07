@@ -13,6 +13,7 @@ B5_other = read.csv("~/.gvpers/otherQuestionnaireResponses.csv") %>%
   right_join(new_isco, "scode") %>% 
   as_tibble %>% 
   filter(!is.na(N)) %>% 
+  filter(!is.na(XXXX_code)) %>%
   rename(O = `O-`) %>%
   stratified("XXXX_code", 1000) %>%
   mutate_at(pVars, ~scale(residuals(lm(. ~ gender + age, ,)))) %>%
@@ -22,8 +23,6 @@ B5_other = B5_other %>%
   group_by(XXXX_code) %>%        
   filter(n() >= 25) %>%         
   ungroup()
-
-#B5 = B5 %>% mutate_at(c("N","A","E","C", "O"), scale) ## if no residualised for age and sex
 
 ## More fine-grained groups give bigger effects, so less variability in sample means for broader groups. 
 ## This means later Bayesian averaging will generally push means and variances in smaller samples towards the population means
@@ -41,15 +40,15 @@ eta_squared(aov(A ~ XXXX_code, B5_other),alternative = "two.sided")
 eta_squared(aov(N ~ XXXX_code, B5_other),alternative = "two.sided")
 eta_squared(aov(C ~ XXXX_code, B5_other),alternative = "two.sided")
 
-XXXX_means = B5_other %>% group_by(XXXX_code) %>% summarise_at(pVars, c(mean, sd, length)) %>% mutate(XXX_code = strtrim(XXXX_code,3)) %>%
+XXXX_means_other = B5_other %>% group_by(XXXX_code) %>% summarise_at(pVars, c(mean, sd, length)) %>% mutate(XXX_code = strtrim(XXXX_code,3)) %>%
   left_join(B5_other %>% group_by(XXX_code) %>% summarise_at(pVars, c(mean, sd, length)) %>% mutate(XX_code = strtrim(XXX_code,2)), by = "XXX_code") %>% 
   left_join(B5_other %>% group_by(XX_code) %>% summarise_at(pVars, c(mean, sd, length))%>% mutate(X_code = strtrim(XX_code,1)), by = "XX_code") %>% 
   left_join(B5_other %>% group_by(X_code) %>% summarise_at(pVars, c(mean, sd, length)), by = "X_code")
 
-names(XXXX_means) = names(XXXX_means) %>% gsub("fn1","mean",., fixed = T) %>%  gsub("fn2","sd",., fixed = T) %>% gsub("fn3","N",., fixed = T)  %>% 
+names(XXXX_means_other) = names(XXXX_means_other) %>% gsub("fn1","mean",., fixed = T) %>%  gsub("fn2","sd",., fixed = T) %>% gsub("fn3","N",., fixed = T)  %>% 
   gsub(".y.y","_X",., fixed = T) %>% gsub(".x.x","_XX",., fixed = T) %>% gsub(".y","_XXX",., fixed = T) %>% gsub(".x","_XXXX",., fixed = T) 
 
-XXXX_means = ISCO %>% select(XXXX_code, XXXX_name) %>% right_join(XXXX_means, by="XXXX_code")
+XXXX_means_other = ISCO %>% select(XXXX_code, XXXX_name) %>% right_join(XXXX_means_other, by="XXXX_code")
 
 ## Function here for trialing. Later to be moved to the helpers file.
 posteriors = function(m_data, var_data, m_prior, var_prior, n_data, n_prior) {
@@ -75,9 +74,9 @@ plot(w, type="l", xlab="N", ylab="Proportion of data over prior", ylim=c(0,1))
 # Those in 3-digit ISCO groups with at least 100 individuals averaged towards the 3-digit group
 # Others averaged towards 2-digit groups, and if N < 100 in that group, towards 1-digit group
 
-tmp1 = XXXX_means %>% filter(N_N_XXX >= 100) %>% select(contains("XXXX"), ends_with("XXX")) ## almost all observations
-tmp2 = XXXX_means %>% filter(N_N_XXX < 100 & N_N_XX >= 100)  %>% select(contains("XXXX"), ends_with("_XX"))
-tmp3 = XXXX_means %>% filter(N_N_XX < 100 & N_N_X >= 100)  %>% select(contains("XXXX"), ends_with("_X"))
+tmp1 = XXXX_means_other %>% filter(N_N_XXX >= 100) %>% select(contains("XXXX"), ends_with("XXX")) ## almost all observations
+tmp2 = XXXX_means_other %>% filter(N_N_XXX < 100 & N_N_XX >= 100)  %>% select(contains("XXXX"), ends_with("_XX"))
+tmp3 = XXXX_means_other %>% filter(N_N_XX < 100 & N_N_X >= 100)  %>% select(contains("XXXX"), ends_with("_X"))
 
 k = 25
 smoothed1 = posteriors(
@@ -121,19 +120,16 @@ smoothed_sds = rbind(smoothed1_sds, smoothed2_sds, smoothed3_sds)
 
 ## Combine Bayesian-averaged group means with the raw means
 
-res_other = XXXX_means %>% left_join(smoothed_means, by="XXXX_code") %>% left_join(smoothed_sds, by="XXXX_code")
+res_other = XXXX_means_other %>% left_join(smoothed_means, by="XXXX_code") %>% left_join(smoothed_sds, by="XXXX_code") %>% filter(!is.na(N_mean))
 
 ### Sanity check
 
 cor(select(res_other, N_mean_XXXX:C_mean_XXXX), select(res_other, N_mean:C_mean))
 cor(select(res_other, N_sd_XXXX:C_sd_XXXX), select(res_other, N_sd:C_sd))
 
-
 # Correlations with self-report scores
 res_joined <- left_join(res, res_other, by = "XXXX_code")
 cor(select(res_joined, N_mean.x:C_mean.x), select(res_joined, N_mean.y:C_mean.y), use = "complete.obs")
-
-
 
 ### Nuances
 
@@ -223,18 +219,6 @@ names(XXXX_means_nuances_other) = names(XXXX_means_nuances_other) %>% gsub("leng
 
 XXXX_means_nuances_other = ISCO %>% select(XXXX_code, XXXX_name) %>% right_join(XXXX_means_nuances_other, by="XXXX_code")
 
-## Function here for trialing. Later to be moved to the helpers file.
-posteriors = function(m_data, var_data, m_prior, var_prior, n_data, n_prior) {
-  m_posterior = (n_prior * m_prior + n_data * m_data) / (n_prior + n_data)
-  var_posterior = (n_prior * var_prior + (n_data - 1) * var_data + (n_data * n_prior * (m_data - m_prior)^2) / (n_prior + n_data)) / (n_prior + n_data - 1)
-  return(list(m_posterior = m_posterior, var_posterior = var_posterior))
-}
-
-## to understand try different sample sizes, moving mean from observed .5 closer to 0 and var from observed 1.1^2 close to 1
-n = 100 ## data
-k = 25 ## the sample size at which data and prior have equal weight
-posteriors(.5, 1.1^2, 0, 1, (n/k)^2 * k, k)
-
 tmp1 = XXXX_means_nuances_other %>% filter(extraversion12_N_XXX >= 100) %>% select(contains("XXXX"), ends_with("XXX")) ## almost all observations
 tmp2 = XXXX_means_nuances_other %>% filter(extraversion12_N_XXX < 100 & extraversion12_N_XX >= 100)  %>% select(contains("XXXX"), ends_with("_XX"))
 tmp3 = XXXX_means_nuances_other %>% filter(extraversion12_N_XX < 100 & extraversion12_N_X >= 100)  %>% select(contains("XXXX"), ends_with("_X"))
@@ -291,3 +275,291 @@ cor_matrix <- cor(
 cor_diagonal <- diag(cor_matrix)
 names(cor_diagonal) <- colnames(select(res_joined_nuances, extraversion12_mean.x:openness11_mean.x))
 cor_diagonal
+
+# Correlations with self-report scores 2 - B5
+B5_subset <- B5 %>%
+  semi_join(B5_other, by = "scode")
+B5_subset_other <- B5_other %>%
+  semi_join(B5_subset, by = "scode")
+
+# Self-report means
+XXXX_means_subset = B5_subset %>% group_by(XXXX_code) %>% summarise_at(pVars, c(mean, sd, length)) %>% mutate(XXX_code = strtrim(XXXX_code,3)) %>%
+  left_join(B5 %>% group_by(XXX_code) %>% summarise_at(pVars, c(mean, sd, length)) %>% mutate(XX_code = strtrim(XXX_code,2)), by = "XXX_code") %>% 
+  left_join(B5 %>% group_by(XX_code) %>% summarise_at(pVars, c(mean, sd, length))%>% mutate(X_code = strtrim(XX_code,1)), by = "XX_code") %>% 
+  left_join(B5 %>% group_by(X_code) %>% summarise_at(pVars, c(mean, sd, length)), by = "X_code")
+
+names(XXXX_means_subset) = names(XXXX_means_subset) %>% gsub("fn1","mean",., fixed = T) %>%  gsub("fn2","sd",., fixed = T) %>% gsub("fn3","N",., fixed = T)  %>% 
+  gsub(".y.y","_X",., fixed = T) %>% gsub(".x.x","_XX",., fixed = T) %>% gsub(".y","_XXX",., fixed = T) %>% gsub(".x","_XXXX",., fixed = T) 
+
+XXXX_means_subset = ISCO %>% select(XXXX_code, XXXX_name) %>% right_join(XXXX_means_subset, by="XXXX_code")
+
+tmp1 = XXXX_means_subset %>% filter(N_N_XXX >= 100) %>% select(contains("XXXX"), ends_with("XXX")) ## almost all observations
+tmp2 = XXXX_means_subset %>% filter(N_N_XXX < 100 & N_N_XX >= 100)  %>% select(contains("XXXX"), ends_with("_XX"))
+tmp3 = XXXX_means_subset %>% filter(N_N_XX < 100 & N_N_X >= 100)  %>% select(contains("XXXX"), ends_with("_X"))
+
+k = 25
+smoothed1 = posteriors(
+  select(tmp1, ends_with("mean_XXXX")),select(tmp1, ends_with("sd_XXXX"))^2,
+  select(tmp1, ends_with("mean_XXX")),select(tmp1, ends_with("sd_XXX"))^2,
+  k * (select(tmp1, ends_with("_N_XXXX"))/k)^2, k) 
+
+smoothed1_means = smoothed1$m_posterior %>% as_tibble %>%
+  mutate(XXXX_code = tmp1$XXXX_code, XXXX_name = tmp1$XXXX_name)
+
+smoothed1_sds = sqrt(smoothed1$var_posterior) %>% as_tibble %>%
+  mutate(XXXX_code = tmp1$XXXX_code, XXXX_name = tmp1$XXXX_name)
+
+smoothed2 = posteriors(
+  select(tmp2, ends_with("mean_XXXX")),select(tmp2, ends_with("sd_XXXX"))^2,
+  select(tmp2, ends_with("mean_XX")),select(tmp2, ends_with("sd_XX"))^2,
+  k * (select(tmp2, ends_with("_N_XXXX"))/k)^2, k) 
+
+smoothed2_means = smoothed2$m_posterior %>% as_tibble %>%
+  mutate(XXXX_code = tmp2$XXXX_code, XXXX_name = tmp2$XXXX_name)
+
+smoothed2_sds = sqrt(smoothed2$var_posterior) %>% as_tibble %>%
+  mutate(XXXX_code = tmp2$XXXX_code, XXXX_name = tmp2$XXXX_name)
+
+smoothed3 = posteriors(
+  select(tmp3, ends_with("mean_XXXX")),select(tmp3, ends_with("sd_XXXX"))^2,
+  select(tmp3, ends_with("mean_X")),select(tmp3, ends_with("sd_X"))^2,
+  k * (select(tmp3, ends_with("_N_XXXX"))/k)^2, k) 
+
+smoothed3_means = smoothed3$m_posterior %>% as_tibble %>%
+  mutate(XXXX_code = tmp3$XXXX_code, XXXX_name = tmp3$XXXX_name)
+
+smoothed3_sds = sqrt(smoothed3$var_posterior) %>% as_tibble %>%
+  mutate(XXXX_code = tmp3$XXXX_code, XXXX_name = tmp3$XXXX_name)
+
+names(smoothed1_means) = names(smoothed2_means) = names(smoothed3_means) = c(paste(pVars, "mean",sep ="_"), "XXXX_code","XXXX_name")
+names(smoothed1_sds) = names(smoothed2_sds) = names(smoothed3_sds) = c(paste(pVars, "sd",sep ="_"), "XXXX_code","XXXX_name")
+
+smoothed_means = rbind(smoothed1_means, smoothed2_means, smoothed3_means)
+smoothed_sds = rbind(smoothed1_sds, smoothed2_sds, smoothed3_sds)
+
+## Combine Bayesian-averaged group means with the raw means
+
+res_subset = XXXX_means_subset %>% left_join(smoothed_means, by="XXXX_code") %>% left_join(smoothed_sds, by="XXXX_code") %>% filter(!is.na(N_mean))
+
+
+# Other
+XXXX_means_subset_other = B5_subset_other %>% group_by(XXXX_code) %>% summarise_at(pVars, c(mean, sd, length)) %>% mutate(XXX_code = strtrim(XXXX_code,3)) %>%
+  left_join(B5_other %>% group_by(XXX_code) %>% summarise_at(pVars, c(mean, sd, length)) %>% mutate(XX_code = strtrim(XXX_code,2)), by = "XXX_code") %>% 
+  left_join(B5_other %>% group_by(XX_code) %>% summarise_at(pVars, c(mean, sd, length))%>% mutate(X_code = strtrim(XX_code,1)), by = "XX_code") %>% 
+  left_join(B5_other %>% group_by(X_code) %>% summarise_at(pVars, c(mean, sd, length)), by = "X_code")
+
+names(XXXX_means_subset_other) = names(XXXX_means_subset_other) %>% gsub("fn1","mean",., fixed = T) %>%  gsub("fn2","sd",., fixed = T) %>% gsub("fn3","N",., fixed = T)  %>% 
+  gsub(".y.y","_X",., fixed = T) %>% gsub(".x.x","_XX",., fixed = T) %>% gsub(".y","_XXX",., fixed = T) %>% gsub(".x","_XXXX",., fixed = T) 
+
+XXXX_means_subset_other = ISCO %>% select(XXXX_code, XXXX_name) %>% right_join(XXXX_means_subset_other, by="XXXX_code")
+
+tmp1 = XXXX_means_subset_other %>% filter(N_N_XXX >= 100) %>% select(contains("XXXX"), ends_with("XXX")) ## almost all observations
+tmp2 = XXXX_means_subset_other %>% filter(N_N_XXX < 100 & N_N_XX >= 100)  %>% select(contains("XXXX"), ends_with("_XX"))
+tmp3 = XXXX_means_subset_other %>% filter(N_N_XX < 100 & N_N_X >= 100)  %>% select(contains("XXXX"), ends_with("_X"))
+
+k = 25
+smoothed1 = posteriors(
+  select(tmp1, ends_with("mean_XXXX")),select(tmp1, ends_with("sd_XXXX"))^2,
+  select(tmp1, ends_with("mean_XXX")),select(tmp1, ends_with("sd_XXX"))^2,
+  k * (select(tmp1, ends_with("_N_XXXX"))/k)^2, k) 
+
+smoothed1_means = smoothed1$m_posterior %>% as_tibble %>%
+  mutate(XXXX_code = tmp1$XXXX_code, XXXX_name = tmp1$XXXX_name)
+
+smoothed1_sds = sqrt(smoothed1$var_posterior) %>% as_tibble %>%
+  mutate(XXXX_code = tmp1$XXXX_code, XXXX_name = tmp1$XXXX_name)
+
+smoothed2 = posteriors(
+  select(tmp2, ends_with("mean_XXXX")),select(tmp2, ends_with("sd_XXXX"))^2,
+  select(tmp2, ends_with("mean_XX")),select(tmp2, ends_with("sd_XX"))^2,
+  k * (select(tmp2, ends_with("_N_XXXX"))/k)^2, k) 
+
+smoothed2_means = smoothed2$m_posterior %>% as_tibble %>%
+  mutate(XXXX_code = tmp2$XXXX_code, XXXX_name = tmp2$XXXX_name)
+
+smoothed2_sds = sqrt(smoothed2$var_posterior) %>% as_tibble %>%
+  mutate(XXXX_code = tmp2$XXXX_code, XXXX_name = tmp2$XXXX_name)
+
+smoothed3 = posteriors(
+  select(tmp3, ends_with("mean_XXXX")),select(tmp3, ends_with("sd_XXXX"))^2,
+  select(tmp3, ends_with("mean_X")),select(tmp3, ends_with("sd_X"))^2,
+  k * (select(tmp3, ends_with("_N_XXXX"))/k)^2, k) 
+
+smoothed3_means = smoothed3$m_posterior %>% as_tibble %>%
+  mutate(XXXX_code = tmp3$XXXX_code, XXXX_name = tmp3$XXXX_name)
+
+smoothed3_sds = sqrt(smoothed3$var_posterior) %>% as_tibble %>%
+  mutate(XXXX_code = tmp3$XXXX_code, XXXX_name = tmp3$XXXX_name)
+
+names(smoothed1_means) = names(smoothed2_means) = names(smoothed3_means) = c(paste(pVars, "mean",sep ="_"), "XXXX_code","XXXX_name")
+names(smoothed1_sds) = names(smoothed2_sds) = names(smoothed3_sds) = c(paste(pVars, "sd",sep ="_"), "XXXX_code","XXXX_name")
+
+smoothed_means = rbind(smoothed1_means, smoothed2_means, smoothed3_means)
+smoothed_sds = rbind(smoothed1_sds, smoothed2_sds, smoothed3_sds)
+
+## Combine Bayesian-averaged group means with the raw means
+
+res_subset_other = XXXX_means_subset_other %>% left_join(smoothed_means, by="XXXX_code") %>% left_join(smoothed_sds, by="XXXX_code") %>% filter(!is.na(N_mean))
+
+res_joined_subset <- left_join(res_subset, res_subset_other, by = "XXXX_code")
+cor = cor(select(res_joined_subset, N_mean.x:C_mean.x), select(res_joined_subset, N_mean.y:C_mean.y), use = "complete.obs", method = "spearman")
+cor_diagonal <- diag(cor)
+names(cor_diagonal) <- colnames(select(res_joined_subset, N_mean.x:C_mean.x))
+cor_diagonal
+
+# Correlations with self-report scores 2 - nuances
+nuances_subset <- persn %>%
+  semi_join(persn_other, by = "scode")
+nuances_subset_other <- persn_other %>%
+  semi_join(nuances_subset, by = "scode")
+
+nuanceVars <- persn %>%
+  select(extraversion12, neuroticism12, openness13, openness18, openness20, 
+         agreeableness09R, openness19, openness15, openness03, openness09R, 
+         agreeableness36, agreeableness06R, neuroticism52, conscientiousness19, 
+         neuroticism28, agreeableness44R, neuroticism31, others12, openness11) %>%
+  colnames()
+
+XXXX_means_nuances_subset <- nuances_subset %>%
+  group_by(XXXX_code) %>%
+  summarise(across(all_of(nuanceVars), list(mean = mean, sd = sd, length = length))) %>%
+  mutate(XXX_code = strtrim(XXXX_code, 3)) %>%
+  left_join(nuances_subset %>%
+              group_by(XXX_code) %>%
+              summarise(across(all_of(nuanceVars), list(mean = mean, sd = sd, length = length))) %>%
+              mutate(XX_code = strtrim(XXX_code, 2)), 
+            by = "XXX_code") %>%
+  left_join(nuances_subset %>%
+              group_by(XX_code) %>%
+              summarise(across(all_of(nuanceVars), list(mean = mean, sd = sd, length = length))) %>%
+              mutate(X_code = strtrim(XX_code, 1)), 
+            by = "XX_code") %>%
+  left_join(nuances_subset %>%
+              group_by(X_code) %>%
+              summarise(across(all_of(nuanceVars), list(mean = mean, sd = sd, length = length))), 
+            by = "X_code")
+
+names(XXXX_means_nuances_subset) = names(XXXX_means_nuances_subset) %>% gsub("length","N",., fixed = T) %>% gsub(".y.y","_X",., fixed = T) %>% gsub(".x.x","_XX",., fixed = T) %>% gsub(".y","_XXX",., fixed = T) %>% gsub(".x","_XXXX",., fixed = T) 
+
+XXXX_means_nuances_subset = ISCO %>% select(XXXX_code, XXXX_name) %>% right_join(XXXX_means_nuances_subset, by="XXXX_code")
+
+tmp1 = XXXX_means_nuances_subset %>% filter(extraversion12_N_XXX >= 100) %>% select(contains("XXXX"), ends_with("XXX")) ## almost all observations
+tmp2 = XXXX_means_nuances_subset %>% filter(extraversion12_N_XXX < 100 & extraversion12_N_XX >= 100)  %>% select(contains("XXXX"), ends_with("_XX"))
+tmp3 = XXXX_means_nuances_subset %>% filter(extraversion12_N_XX < 100 & extraversion12_N_X >= 100)  %>% select(contains("XXXX"), ends_with("_X"))
+
+k = 25
+smoothed1 = posteriors(
+  select(tmp1, ends_with("mean_XXXX")),select(tmp1, ends_with("sd_XXXX"))^2,
+  select(tmp1, ends_with("mean_XXX")),select(tmp1, ends_with("sd_XXX"))^2,
+  k * (select(tmp1, ends_with("_N_XXXX"))/k)^2, k) 
+
+smoothed1_means = smoothed1$m_posterior %>% as_tibble %>%
+  mutate(XXXX_code = tmp1$XXXX_code, XXXX_name = tmp1$XXXX_name)
+
+smoothed1_sds = sqrt(smoothed1$var_posterior) %>% as_tibble %>%
+  mutate(XXXX_code = tmp1$XXXX_code, XXXX_name = tmp1$XXXX_name)
+
+smoothed2 = posteriors(
+  select(tmp2, ends_with("mean_XXXX")),select(tmp2, ends_with("sd_XXXX"))^2,
+  select(tmp2, ends_with("mean_XX")),select(tmp2, ends_with("sd_XX"))^2,
+  k * (select(tmp2, ends_with("_N_XXXX"))/k)^2, k) 
+
+smoothed2_means = smoothed2$m_posterior %>% as_tibble %>%
+  mutate(XXXX_code = tmp2$XXXX_code, XXXX_name = tmp2$XXXX_name)
+
+smoothed2_sds = sqrt(smoothed2$var_posterior) %>% as_tibble %>%
+  mutate(XXXX_code = tmp2$XXXX_code, XXXX_name = tmp2$XXXX_name)
+
+smoothed3 = posteriors(
+  select(tmp3, ends_with("mean_XXXX")),select(tmp3, ends_with("sd_XXXX"))^2,
+  select(tmp3, ends_with("mean_X")),select(tmp3, ends_with("sd_X"))^2,
+  k * (select(tmp3, ends_with("_N_XXXX"))/k)^2, k) 
+
+smoothed3_means = smoothed3$m_posterior %>% as_tibble %>%
+  mutate(XXXX_code = tmp3$XXXX_code, XXXX_name = tmp3$XXXX_name)
+
+smoothed3_sds = sqrt(smoothed3$var_posterior) %>% as_tibble %>%
+  mutate(XXXX_code = tmp3$XXXX_code, XXXX_name = tmp3$XXXX_name)
+
+names(smoothed1_means) = names(smoothed2_means) = names(smoothed3_means) = c(paste(nuanceVars, "mean",sep ="_"), "XXXX_code","XXXX_name")
+names(smoothed1_sds) = names(smoothed2_sds) = names(smoothed3_sds) = c(paste(nuanceVars, "sd",sep ="_"), "XXXX_code","XXXX_name")
+
+smoothed_means = rbind(smoothed1_means, smoothed2_means, smoothed3_means)
+smoothed_sds = rbind(smoothed1_sds, smoothed2_sds, smoothed3_sds)
+
+res_nuances_subset = XXXX_means_nuances_subset %>% left_join(smoothed_means, by="XXXX_code") %>% left_join(smoothed_sds, by="XXXX_code")
+
+# Other
+XXXX_means_nuances_subset_o <- nuances_subset_other %>%
+  group_by(XXXX_code) %>%
+  summarise(across(all_of(nuanceVars), list(mean = mean, sd = sd, length = length))) %>%
+  mutate(XXX_code = strtrim(XXXX_code, 3)) %>%
+  left_join(nuances_subset_other %>%
+              group_by(XXX_code) %>%
+              summarise(across(all_of(nuanceVars), list(mean = mean, sd = sd, length = length))) %>%
+              mutate(XX_code = strtrim(XXX_code, 2)), 
+            by = "XXX_code") %>%
+  left_join(nuances_subset_other %>%
+              group_by(XX_code) %>%
+              summarise(across(all_of(nuanceVars), list(mean = mean, sd = sd, length = length))) %>%
+              mutate(X_code = strtrim(XX_code, 1)), 
+            by = "XX_code") %>%
+  left_join(nuances_subset_other %>%
+              group_by(X_code) %>%
+              summarise(across(all_of(nuanceVars), list(mean = mean, sd = sd, length = length))), 
+            by = "X_code")
+
+names(XXXX_means_nuances_subset_o) = names(XXXX_means_nuances_subset_o) %>% gsub("length","N",., fixed = T) %>% gsub(".y.y","_X",., fixed = T) %>% gsub(".x.x","_XX",., fixed = T) %>% gsub(".y","_XXX",., fixed = T) %>% gsub(".x","_XXXX",., fixed = T) 
+
+XXXX_means_nuances_subset_o = ISCO %>% select(XXXX_code, XXXX_name) %>% right_join(XXXX_means_nuances_subset_o, by="XXXX_code")
+
+tmp1 = XXXX_means_nuances_subset_o %>% filter(extraversion12_N_XXX >= 100) %>% select(contains("XXXX"), ends_with("XXX")) ## almost all observations
+tmp2 = XXXX_means_nuances_subset_o %>% filter(extraversion12_N_XXX < 100 & extraversion12_N_XX >= 100)  %>% select(contains("XXXX"), ends_with("_XX"))
+tmp3 = XXXX_means_nuances_subset_o %>% filter(extraversion12_N_XX < 100 & extraversion12_N_X >= 100)  %>% select(contains("XXXX"), ends_with("_X"))
+
+k = 25
+smoothed1 = posteriors(
+  select(tmp1, ends_with("mean_XXXX")),select(tmp1, ends_with("sd_XXXX"))^2,
+  select(tmp1, ends_with("mean_XXX")),select(tmp1, ends_with("sd_XXX"))^2,
+  k * (select(tmp1, ends_with("_N_XXXX"))/k)^2, k) 
+
+smoothed1_means = smoothed1$m_posterior %>% as_tibble %>%
+  mutate(XXXX_code = tmp1$XXXX_code, XXXX_name = tmp1$XXXX_name)
+
+smoothed1_sds = sqrt(smoothed1$var_posterior) %>% as_tibble %>%
+  mutate(XXXX_code = tmp1$XXXX_code, XXXX_name = tmp1$XXXX_name)
+
+smoothed2 = posteriors(
+  select(tmp2, ends_with("mean_XXXX")),select(tmp2, ends_with("sd_XXXX"))^2,
+  select(tmp2, ends_with("mean_XX")),select(tmp2, ends_with("sd_XX"))^2,
+  k * (select(tmp2, ends_with("_N_XXXX"))/k)^2, k) 
+
+smoothed2_means = smoothed2$m_posterior %>% as_tibble %>%
+  mutate(XXXX_code = tmp2$XXXX_code, XXXX_name = tmp2$XXXX_name)
+
+smoothed2_sds = sqrt(smoothed2$var_posterior) %>% as_tibble %>%
+  mutate(XXXX_code = tmp2$XXXX_code, XXXX_name = tmp2$XXXX_name)
+
+smoothed3 = posteriors(
+  select(tmp3, ends_with("mean_XXXX")),select(tmp3, ends_with("sd_XXXX"))^2,
+  select(tmp3, ends_with("mean_X")),select(tmp3, ends_with("sd_X"))^2,
+  k * (select(tmp3, ends_with("_N_XXXX"))/k)^2, k) 
+
+smoothed3_means = smoothed3$m_posterior %>% as_tibble %>%
+  mutate(XXXX_code = tmp3$XXXX_code, XXXX_name = tmp3$XXXX_name)
+
+smoothed3_sds = sqrt(smoothed3$var_posterior) %>% as_tibble %>%
+  mutate(XXXX_code = tmp3$XXXX_code, XXXX_name = tmp3$XXXX_name)
+
+names(smoothed1_means) = names(smoothed2_means) = names(smoothed3_means) = c(paste(nuanceVars, "mean",sep ="_"), "XXXX_code","XXXX_name")
+names(smoothed1_sds) = names(smoothed2_sds) = names(smoothed3_sds) = c(paste(nuanceVars, "sd",sep ="_"), "XXXX_code","XXXX_name")
+
+smoothed_means = rbind(smoothed1_means, smoothed2_means, smoothed3_means)
+smoothed_sds = rbind(smoothed1_sds, smoothed2_sds, smoothed3_sds)
+
+res_nuances_subset_o = XXXX_means_nuances_subset_o %>% left_join(smoothed_means, by="XXXX_code") %>% left_join(smoothed_sds, by="XXXX_code")
+
+cor_nuances = cor(select(res_nuances_subset, extraversion12_mean:openness11_mean), select(res_nuances_subset_o, extraversion12_mean:openness11_mean), use = "complete.obs")
+cor_diagonal_n <- diag(cor_nuances)
+names(cor_diagonal_n) <- colnames(select(res_nuances_subset, extraversion12_mean:openness11_mean))
+cor_diagonal_n
