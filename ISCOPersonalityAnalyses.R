@@ -67,6 +67,7 @@ for(i in 0:length(w)-1) {
   w[i+1] = dp / (k + dp)
 }
 plot(0:150, w, type="l", xlab="Number of people in the ISCO XXXX group", ylab="Proportion of ISCO XXXX mean over XXX mean", ylim=c(0,1), xaxt="n", axes=F)
+lines(0:25, w[1:26], col="white", lwd=2, lty=2)
 axis(2, at=seq(0,1,0.1))
 axis(1, at=seq(0, length(w)-1, by=25), labels=seq(0, length(w)-1, by=25))
 lines(c(25,25),c(-0.5,w[26]), col="grey90")
@@ -129,6 +130,8 @@ names(smoothed1_sds) = names(smoothed2_sds) = names(smoothed3_sds) = c(paste(pVa
 
 smoothed_means = rbind(smoothed1_means, smoothed2_means, smoothed3_means)
 smoothed_sds = rbind(smoothed1_sds, smoothed2_sds, smoothed3_sds)
+
+rm(tmp1, tmp2, tmp3, smoothed1_means, smoothed1_sds, smoothed2_means, smoothed2_sds, smoothed3_means, smoothed3_sds)
 
 ## Combine Bayesian-averaged group means with the raw means
 
