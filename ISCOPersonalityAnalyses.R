@@ -61,12 +61,13 @@ k = 25 ## the sample size at which data and prior have equal weight
 posteriors(.5, 1.1^2, 0, 1, (n/k)^2 * k, k)
 
 ## To see how the weights of data and priors vary with sample size
-w = vector(length = 150)
-for(i in 1:length(w)) {
+w = vector(length = 151)
+for(i in 0:length(w)-1) {  
   dp = (i/k)^2 * k
-  w[i] = dp / (k + dp)
+  w[i+1] = dp / (k + dp)
 }
-plot(w, type="l", xlab="N", ylab="Proportion of data over prior", ylim=c(0,1))
+plot(w, type="l", xlab="N", ylab="Proportion of data over prior", ylim=c(0,1), xaxt="n")
+axis(1, at=seq(0, length(w)-1, by=25), labels=seq(0, length(w)-1, by=25))
 
 ### Bayesian averaging of the Big Five scores
 # Those in 3-digit ISCO groups with at least 100 individuals averaged towards the 3-digit group
@@ -176,7 +177,7 @@ dev.off()
 colored_groups <- ifelse(strtrim(res$XXXX_code, 2) == "83", "red", 
                          ifelse(strtrim(res$XXXX_code, 2) == "23", "green", 
                                 ifelse(strtrim(res$XXXX_code, 2) == "12", "orange",
-                                ifelse(strtrim(res$XXXX_code, 2) == "25", "blue", "black"))))
+                                       ifelse(strtrim(res$XXXX_code, 2) == "25", "blue", "black"))))
 
 svg("jobs.svg", width=25, height=25)
 plot(new, cex=0, xlab="~ E+,C+,N-,A- ", ylab="~ O+,C-,A+")
@@ -189,6 +190,47 @@ legend("topright",
        title = "Groups",             
        box.lwd = 1)
 dev.off()
+
+
+# Interaktiivne MDS
+require(ggiraph)
+require(htmlwidgets)
+library(RColorBrewer)
+
+res <- res %>%
+  mutate(across(N_mean:C_mean, ~ 50 + 10 * ((. - mean(.)) / sd(.)), .names = "T_{col}"))
+
+d = dist(res %>% select(starts_with("T_")))
+fit = cmdscale(d,eig=TRUE, k=2)
+
+new = psych::target.rot(fit$points, select(res, T_E_mean,T_O_mean))$load %>% unclass
+new = tibble(as.data.frame(new), select(res, starts_with("T_"), XXXX_name, XXXX_code)) %>% 
+  left_join(select(ISCO, XXXX_code, X_name),by="XXXX_code") %>% 
+  `names<-`(c("C","O","NT","ET","OT","AT","CT","Job","Code","Group")) %>%
+  mutate(tooltip = paste(
+    Job,
+    "",
+    paste("Neuroticism",round(NT,2), sep =" = "),
+    paste("Extraversion",round(ET,2), sep =" = "),
+    paste("Openness",round(OT,2), sep =" = "),
+    paste("Agreeableness",round(AT,2), sep =" = "),
+    paste("Conscientiousness",round(CT,2), sep =" = "), sep="\n"))
+
+theme_set(theme_minimal())
+sp = ggplot(new %>% filter(!is.na(Group))) +
+  geom_point_interactive(aes(x=C,y=O, color=Group, tooltip = tooltip), size=3) +
+  xlab("~ E+,N-,C+,A-,O+") +
+  ylab("~ O+,C-,A+,E+") +
+  theme(
+    legend.text = element_text(size=4), 
+    legend.title = element_text(size=5),
+    axis.title = element_text(size=8)) +
+  scale_color_brewer_interactive(palette="Paired")
+
+girafe(ggobj = sp) %>% saveWidget("JobMap.html", selfcontained = F, libdir = "JobMap", title = "Personality trait map of jobs")
+
+
+
 
 ### K-Means Clustering?
 means <- res[, c("N_mean", "E_mean", "O_mean", "A_mean", "C_mean")]
@@ -240,3 +282,4 @@ cluster_assignment <- res %>%
   select(XXXX_name) %>%
   mutate(cluster = kmeans_result$cluster) %>%
   arrange(cluster, XXXX_name)
+
