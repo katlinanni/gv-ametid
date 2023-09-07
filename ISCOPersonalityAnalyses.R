@@ -66,8 +66,21 @@ for(i in 0:length(w)-1) {
   dp = (i/k)^2 * k
   w[i+1] = dp / (k + dp)
 }
-plot(w, type="l", xlab="N", ylab="Proportion of data over prior", ylim=c(0,1), xaxt="n")
+plot(0:150, w, type="l", xlab="Number of people in the ISCO XXXX group", ylab="Proportion of ISCO XXXX mean over XXX mean", ylim=c(0,1), xaxt="n", axes=F)
+axis(2, at=seq(0,1,0.1))
 axis(1, at=seq(0, length(w)-1, by=25), labels=seq(0, length(w)-1, by=25))
+lines(c(25,25),c(-0.5,w[26]), col="grey90")
+lines(c(-25,25),c(w[26],w[26]), col="grey90")
+lines(c(50,50),c(-0.5,w[51]), col="grey90")
+lines(c(-50,50),c(w[51],w[51]), col="grey90")
+lines(c(75,75),c(-0.5,w[76]), col="grey90")
+lines(c(-75,75),c(w[76],w[76]), col="grey90")
+lines(c(100,100),c(-0.5,w[101]), col="grey90")
+lines(c(-100,100),c(w[101],w[101]), col="grey90")
+lines(c(125,125),c(-0.5,w[126]), col="grey90")
+lines(c(-125,125),c(w[126],w[126]), col="grey90")
+lines(c(150,150),c(-0.5,w[151]), col="grey90")
+lines(c(-150,150),c(w[151],w[151]), col="grey90")
 
 ### Bayesian averaging of the Big Five scores
 # Those in 3-digit ISCO groups with at least 100 individuals averaged towards the 3-digit group
