@@ -1,8 +1,6 @@
 require(tidyverse)
 require(splitstackshape)
-require(effectsize)
 require(DT)
-require(focusedMDS)
 
 pVars = c("N","E","O","A","C")
 
@@ -17,79 +15,51 @@ B5 = read.csv("~/.gvpers/otherQuestionnaireResponses.csv") %>%
   filter(!is.na(XXXX_code)) %>%
   rename(O = `O-`) %>%
   stratified("XXXX_code", 1000) %>%
-  mutate_at(pVars, ~scale(residuals(lm(. ~ gender + age, ,)))) %>%
+  mutate_at(pVars, ~scale(residuals(lm(. ~ gender + age, ,)))) %>% #if residualising for age and sex
+  #mutate_at(pVars, scale) %>% ## if no residualising for age and sex
   mutate(O = -1*O)
 
-# B5 = B5 %>% mutate_at(c("N","A","E","C", "O"), scale) ## if no residualised for age and sex
+eta2s = data.frame(
+  XXXX = pVars %>% as.list %>% map_dbl(~ eta2(aov(pull(B5,.x) ~ XXXX_code, B5))),
+  XXX = pVars %>% as.list %>% map_dbl(~ eta2(aov(pull(B5,.x) ~ XXX_code, B5))),
+  XX = pVars %>% as.list %>% map_dbl(~ eta2(aov(pull(B5,.x) ~ XX_code, B5))),
+  X = pVars %>% as.list %>% map_dbl(~ eta2(aov(pull(B5,.x) ~ X_code, B5)))
+) %>% mutate(trait = pVars)
 
-## More fine-grained groups give bigger effects, so less variability in sample means for broader groups. 
-## This means later Bayesian averaging will generally push means and variances in smaller samples towards the population means
-eta_squared(aov(O ~ XXXX_code, B5),alternative = "two.sided")
-eta_squared(aov(O ~ XXX_code, B5),alternative = "two.sided")
-eta_squared(aov(O ~ XX_code, B5),alternative = "two.sided")
-eta_squared(aov(O ~ X_code, B5),alternative = "two.sided")
-
-eta_squared(aov(E ~ XXXX_code, B5),alternative = "two.sided")
-eta_squared(aov(E ~ XXX_code, B5),alternative = "two.sided")
-eta_squared(aov(E ~ XX_code, B5),alternative = "two.sided")
-eta_squared(aov(E ~ X_code, B5),alternative = "two.sided")
-
-eta_squared(aov(A ~ XXXX_code, B5),alternative = "two.sided")
-eta_squared(aov(N ~ XXXX_code, B5),alternative = "two.sided")
-eta_squared(aov(C ~ XXXX_code, B5),alternative = "two.sided")
-
-XXXX_means = B5 %>% group_by(XXXX_code) %>% summarise_at(pVars, c(mean, sd, length)) %>% mutate(XXX_code = strtrim(XXXX_code,3)) %>%
+raw = B5 %>% group_by(XXXX_code) %>% summarise_at(pVars, c(mean, sd, length)) %>% mutate(XXX_code = strtrim(XXXX_code,3)) %>%
   left_join(B5 %>% group_by(XXX_code) %>% summarise_at(pVars, c(mean, sd, length)) %>% mutate(XX_code = strtrim(XXX_code,2)), by = "XXX_code") %>% 
   left_join(B5 %>% group_by(XX_code) %>% summarise_at(pVars, c(mean, sd, length))%>% mutate(X_code = strtrim(XX_code,1)), by = "XX_code") %>% 
-  left_join(B5 %>% group_by(X_code) %>% summarise_at(pVars, c(mean, sd, length)), by = "X_code")
-
-names(XXXX_means) = names(XXXX_means) %>% gsub("fn1","mean",., fixed = T) %>%  gsub("fn2","sd",., fixed = T) %>% gsub("fn3","N",., fixed = T)  %>% 
+  left_join(B5 %>% group_by(X_code) %>% summarise_at(pVars, c(mean, sd, length)), by = "X_code") %>%
+  left_join(select(ISCO, XXXX_code, XXXX_name, XXX_name, XX_name, X_name), raw, by="XXXX_code") %>%
+  filter(!is.na(XXXX_code))
+  
+names(raw) = names(raw) %>% gsub("fn1","mean",., fixed = T) %>%  gsub("fn2","sd",., fixed = T) %>% gsub("fn3","N",., fixed = T)  %>% 
   gsub(".y.y","_X",., fixed = T) %>% gsub(".x.x","_XX",., fixed = T) %>% gsub(".y","_XXX",., fixed = T) %>% gsub(".x","_XXXX",., fixed = T) 
 
-XXXX_means = ISCO %>% select(XXXX_code, XXXX_name) %>% right_join(XXXX_means, by="XXXX_code")
 
-## Function here for trialing. Later to be moved to the helpers file.
-posteriors = function(m_data, var_data, m_prior, var_prior, n_data, n_prior) {
-  m_posterior = (n_prior * m_prior + n_data * m_data) / (n_prior + n_data)
-  var_posterior = (n_prior * var_prior + (n_data - 1) * var_data + (n_data * n_prior * (m_data - m_prior)^2) / (n_prior + n_data)) / (n_prior + n_data - 1)
-  return(list(m_posterior = m_posterior, var_posterior = var_posterior))
-}
 
-## to understand try different sample sizes, moving mean from observed .5 closer to 0 and var from observed 1.1^2 close to 1
-n = 100 ## data
-k = 25 ## the sample size at which data and prior have equal weight
-posteriors(.5, 1.1^2, 0, 1, (n/k)^2 * k, k)
+#### Bayesian averaging of the Big Five scores ####
+
+# Means/variances of all 4-digit job groups will be smoothed towards the means/variances of broader groups, according to the weighting below
+# Means/variances of 4-digit ISCO groups with at least 100 individuals in 3-digit group are averaged towards the 3-digit group means/variances
+# Means/variances of other groups are averaged towards 2-digit group means/variances, and where N < 100 in 2-digit groups, towards the means/variances of 1-digit groups
 
 ## To see how the weights of data and priors vary with sample size
-w = vector(length = 151)
+w = vector(length = 201)
 for(i in 0:length(w)-1) {  
   dp = (i/k)^2 * k
   w[i+1] = dp / (k + dp)
 }
-plot(0:150, w, type="l", xlab="Number of people in the ISCO XXXX group", ylab="Proportion of ISCO XXXX mean over XXX mean", ylim=c(0,1), xaxt="n", axes=F)
+plot(0:200, w, type="l", xlab="Number of people in the ISCO XXXX group", ylab="Proportion of ISCO XXXX mean/variance over XXX/XX/X mean/variance", ylim=c(0,1), xaxt="n", axes=F)
 lines(0:25, w[1:26], col="white", lwd=2, lty=2)
 axis(2, at=seq(0,1,0.1))
 axis(1, at=seq(0, length(w)-1, by=25), labels=seq(0, length(w)-1, by=25))
-lines(c(25,25),c(-0.5,w[26]), col="grey90")
-lines(c(-25,25),c(w[26],w[26]), col="grey90")
-lines(c(50,50),c(-0.5,w[51]), col="grey90")
-lines(c(-50,50),c(w[51],w[51]), col="grey90")
-lines(c(75,75),c(-0.5,w[76]), col="grey90")
-lines(c(-75,75),c(w[76],w[76]), col="grey90")
-lines(c(100,100),c(-0.5,w[101]), col="grey90")
-lines(c(-100,100),c(w[101],w[101]), col="grey90")
-lines(c(125,125),c(-0.5,w[126]), col="grey90")
-lines(c(-125,125),c(w[126],w[126]), col="grey90")
-lines(c(150,150),c(-0.5,w[151]), col="grey90")
-lines(c(-150,150),c(w[151],w[151]), col="grey90")
+map(as.list(c(25,50,75,100,125,150,175,200)), ~lines(c(.x,.x),c(-0.5,w[.x+1]), col="grey80"))
+map(as.list(c(25,50,75,100,125,150, 175, 200)), ~lines(c(-1*.x,.x),c(w[.x+1],w[.x+1]), col="grey80"))
 
-### Bayesian averaging of the Big Five scores
-# Those in 3-digit ISCO groups with at least 100 individuals averaged towards the 3-digit group
-# Others averaged towards 2-digit groups, and if N < 100 in that group, towards 1-digit group
-
-tmp1 = XXXX_means %>% filter(N_N_XXX >= 100) %>% select(contains("XXXX"), ends_with("XXX")) ## almost all observations
-tmp2 = XXXX_means %>% filter(N_N_XXX < 100 & N_N_XX >= 100)  %>% select(contains("XXXX"), ends_with("_XX"))
-tmp3 = XXXX_means %>% filter(N_N_XX < 100 & N_N_X >= 100)  %>% select(contains("XXXX"), ends_with("_X"))
+tmp1 = raw %>% filter(N_N_XXX >= 100) %>% select(contains("XXXX"), ends_with("XXX")) ## almost all observations; N > 100 for XXX code
+tmp2 = raw %>% filter(N_N_XXX < 100 & N_N_XX >= 100)  %>% select(contains("XXXX"), ends_with("_XX")) ## include jobs where N < 100 for XXX codes but n > 100 for XX code
+tmp3 = raw %>% filter(N_N_XX < 100 & N_N_X >= 100)  %>% select(contains("XXXX"), ends_with("_X")) ## include jobs where N < 100 for XX codes but n > 100 for X code
 
 k = 25
 smoothed1 = posteriors(
@@ -131,27 +101,52 @@ names(smoothed1_sds) = names(smoothed2_sds) = names(smoothed3_sds) = c(paste(pVa
 smoothed_means = rbind(smoothed1_means, smoothed2_means, smoothed3_means)
 smoothed_sds = rbind(smoothed1_sds, smoothed2_sds, smoothed3_sds)
 
-rm(tmp1, tmp2, tmp3, smoothed1_means, smoothed1_sds, smoothed2_means, smoothed2_sds, smoothed3_means, smoothed3_sds)
+rm(tmp1, tmp2, tmp3, smoothed1, smoothed2, smoothed3, smoothed1_means, smoothed1_sds, smoothed2_means, smoothed2_sds, smoothed3_means, smoothed3_sds)
 
-## Combine Bayesian-averaged group means with the raw means
+## Combine Bayesian-averaged (smoothed) group means with the raw means
 
-res = XXXX_means %>% left_join(smoothed_means, by="XXXX_code") %>% left_join(smoothed_sds, by="XXXX_code")
+res = raw %>% left_join(smoothed_means, by="XXXX_code") %>% left_join(smoothed_sds, by="XXXX_code") %>% select(-contains(".x"), -contains(".y"))
+
+# res %>% select(XXXX_name, N_mean:C_sd, N_N_XXXX) %>% rename(N = N_N_XXXX) %>% mutate_at(2:11, ~round(.,2)) %>% datatable %>% saveWidget("Means.html")
 
 ### Sanity check
 
 cor(select(res, N_mean_XXXX:C_mean_XXXX), select(res, N_mean:C_mean))
 cor(select(res, N_sd_XXXX:C_sd_XXXX), select(res, N_sd:C_sd))
 
-plot(res$N_mean, res$N_mean_XXXX)
-lines(c(-10,10),c(-10,10))
+ggplot(res, aes(x = N_mean, y = N_mean_XXXX, size = N_N_XXXX )) + 
+  geom_point() +
+  geom_abline(intercept = 0, slope = 1)
 
-plot(res$N_sd, res$N_sd_XXXX)
-lines(c(0,2),c(0,2))
+ggplot(res, aes(x = N_sd, y = N_sd_XXXX, size = N_N_XXXX )) + 
+  geom_point() +
+  geom_abline(intercept = 0, slope = 1)
+
 
 ### Are means and variances correlated, suggesting scores with higher/lower Big Five trait levels are more selection?
 
-cor(XXXX_means %>% select(N_mean_XXXX:C_mean_XXXX), XXXX_means %>% select(N_sd_XXXX:C_sd_XXXX), method="spearman")
-cor(res %>% select(N_mean:C_mean), res %>% select(N_sd:C_sd), method="spearman")
+cor(raw %>% select(N_mean_XXXX:C_mean_XXXX), raw %>% select(N_sd_XXXX:C_sd_XXXX), method="spearman") ## non-smoothed, for check
+cor(res %>% select(N_mean:C_mean), res %>% select(N_sd:C_sd), method="spearman") ## smoothed
+
+map2(
+  .x = as.list(c("N_mean","E_mean","O_mean","A_mean","C_mean")), 
+  .y = as.list(c("N_sd","E_sd","O_sd","A_sd","C_sd")),
+  ~summary(lm(rank(pull(res,.y)) ~ rank(pull(res, .x)) + res$N_N_XXXX))$coef) %>% 
+  as.data.frame %>% select(-contains("value")) %>% round(3) %>%
+  `rownames<-`(c("Intercept","Mean","N")) %>%
+  `names<-`(paste(rep(pVars,each=3),rep(c("Est","SE","p"), times=3), sep="_"))
+
+p = map2(
+  .x = as.list(c("N_mean","E_mean","O_mean","A_mean","C_mean")), 
+  .y = as.list(c("N_sd","E_sd","O_sd","A_sd","C_sd")),
+  ~ggplot(tibble(Mean = pull(res,.x), SD = pull(res, .y), N =  pull(res,N_N_XXXX)), aes(x = Mean, y = SD, size = N)) + 
+    geom_point() +
+    geom_smooth() + 
+    theme_minimal() +
+    theme(legend.position = "none")
+)
+
+# cowplot them
 
 ### wolfram comparison
 
@@ -161,13 +156,6 @@ wolfram = res %>% select(XXXX_code, XXXX_name, N_mean:O_sd, N_N_XXXX, -ends_with
 
 cor(select(wolfram, N_mean:C_mean), select(wolfram, contains("Big 5")), use="pairwise") %>% round(2)
 
-### Just exploring ...
-
-res %>% arrange(desc(O_mean)) %>% select(XXXX_name, N_mean:C_sd, N_N_XXXX) %>% slice(1:10)
-
-res %>% filter(XXXX_name %in% "Psychologists") %>% select(XXXX_name, N_mean:C_sd, N_N_XXXX) 
-
-#res %>% select(XXXX_name, N_mean:C_sd, N_N_XXXX, -ends_with(".y")) %>% mutate_at(2:11, ~round(.,2)) %>% datatable %>% saveWidget("Means.html")
 
 ### MDS
 

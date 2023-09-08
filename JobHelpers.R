@@ -80,3 +80,20 @@ replaceImmediately = list(
   c("peaspetsilist", "peaspetsialist"),
   c("juhatuse liige,", "")
 )
+
+eta2 = function(x) {
+  x = anova(x)$Sum
+  x = x / sum(x)
+  x[1]
+}
+
+posteriors = function(m_data, var_data, m_prior, var_prior, n_data, n_prior) {
+  m_posterior = (n_prior * m_prior + n_data * m_data) / (n_prior + n_data)
+  var_posterior = (n_prior * var_prior + (n_data - 1) * var_data + (n_data * n_prior * (m_data - m_prior)^2) / (n_prior + n_data)) / (n_prior + n_data - 1)
+  return(list(m_posterior = m_posterior, var_posterior = var_posterior))
+}
+
+## to understand try different sample sizes, moving mean from observed .5 closer to 0 and var from observed 1.1^2 close to 1
+# n = 100 ## data
+# k = 25 ## the sample size at which data and prior have equal weight
+# posteriors(.5, 1.1^2, 0, 1, (n/k)^2 * k, k)
