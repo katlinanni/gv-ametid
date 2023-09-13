@@ -3577,7 +3577,7 @@ new$new = asendaja(new$new, "^aruandlusspetsialist$", "", replace = "spetsialist
 new$new = asendaja(new$new, "^hooldusspetsialist$", "", replace = "spetsialist")
 
 new$new = asendaja(new$new, "koolitusspetsialist", "", replace = "töötajate koolitusspetsialist")
-new$new = asendaja(new$new, "tippspetsialist", "", excl1 = "pedagoogika", replace = "peaspetsialist")
+new$new = asendaja(new$new, "tippspetsialist", "", excl1 = "pedagoogika", excl2 = "tervishoiu", replace = "peaspetsialist")
 new$new = asendaja(new$new, "kvalitee", "spets", replace = "kvaliteedispetsialist")
 new$new = asendaja(new$new, "kvaliteedihindaja", "", replace = "kvaliteedispetsialist")
 new$new = asendaja(new$new, "spatsialist", "", replace = "spetsialist")
